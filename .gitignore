@@ -1,0 +1,30 @@
+# Cache and temp files
+*~
+auto-save-list/
+.cache/
+eln-cache/
+recentf
+savefile/
+tramp/
+var/
+
+# Package directories
+elpa/
+
+# Config and session files
+.cask
+.lsp-session*
+session*
+savehist
+saveplace
+
+# Data directories
+places
+transient/
+tutorial/
+history
+
+# Other files and directories
+eshell/
+save/
+var/pcache
