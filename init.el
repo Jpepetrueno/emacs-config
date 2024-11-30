@@ -2,7 +2,7 @@
 ;;
 ;; Copyright (C) 2024 David Dimagid
 ;;
-;; Author: David Dimagid  <dimagidve@gmail.com>
+;; Author: David Dimagid
 ;; Created: 29 Nov 2024
 ;;
 ;; This file is not part of GNU Emacs.
@@ -21,5 +21,3 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 (load (locate-user-emacs-file "README.el"))
-
-;; (org-babel-load-file (expand-file-name "$XDG_CONFIG_HOME/emacs/README.org"))
