@@ -1,5 +1,6 @@
 # Cache and temp files
 *~
+*#
 auto-save-list/
 .cache/
 eln-cache/
