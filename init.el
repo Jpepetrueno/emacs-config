@@ -20,8 +20,5 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; For reduce load time
-(eval-when-compile
-  (require 'use-package))
-
+;; Load the README.el file from the user's Emacs configuration directory
 (load (locate-user-emacs-file "README.el"))

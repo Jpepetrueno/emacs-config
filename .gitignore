@@ -1,7 +1,11 @@
-# Cache and temp files
+# -*- mode: gitignore; -*-
+
 *~
 *#
-auto-save-list/
+*.elc
+/.emacs.desktop
+/.emacs.desktop.lock
+auto-save-list
 .cache/
 eln-cache/
 recentf
@@ -9,8 +13,33 @@ savefile/
 tramp/
 var/
 
-# Package directories
 elpa/
+.cask/
+.dist/
+
+.org-id-locations
+*_archive
+*_flymake.*
+/eshell/history
+/eshell/lastdir
+*.rel
+/auto/
+flycheck_*.el
+/server/
+.projectile
+/network-security.data
+.dir-locals.el
+.lsp-session*
+session*
+savehist
+saveplace
+places
+transient/
+tutorial/
+history
+eshell/
+save/
+var/pcache
 
 # Config and session files
 .cask
@@ -29,3 +58,39 @@ history
 eshell/
 save/
 var/pcache
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# flymake-mode
+*_flymake.*
+
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# Flycheck
+flycheck_*.el
+
+# server auth directory
+/server/
+
+# projectiles files
+.projectile
+
+# network security
+/network-security.data
+
+# Emacs desktop files
+/.emacs.desktop
+/.emacs.desktop.lock
+
+# Compiled Emacs Lisp files
+*.elc

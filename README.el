@@ -3,22 +3,19 @@
   (setq load-prefer-newer t
 	history-length 50
 	global-auto-revert-non-file-buffers t
-	toggle-frame-maximized t
 	custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file 'noerror 'nomessage)
-  (load-theme 'wombat t)
+  (load custom-file)
   (tool-bar-mode -1)
   (savehist-mode 1)
   (recentf-mode 1)
-  (save-place-mode 1)
   (global-auto-revert-mode 1)
-  (pending-delete-mode 1)
 
   :hook
-  (after-init . pending-delete-mode)
   (after-init . toggle-frame-maximized)
 
   :config
+  (desktop-save-mode 1)
+  (pending-delete-mode 1)
   (setq visible-bell t
 	use-short-answers t
 	debugger-stack-frame-as-list t
