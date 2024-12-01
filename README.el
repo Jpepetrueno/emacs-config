@@ -78,7 +78,12 @@
 	      ("C-c '"  . wrap-with-single-quotes)
 	      ("C-c \"" . wrap-with-double-quotes)
 	      ("C-c `"  . wrap-with-back-quotes))
-  :custom
+
+  :config
+  ;; load default config
+  (require 'smartparens-config)
+  ;; enable strict-mode
+  (smartparens-strict-mode t)
   ;; define the def-pairs macro
   (defmacro def-pairs (pairs)
     "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
@@ -104,11 +109,7 @@ respectively."
 	      (brace . "{")
 	      (single-quote . "'")
 	      (double-quote . "\"")
-	      (back-quote . "`")))
-  :config
-  ;; load default config
-  (require 'smartparens-config)
-  (smartparens-strict-mode t))
+	      (back-quote . "`"))))
 
 ;; Enable auto-fill mode to automatically wrap text
 (use-package auto-fill
