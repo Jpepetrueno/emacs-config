@@ -53,6 +53,7 @@ places
 transient/
 tutorial/
 history
+undo-fu-session/
 
 # Other files and directories
 eshell/
