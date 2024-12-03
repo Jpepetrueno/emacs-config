@@ -8,7 +8,6 @@
 	global-auto-revert-non-file-buffers t
 	custom-file (locate-user-emacs-file "custom-vars.el"))
   (load custom-file)
-
   :config
   (savehist-mode 1)
   (recentf-mode 1)
@@ -31,8 +30,7 @@
     "Deletes all loaded tests from the runtime, evaluates the current
     buffer and runs all loaded tests with ert."
     (interactive)
-    (if (fboundp 'ert-delete-all-tests)
-	(ert-delete-all-tests))
+    (ert-delete-all-tests)
     (eval-buffer)
     (ert 't)))
 
@@ -44,47 +42,44 @@
 (use-package smartparens
   :ensure t  ;; install the package
   :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
-  ;; :bind (:map smartparens-mode-map
-  ;; 	      ("C-M-a" . sp-beginning-of-sexp)
-  ;; 	      ("C-M-e" . sp-end-of-sexp)
-  ;; 	      ("C-<down>" . sp-down-sexp)
-  ;; 	      ("C-<up>"   . sp-up-sexp)
-  ;; 	      ("M-<down>" . sp-backward-down-sexp)
-  ;; 	      ("M-<up>"   . sp-backward-up-sexp)
-  ;; 	      ("C-M-f" . sp-forward-sexp)
-  ;; 	      ("C-M-b" . sp-backward-sexp)
-  ;; 	      ("C-M-n" . sp-next-sexp)
-  ;; 	      ("C-M-p" . sp-previous-sexp)
-  ;; 	      ("C-S-f" . sp-forward-symbol)
-  ;; 	      ("C-S-b" . sp-backward-symbol)
-  ;; 	      ("C-<right>" . sp-forward-slurp-sexp)
-  ;; 	      ("M-<right>" . sp-forward-barf-sexp)
-  ;; 	      ("C-<left>"  . sp-backward-slurp-sexp)
-  ;; 	      ("M-<left>"  . sp-backward-barf-sexp)
-  ;; 	      ("C-M-t" . sp-transpose-sexp)
-  ;; 	      ("C-M-k" . sp-kill-sexp)
-  ;; 	      ("C-k"   . sp-kill-hybrid-sexp)
-  ;; 	      ("M-k"   . sp-backward-kill-sexp)
-  ;; 	      ("C-M-w" . sp-copy-sexp)
-  ;; 	      ("C-M-d" . delete-sexp)
-  ;; 	      ("M-<backspace>" . backward-kill-word)
-  ;; 	      ("C-<backspace>" . sp-backward-kill-word)
-  ;; 	      ([remap sp-backward-kill-word] . backward-kill-word)
-  ;; 	      ("M-[" . sp-backward-unwrap-sexp)
-  ;; 	      ("M-]" . sp-unwrap-sexp)
-  ;; 	      ("C-x C-t" . sp-transpose-hybrid-sexp)
-  ;; 	      ("C-c ("  . wrap-with-parens)
-  ;; 	      ("C-c ["  . wrap-with-brackets)
-  ;;		("C-c {"  . wrap-with-braces)
-  ;;		("C-c '"  . wrap-with-single-quotes)
-  ;;		("C-c \"" . wrap-with-double-quotes)
-  ;;		("C-c `"  . wrap-with-back-quotes))
-
+  :bind (:map smartparens-mode-map
+	      ("C-M-a" . sp-beginning-of-sexp)
+	      ("C-M-e" . sp-end-of-sexp)
+	      ("C-<down>" . sp-down-sexp)
+	      ("C-<up>"   . sp-up-sexp)
+	      ("M-<down>" . sp-backward-down-sexp)
+	      ("M-<up>"   . sp-backward-up-sexp)
+	      ("C-M-f" . sp-forward-sexp)
+	      ("C-M-b" . sp-backward-sexp)
+	      ("C-M-n" . sp-next-sexp)
+	      ("C-M-p" . sp-previous-sexp)
+	      ("C-S-f" . sp-forward-symbol)
+	      ("C-S-b" . sp-backward-symbol)
+	      ("C-<right>" . sp-forward-slurp-sexp)
+	      ("M-<right>" . sp-forward-barf-sexp)
+	      ("C-<left>"  . sp-backward-slurp-sexp)
+	      ("M-<left>"  . sp-backward-barf-sexp)
+	      ("C-M-t" . sp-transpose-sexp)
+	      ("C-M-k" . sp-kill-sexp)
+	      ("C-k"   . sp-kill-hybrid-sexp)
+	      ("M-k"   . sp-backward-kill-sexp)
+	      ("C-M-w" . sp-copy-sexp)
+	      ("C-M-d" . delete-sexp)
+	      ("M-<backspace>" . backward-kill-word)
+	      ("C-<backspace>" . sp-backward-kill-word)
+	      ([remap sp-backward-kill-word] . backward-kill-word)
+	      ("M-[" . sp-backward-unwrap-sexp)
+	      ("M-]" . sp-unwrap-sexp)
+	      ("C-x C-t" . sp-transpose-hybrid-sexp)
+	      ("C-c ("  . wrap-with-parens)
+	      ("C-c ["  . wrap-with-brackets)
+	      ("C-c {"  . wrap-with-braces)
+	      ("C-c '"  . wrap-with-single-quotes)
+	      ("C-c \"" . wrap-with-double-quotes)
+	      ("C-c `"  . wrap-with-back-quotes))
   :config
-  ;; load default config
-  (require 'smartparens-config)
-  ;; enable strict-mode
-  (smartparens-strict-mode t)
+  ;; enable global strict-mode
+  (smartparens-global-strict-mode)
   ;; define the def-pairs macro
   (defmacro def-pairs (pairs)
     "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
