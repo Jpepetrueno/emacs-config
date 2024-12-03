@@ -15,6 +15,8 @@
   (global-auto-revert-mode 1)
   (desktop-save-mode 1)
   (pending-delete-mode 1)
+  (fido-mode t)
+  (fido-vertical-mode t)
   (setq visible-bell t
 	use-short-answers t
 	debugger-stack-frame-as-list t
@@ -137,3 +139,8 @@ respectively."
 (use-package display-line-numbers
   :config
   (global-display-line-numbers-mode))
+
+;; Enable Flyspell
+(use-package flyspell
+  :config
+  (flyspell-prog-mode))

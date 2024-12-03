@@ -26,6 +26,8 @@ customize their Emacs experience.
     (global-auto-revert-mode 1)
     (desktop-save-mode 1)
     (pending-delete-mode 1)
+    (fido-mode t)
+    (fido-vertical-mode t)
     (setq visible-bell t
 	  use-short-answers t
 	  debugger-stack-frame-as-list t
@@ -166,4 +168,12 @@ customize their Emacs experience.
   (use-package display-line-numbers
     :config
     (global-display-line-numbers-mode))
+#+end_src
+
+** Flyspell config
+#+begin_src emacs-lisp
+  ;; Enable Flyspell
+  (use-package flyspell
+    :config
+    (flyspell-prog-mode))
 #+end_src
