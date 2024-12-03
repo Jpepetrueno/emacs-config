@@ -144,3 +144,9 @@ respectively."
 (use-package flyspell
   :config
   (flyspell-prog-mode))
+
+;; Enable which-key
+(use-package which-key
+  :ensure t
+  :config
+  (which-key-mode))

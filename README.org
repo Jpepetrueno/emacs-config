@@ -3,9 +3,35 @@
 #+WARNING: Don't forget to run `org-babel-tangle` to generate README.el!
 
 * My Emacs Configuration File
-This is a basic Emacs configuration file, currently in development. It's a work
-in progress, but it should provide a good starting point for anyone looking to
-customize their Emacs experience.
+This is my Emacs configuration file, currently in development. Feel
+free to use it as a starting point for creating your own personalized
+Emacs setup.
+
+I use [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to organize my Emacs configuration. This package provides a simple and efficient way to manage my Emacs setup, allowing me to easily install and configure packages, as well as define custom settings and keybindings.
+
+As the use-package README states, "The purpose of this package is to provide a consistent and simple way to organize your Emacs configuration, making it easier to manage and maintain your setup over time." By using use-package, I can keep my configuration organized and up-to-date, and easily share my setup with others.
+
+** Customization
+When you customize Emacs through the menu bar or make changes to your
+init.el file, Emacs generates configuration lines that are typically
+stored in the custom-set-variables and custom-set-faces sections. To
+keep your configuration organized and clean, I redirect these auto-generated
+lines to a separate file called custom-vars.el, located in your user
+Emacs directory.
+
+** Loading Configuration Files
+Emacs loads two configuration files:
+
+1. `init.el`: Your personal Emacs configuration file, where you can
+   add custom settings and code. In my case, init.el also loads the README.el file, which is generated from the README.org file. This allows me to display my Emacs configuration directly in the README of my Emacs configuration repository.
+2. `custom-vars.el`: The auto-generated configuration file that stores
+   your customized settings, redirected from the custom-set-variables
+   and custom-set-faces sections.
+
+By separating your customizations into these two files, you can keep your init.el file clean and organized, while still benefiting from Emacs's auto-generated configuration features.
+
+`Note`: To use this configuration, simply add your custom settings to
+init.el and let Emacs generate the custom-vars.el file automatically. This way, you can easily manage your Emacs configuration and keep your repository up-to-date.
 
 ** Emacs Core Config
 #+begin_src emacs-lisp
@@ -176,4 +202,13 @@ customize their Emacs experience.
   (use-package flyspell
     :config
     (flyspell-prog-mode))
+#+end_src
+
+** Which key config
+#+begin_src emacs-lisp
+  ;; Enable which-key
+  (use-package which-key
+    :ensure t
+    :config
+    (which-key-mode))
 #+end_src
