@@ -6,7 +6,7 @@
  '(custom-enabled-themes '(tsdh-dark))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(rainbow-delimiters which-key undo-fu-session keycast smartparens magit))
+   '(undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

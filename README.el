@@ -3,7 +3,7 @@
   :bind (("M-o" . other-window)
 	 ("C-x C-b" . ibuffer))
   :init
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ; Start the initial frame maximized
+  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   (setq load-prefer-newer t
 	global-auto-revert-non-file-buffers t
 	custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -36,79 +36,20 @@
 (use-package smartparens
   :ensure t  ;; install the package
   :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
-  :bind (:map smartparens-mode-map
-	      ("C-M-a" . sp-beginning-of-sexp)
-	      ("C-M-e" . sp-end-of-sexp)
-	      ("C-<down>" . sp-down-sexp)
-	      ("C-<up>"   . sp-up-sexp)
-	      ("M-<down>" . sp-backward-down-sexp)
-	      ("M-<up>"   . sp-backward-up-sexp)
-	      ("C-M-f" . sp-forward-sexp)
-	      ("C-M-b" . sp-backward-sexp)
-	      ("C-M-n" . sp-next-sexp)
-	      ("C-M-p" . sp-previous-sexp)
-	      ("C-S-f" . sp-forward-symbol)
-	      ("C-S-b" . sp-backward-symbol)
-	      ("C-<right>" . sp-forward-slurp-sexp)
-	      ("M-<right>" . sp-forward-barf-sexp)
-	      ("C-<left>"  . sp-backward-slurp-sexp)
-	      ("M-<left>"  . sp-backward-barf-sexp)
-	      ("C-M-t" . sp-transpose-sexp)
-	      ("C-M-k" . sp-kill-sexp)
-	      ("C-k"   . sp-kill-hybrid-sexp)
-	      ("M-k"   . sp-backward-kill-sexp)
-	      ("C-M-w" . sp-copy-sexp)
-	      ("C-M-d" . delete-sexp)
-	      ("M-<backspace>" . backward-kill-word)
-	      ("C-<backspace>" . sp-backward-kill-word)
-	      ([remap sp-backward-kill-word] . backward-kill-word)
-	      ("M-[" . sp-backward-unwrap-sexp)
-	      ("M-]" . sp-unwrap-sexp)
-	      ("C-x C-t" . sp-transpose-hybrid-sexp)
-	      ("C-c ("  . wrap-with-parens)
-	      ("C-c ["  . wrap-with-brackets)
-	      ("C-c {"  . wrap-with-braces)
-	      ("C-c '"  . wrap-with-single-quotes)
-	      ("C-c \"" . wrap-with-double-quotes)
-	      ("C-c `"  . wrap-with-back-quotes))
   :config
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
-  ;; define the def-pairs macro
-  (defmacro def-pairs (pairs)
-    "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
-conses, where NAME is the function name that will be created and
-STRING is a single-character string that marks the opening character.
-
-  (def-pairs ((paren . \"(\")
-	      (bracket . \"[\"))
-
-defines the functions WRAP-WITH-PAREN and WRAP-WITH-BRACKET,
-respectively."
-    `(progn
-       ,@(mapcar (lambda (pair)
-		   `(defun ,(intern (format "wrap-with-%ss" (car pair)))
-			(&optional arg)
-		      (interactive "p")
-		      (sp-wrap-with-pair ,(cdr pair))))
-		 pairs)))
-
-  ;; define the pairing functions
-  (def-pairs ((paren . "(")
-	      (bracket . "[")
-	      (brace . "{")
-	      (single-quote . "'")
-	      (double-quote . "\"")
-	      (back-quote . "`"))))
+  ;; enable the pres-set bindings
+  (sp-use-smartparens-bindings))
 
 ;; Enable auto-fill mode to automatically wrap text
 (use-package auto-fill
-  :init
-  (auto-fill-mode 1)
   :hook
   (prog-mode text-mode markdown-mode org-mode)
   :config
   (setq fill-column 80)
+  (setq-default auto-fill-function 'do-auto-fill)
+  (auto-fill-mode 1)
   :delight " AF")
 
 ;; Enable keycast mode to display key sequences
@@ -117,12 +58,12 @@ respectively."
   :init
   (keycast-tab-bar-mode 1))
 
-;; Configure undo-fu-session to exclude certain files and enable global mode
-(use-package undo-fu-session
+;; Enable undo tree
+(use-package undo-tree
   :ensure t
   :config
-  (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-  (undo-fu-session-global-mode))
+  (setq undo-tree-auto-save-history t)
+  (global-undo-tree-mode 1))
 
 ;; Enable global-display-line-numbers-mode
 (use-package display-line-numbers
@@ -156,5 +97,6 @@ respectively."
     (eval-buffer)
     (ert 't))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c C-c" . eval-defun)
-	      ("C-c C-t" . my-elisp-eval-and-run-all-tests-in-buffer)))
+	      ("C-c e b" . my-elisp-eval-and-run-all-tests-in-buffer))
+  :hook
+  (emacs-lisp-mode . flymake-mode))

@@ -3,35 +3,51 @@
 #+WARNING: Don't forget to run `org-babel-tangle` to generate README.el!
 
 * My Emacs Configuration File
+** Intro
 This is my Emacs configuration file, currently in development. Feel
 free to use it as a starting point for creating your own personalized
 Emacs setup.
 
-I use [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to organize my Emacs configuration. This package provides a simple and efficient way to manage my Emacs setup, allowing me to easily install and configure packages, as well as define custom settings and keybindings.
-
-As the use-package README states, "The purpose of this package is to provide a consistent and simple way to organize your Emacs configuration, making it easier to manage and maintain your setup over time." By using use-package, I can keep my configuration organized and up-to-date, and easily share my setup with others.
+I use [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to organize my Emacs configuration. This package
+provides a simple and efficient way to manage my Emacs setup, allowing
+me to easily install and configure packages, as well as define custom
+settings and keybindings.
 
 ** Customization
-When you customize Emacs through the menu bar or make changes to your
-init.el file, Emacs generates configuration lines that are typically
-stored in the custom-set-variables and custom-set-faces sections. To
-keep your configuration organized and clean, I redirect these auto-generated
-lines to a separate file called custom-vars.el, located in your user
-Emacs directory.
+When you customize Emacs through the menu bar or sometimes when you
+make changes to your init.el file, Emacs generates configuration lines
+that are typically stored in the custom-set-variables and
+custom-set-faces sections. To keep my configuration organized and
+clean, I redirect these auto-generated lines to a separate file called
+custom-vars.el, located in your user Emacs directory.
 
 ** Loading Configuration Files
-Emacs loads two configuration files:
+Here Emacs loads two configuration files:
 
 1. `init.el`: Your personal Emacs configuration file, where you can
-   add custom settings and code. In my case, init.el also loads the README.el file, which is generated from the README.org file. This allows me to display my Emacs configuration directly in the README of my Emacs configuration repository.
+   add custom settings and code. In my case, init.el also loads the
+   README.el file, which is generated from the README.org file. This
+   allows me to display my Emacs configuration directly in the README
+   of my Emacs configuration repository.
 2. `custom-vars.el`: The auto-generated configuration file that stores
    your customized settings, redirected from the custom-set-variables
    and custom-set-faces sections.
 
-By separating your customizations into these two files, you can keep your init.el file clean and organized, while still benefiting from Emacs's auto-generated configuration features.
+By separating your customizations into these two files, you can keep
+your init.el file clean and organized, while still benefiting from
+Emacs's auto-generated configuration features.
 
 `Note`: To use this configuration, simply add your custom settings to
-init.el and let Emacs generate the custom-vars.el file automatically. This way, you can easily manage your Emacs configuration and keep your repository up-to-date.
+README.org and let Emacs generate the custom-vars.el file automatically.
+This way, you can easily manage your Emacs configuration and keep your
+repository up-to-date.
+
+** README.org to README.el
+To generate the README.el file from the README.org file, simply run
+~M-x org-babel-tangle RET~ in the README.org file. This will
+automatically create the README.el file, allowing you to display your
+Emacs configuration directly in the README of your Emacs
+configuration repository.
 
 ** Emacs Core Config
 #+begin_src emacs-lisp
@@ -40,7 +56,7 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     :bind (("M-o" . other-window)
 	   ("C-x C-b" . ibuffer))
     :init
-    (add-to-list 'initial-frame-alist '(fullscreen . maximized)) ; Start the initial frame maximized
+    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
     (setq load-prefer-newer t
 	  global-auto-revert-non-file-buffers t
 	  custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -79,86 +95,27 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
   (use-package smartparens
     :ensure t  ;; install the package
     :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
-    :bind (:map smartparens-mode-map
-		("C-M-a" . sp-beginning-of-sexp)
-		("C-M-e" . sp-end-of-sexp)
-		("C-<down>" . sp-down-sexp)
-		("C-<up>"   . sp-up-sexp)
-		("M-<down>" . sp-backward-down-sexp)
-		("M-<up>"   . sp-backward-up-sexp)
-		("C-M-f" . sp-forward-sexp)
-		("C-M-b" . sp-backward-sexp)
-		("C-M-n" . sp-next-sexp)
-		("C-M-p" . sp-previous-sexp)
-		("C-S-f" . sp-forward-symbol)
-		("C-S-b" . sp-backward-symbol)
-		("C-<right>" . sp-forward-slurp-sexp)
-		("M-<right>" . sp-forward-barf-sexp)
-		("C-<left>"  . sp-backward-slurp-sexp)
-		("M-<left>"  . sp-backward-barf-sexp)
-		("C-M-t" . sp-transpose-sexp)
-		("C-M-k" . sp-kill-sexp)
-		("C-k"   . sp-kill-hybrid-sexp)
-		("M-k"   . sp-backward-kill-sexp)
-		("C-M-w" . sp-copy-sexp)
-		("C-M-d" . delete-sexp)
-		("M-<backspace>" . backward-kill-word)
-		("C-<backspace>" . sp-backward-kill-word)
-		([remap sp-backward-kill-word] . backward-kill-word)
-		("M-[" . sp-backward-unwrap-sexp)
-		("M-]" . sp-unwrap-sexp)
-		("C-x C-t" . sp-transpose-hybrid-sexp)
-		("C-c ("  . wrap-with-parens)
-		("C-c ["  . wrap-with-brackets)
-		("C-c {"  . wrap-with-braces)
-		("C-c '"  . wrap-with-single-quotes)
-		("C-c \"" . wrap-with-double-quotes)
-		("C-c `"  . wrap-with-back-quotes))
     :config
     ;; enable global strict-mode
     (smartparens-global-strict-mode)
-    ;; define the def-pairs macro
-    (defmacro def-pairs (pairs)
-      "Define functions for pairing. PAIRS is an alist of (NAME . STRING)
-  conses, where NAME is the function name that will be created and
-  STRING is a single-character string that marks the opening character.
-
-    (def-pairs ((paren . \"(\")
-		(bracket . \"[\"))
-
-  defines the functions WRAP-WITH-PAREN and WRAP-WITH-BRACKET,
-  respectively."
-      `(progn
-	 ,@(mapcar (lambda (pair)
-		     `(defun ,(intern (format "wrap-with-%ss" (car pair)))
-			  (&optional arg)
-			(interactive "p")
-			(sp-wrap-with-pair ,(cdr pair))))
-		   pairs)))
-
-    ;; define the pairing functions
-    (def-pairs ((paren . "(")
-		(bracket . "[")
-		(brace . "{")
-		(single-quote . "'")
-		(double-quote . "\"")
-		(back-quote . "`"))))
+    ;; enable the pres-set bindings
+    (sp-use-smartparens-bindings))
 #+end_src
 
-** Auto-fill config
+** Auto-fill Config
 #+begin_src emacs-lisp
   ;; Enable auto-fill mode to automatically wrap text
   (use-package auto-fill
-    :init
-    (auto-fill-mode 1)
     :hook
     (prog-mode text-mode markdown-mode org-mode)
     :config
     (setq fill-column 80)
+    (setq-default auto-fill-function 'do-auto-fill)
+    (auto-fill-mode 1)
     :delight " AF")
 #+end_src
 
-** Keycast config
+** Keycast Config
 #+begin_src emacs-lisp
   ;; Enable keycast mode to display key sequences
   (use-package keycast
@@ -167,17 +124,17 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     (keycast-tab-bar-mode 1))
 #+end_src
 
-** Undo fu session config
+** Undo-tree Config
 #+begin_src emacs-lisp
-  ;; Configure undo-fu-session to exclude certain files and enable global mode
-  (use-package undo-fu-session
+  ;; Enable undo tree
+  (use-package undo-tree
     :ensure t
     :config
-    (setq undo-fu-session-incompatible-files '("/COMMIT_EDITMSG\\'" "/git-rebase-todo\\'"))
-    (undo-fu-session-global-mode))
+    (setq undo-tree-auto-save-history t)
+    (global-undo-tree-mode 1))
 #+end_src
 
-** Display line numbers config
+** Display Line Numbers Config
 #+begin_src emacs-lisp
   ;; Enable global-display-line-numbers-mode
   (use-package display-line-numbers
@@ -185,7 +142,7 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     (global-display-line-numbers-mode))
 #+end_src
 
-** Flyspell config
+** Flyspell Config
 #+begin_src emacs-lisp
   ;; Enable Flyspell
   (use-package flyspell
@@ -193,7 +150,7 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     (flyspell-prog-mode))
 #+end_src
 
-** Which key config
+** Which Key Config
 #+begin_src emacs-lisp
   ;; Enable which-key
   (use-package which-key
@@ -202,7 +159,7 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     (which-key-mode))
 #+end_src
 
-** COMMENT LSP config
+** COMMENT LSP Config
 #+begin_src emacs-lisp
     ;; Config LSP
   (use-package lsp-mode
@@ -216,14 +173,14 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     :commands lsp lsp-deferred)
 #+end_src
 
-** COMMENT LSP UI config
+** COMMENT LSP UI Config
 #+begin_src emacs-lisp
   ;; Config LSP UI
   (use-package lsp-ui
     :commands lsp-ui-mode)
 #+end_src
 
-** Rainbow-delimiters config
+** Rainbow-delimiters Config
 #+begin_src emacs-lisp
   ;; Config Rainbow delimiters
   (use-package rainbow-delimiters
@@ -231,7 +188,7 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
     :hook (prog-mode))
 #+end_src
 
-** Lisp config
+** Lisp Config
 #+begin_src emacs-lisp
   ;; Config Emacs Lisp
   (use-package lisp-mode
@@ -244,6 +201,7 @@ init.el and let Emacs generate the custom-vars.el file automatically. This way, 
       (eval-buffer)
       (ert 't))
     :bind (:map emacs-lisp-mode-map
-		("C-c C-c" . eval-defun)
-		("C-c C-t" . my-elisp-eval-and-run-all-tests-in-buffer)))
+		("C-c e b" . my-elisp-eval-and-run-all-tests-in-buffer))
+    :hook
+    (emacs-lisp-mode . flymake-mode))
 #+end_src
