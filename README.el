@@ -24,15 +24,9 @@
 	completion-ignore-case t
 	read-buffer-completion-ignore-case t
 	switch-to-buffer-obey-display-actions t
+	require-final-newline t
 	tab-always-indent 'complete)
-  (add-to-list 'savehist-additional-variables 'kill-ring) ; Save the kill ring between sessions
-  (defun my-eval-and-run-all-tests-in-buffer ()
-    "Deletes all loaded tests from the runtime, evaluates the current
-    buffer and runs all loaded tests with ert."
-    (interactive)
-    (ert-delete-all-tests)
-    (eval-buffer)
-    (ert 't)))
+  (add-to-list 'savehist-additional-variables 'kill-ring))
 
 ;; Install and configure Magit package for a more user-friendly Git interface
 (use-package magit
@@ -145,3 +139,22 @@ respectively."
   :ensure t
   :config
   (which-key-mode))
+
+;; Config Rainbow delimiters
+(use-package rainbow-delimiters
+  :ensure t
+  :hook (prog-mode))
+
+;; Config Emacs Lisp
+(use-package lisp-mode
+  :config
+  (defun my-elisp-eval-and-run-all-tests-in-buffer ()
+    "Deletes all loaded tests from the runtime, evaluates the current
+      buffer and runs all loaded tests with ert."
+    (interactive)
+    (ert-delete-all-tests)
+    (eval-buffer)
+    (ert 't))
+  :bind (:map emacs-lisp-mode-map
+	      ("C-c C-c" . eval-defun)
+	      ("C-c C-t" . my-elisp-eval-and-run-all-tests-in-buffer)))

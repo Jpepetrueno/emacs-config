@@ -20,5 +20,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+;; Add the MELPA package archive to the list of package repositories.
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+
+;; Initialize the package system, which will load the package archives
+;; and make the packages available for installation and updating.
+(package-initialize)
 ;; Load the README.el file from the user's Emacs configuration directory
 (load (locate-user-emacs-file "README.el"))

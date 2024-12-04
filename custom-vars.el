@@ -5,7 +5,8 @@
  ;; If there is more than one, they won't work right.
  '(custom-enabled-themes '(tsdh-dark))
  '(inhibit-startup-screen t)
- '(package-selected-packages '(which-key undo-fu-session keycast smartparens magit))
+ '(package-selected-packages
+   '(rainbow-delimiters which-key undo-fu-session keycast smartparens magit))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
