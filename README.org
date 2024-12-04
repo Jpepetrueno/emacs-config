@@ -84,7 +84,7 @@ configuration repository.
 
 ** Magit Config
 #+begin_src emacs-lisp
-  ;; Install and configure Magit package for a more user-friendly Git interface
+  ;; Install Magit package for a more user-friendly Git interface
   (use-package magit
     :ensure t)
 #+end_src
@@ -93,8 +93,8 @@ configuration repository.
 #+begin_src emacs-lisp
   ;; smartparens configuration
   (use-package smartparens
-    :ensure t  ;; install the package
-    :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+    :ensure t
+    :hook (prog-mode text-mode markdown-mode)
     :config
     ;; enable global strict-mode
     (smartparens-global-strict-mode)
@@ -120,7 +120,7 @@ configuration repository.
   ;; Enable keycast mode to display key sequences
   (use-package keycast
     :ensure t
-    :init
+    :config
     (keycast-tab-bar-mode 1))
 #+end_src
 
@@ -158,28 +158,6 @@ configuration repository.
     :config
     (which-key-mode))
 #+end_src
-
-** COMMENT LSP Config
-#+begin_src emacs-lisp
-    ;; Config LSP
-  (use-package lsp-mode
-    :init
-    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-    (setq lsp-keymap-prefix "C-c l")
-    :hook (;; replace XXX-mode with concrete major-mode(e. g. python-mode)
-	   (clojure-mode . lsp-deferred)
-	   ;; if you want which-key integration
-	   (lsp-mode . lsp-enable-which-key-integration))
-    :commands lsp lsp-deferred)
-#+end_src
-
-** COMMENT LSP UI Config
-#+begin_src emacs-lisp
-  ;; Config LSP UI
-  (use-package lsp-ui
-    :commands lsp-ui-mode)
-#+end_src
-
 ** Rainbow-delimiters Config
 #+begin_src emacs-lisp
   ;; Config Rainbow delimiters
@@ -205,3 +183,23 @@ configuration repository.
     :hook
     (emacs-lisp-mode . flymake-mode))
 #+end_src
+
+** Windmove Config
+#+begin_src emacs-lisp
+  ;; Config windmove mode
+  (use-package windmove
+    :config
+    ;; use shift + arrow keys to switch between visible buffers
+    (windmove-default-keybindings))
+#+end_src
+
+** Winner Config
+#+begin_src emacs-lisp
+  ;; Enable winner mode
+  ;; Use C-c right and C-c left for undo or redo window configurations
+  (use-package winner
+    :config
+    (winner-mode)
+    ;; (winner-boring-buffers-regexp "^*")
+    )
+  #+end_src

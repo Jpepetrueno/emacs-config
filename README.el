@@ -28,14 +28,14 @@
 	tab-always-indent 'complete)
   (add-to-list 'savehist-additional-variables 'kill-ring))
 
-;; Install and configure Magit package for a more user-friendly Git interface
+;; Install Magit package for a more user-friendly Git interface
 (use-package magit
   :ensure t)
 
 ;; smartparens configuration
 (use-package smartparens
-  :ensure t  ;; install the package
-  :hook (prog-mode text-mode markdown-mode) ;; add `smartparens-mode` to these hooks
+  :ensure t
+  :hook (prog-mode text-mode markdown-mode)
   :config
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
@@ -55,7 +55,7 @@
 ;; Enable keycast mode to display key sequences
 (use-package keycast
   :ensure t
-  :init
+  :config
   (keycast-tab-bar-mode 1))
 
 ;; Enable undo tree
@@ -100,3 +100,17 @@
 	      ("C-c e b" . my-elisp-eval-and-run-all-tests-in-buffer))
   :hook
   (emacs-lisp-mode . flymake-mode))
+
+;; Config windmove mode
+(use-package windmove
+  :config
+  ;; use shift + arrow keys to switch between visible buffers
+  (windmove-default-keybindings))
+
+;; Enable winner mode
+;; Use C-c right and C-c left for undo or redo window configurations
+(use-package winner
+  :config
+  (winner-mode)
+  ;; (winner-boring-buffers-regexp "^*")
+  )
