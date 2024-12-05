@@ -6,7 +6,7 @@
  '(custom-enabled-themes '(tsdh-dark))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
+   '(nerd-icons-dired nerd-icons-corfu nerd-icons-completion nerd-icons corfu marginalia undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

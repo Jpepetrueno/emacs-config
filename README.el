@@ -1,19 +1,13 @@
 ;; Configure Emacs core settings
 (use-package emacs
-  :bind (("M-o" . other-window)
-	 ("C-x C-b" . ibuffer))
+  :bind
+  ("C-x C-b" . ibuffer)
   :init
   (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   (setq load-prefer-newer t
-	global-auto-revert-non-file-buffers t
-	custom-file (locate-user-emacs-file "custom-vars.el"))
-  (load custom-file)
+	custom-file (locate-user-emacs-file "custom.el"))
+  (load custom-file :no-error-if-file-is-missing)
   :config
-  (savehist-mode 1)
-  (recentf-mode 1)
-  (global-auto-revert-mode 1)
-  (desktop-save-mode 1)
-  (pending-delete-mode 1)
   (fido-mode t)
   (fido-vertical-mode t)
   (setq visible-bell t
@@ -25,8 +19,79 @@
 	read-buffer-completion-ignore-case t
 	switch-to-buffer-obey-display-actions t
 	require-final-newline t
-	tab-always-indent 'complete)
+	tab-always-indent 'complete))
+
+;; Configure savehist to save minibuffer history
+(use-package savehist
+  :config
+  (savehist-mode 1)
   (add-to-list 'savehist-additional-variables 'kill-ring))
+
+;; Enable marginalia to add completion annotations to existing commands.
+(use-package marginalia
+  :ensure t
+  :config
+  (marginalia-mode))
+
+;; Corfu enhances in-buffer completion with a small completion popup.
+(use-package corfu
+  :ensure t
+  :bind (:map corfu-map ("<tab>" . corfu-complete))
+  :after savehist
+  :config
+  (setq corfu-preview-current nil
+	corfu-min-width 20
+	corfu-popupinfo-delay '(1.25 . 0.5))
+  (global-corfu-mode)
+  (corfu-popupinfo-mode 1)
+  (corfu-history-mode 1)
+  (add-to-list 'savehist-additional-variables 'corfu-history))
+
+;; Enable nerd icons
+(use-package nerd-icons
+  :ensure t)
+
+;; Enable nerd icons completion
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+;; Enable nerd icons corfu
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+
+;; Enable nerd icons dired
+(use-package nerd-icons-dired
+  :ensure t
+  :hook
+  (dired-mode . nerd-icons-dired-mode))
+
+;; Enable recentf to track recently opened files
+(use-package recentf
+  :config
+  (recentf-mode 1))
+
+;; Enable autorevert to revert buffers when files change on disk
+(use-package autorevert
+  :config
+  (global-auto-revert-mode 1)
+  (setq global-auto-revert-non-file-buffers t))
+
+;; Enable Desktop mode
+;; Save partial status of Emacs when killed
+(use-package desktop
+  :config
+  (desktop-save-mode 1))
+
+;; Enable to delete selection if you insert
+(use-package delsel
+  :config
+  (delete-selection-mode 1))
 
 ;; Install Magit package for a more user-friendly Git interface
 (use-package magit

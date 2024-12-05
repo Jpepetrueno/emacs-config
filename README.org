@@ -19,7 +19,7 @@ make changes to your init.el file, Emacs generates configuration lines
 that are typically stored in the custom-set-variables and
 custom-set-faces sections. To keep my configuration organized and
 clean, I redirect these auto-generated lines to a separate file called
-custom-vars.el, located in your user Emacs directory.
+custom.el, located in your user Emacs directory.
 
 ** Loading Configuration Files
 Here Emacs loads two configuration files:
@@ -29,7 +29,7 @@ Here Emacs loads two configuration files:
    README.el file, which is generated from the README.org file. This
    allows me to display my Emacs configuration directly in the README
    of my Emacs configuration repository.
-2. `custom-vars.el`: The auto-generated configuration file that stores
+2. `custom.el`: The auto-generated configuration file that stores
    your customized settings, redirected from the custom-set-variables
    and custom-set-faces sections.
 
@@ -38,7 +38,7 @@ your init.el file clean and organized, while still benefiting from
 Emacs's auto-generated configuration features.
 
 `Note`: To use this configuration, simply add your custom settings to
-README.org and let Emacs generate the custom-vars.el file automatically.
+README.org and let Emacs generate the custom.el file automatically.
 This way, you can easily manage your Emacs configuration and keep your
 repository up-to-date.
 
@@ -53,20 +53,14 @@ configuration repository.
 #+begin_src emacs-lisp
   ;; Configure Emacs core settings
   (use-package emacs
-    :bind (("M-o" . other-window)
-	   ("C-x C-b" . ibuffer))
+    :bind
+    ("C-x C-b" . ibuffer)
     :init
     (add-to-list 'initial-frame-alist '(fullscreen . maximized))
     (setq load-prefer-newer t
-	  global-auto-revert-non-file-buffers t
-	  custom-file (locate-user-emacs-file "custom-vars.el"))
-    (load custom-file)
+	  custom-file (locate-user-emacs-file "custom.el"))
+    (load custom-file :no-error-if-file-is-missing)
     :config
-    (savehist-mode 1)
-    (recentf-mode 1)
-    (global-auto-revert-mode 1)
-    (desktop-save-mode 1)
-    (pending-delete-mode 1)
     (fido-mode t)
     (fido-vertical-mode t)
     (setq visible-bell t
@@ -78,8 +72,112 @@ configuration repository.
 	  read-buffer-completion-ignore-case t
 	  switch-to-buffer-obey-display-actions t
 	  require-final-newline t
-	  tab-always-indent 'complete)
+	  tab-always-indent 'complete))
+#+end_src
+
+** Savehist Config
+#+begin_src emacs-lisp
+  ;; Configure savehist to save minibuffer history
+  (use-package savehist
+    :config
+    (savehist-mode 1)
     (add-to-list 'savehist-additional-variables 'kill-ring))
+#+end_src
+
+** Marginalia Config
+#+begin_src emacs-lisp
+  ;; Enable marginalia to add completion annotations to existing commands.
+  (use-package marginalia
+    :ensure t
+    :config
+    (marginalia-mode))
+#+end_src
+
+** Corfu Config
+#+begin_src emacs-lisp
+  ;; Corfu enhances in-buffer completion with a small completion popup.
+  (use-package corfu
+    :ensure t
+    :bind (:map corfu-map ("<tab>" . corfu-complete))
+    :after savehist
+    :config
+    (setq corfu-preview-current nil
+	  corfu-min-width 20
+	  corfu-popupinfo-delay '(1.25 . 0.5))
+    (global-corfu-mode)
+    (corfu-popupinfo-mode 1)
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history))
+#+end_src
+
+** Nerd-icons Config
+#+begin_src emacs-lisp
+  ;; Enable nerd icons
+  (use-package nerd-icons
+    :ensure t)
+#+end_src
+
+** Nerd-icons-completion Config
+#+begin_src emacs-lisp
+  ;; Enable nerd icons completion
+  (use-package nerd-icons-completion
+    :ensure t
+    :after marginalia
+    :config
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+#+end_src
+
+** Nerd-icons-corfu Config
+#+begin_src emacs-lisp
+  ;; Enable nerd icons corfu
+  (use-package nerd-icons-corfu
+    :ensure t
+    :after corfu
+    :config
+    (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+#+end_src
+
+** Nerd-icons-dired Config
+#+begin_src emacs-lisp
+  ;; Enable nerd icons dired
+  (use-package nerd-icons-dired
+    :ensure t
+    :hook
+    (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
+** Recentf Config
+#+begin_src emacs-lisp
+  ;; Enable recentf to track recently opened files
+  (use-package recentf
+    :config
+    (recentf-mode 1))
+#+end_src
+
+** Autorevert Config
+#+begin_src emacs-lisp
+  ;; Enable autorevert to revert buffers when files change on disk
+  (use-package autorevert
+    :config
+    (global-auto-revert-mode 1)
+    (setq global-auto-revert-non-file-buffers t))
+#+end_src
+
+** Desktop Config
+#+begin_src emacs-lisp
+  ;; Enable Desktop mode
+  ;; Save partial status of Emacs when killed
+  (use-package desktop
+    :config
+    (desktop-save-mode 1))
+#+end_src
+
+** Delsel Config
+#+begin_src emacs-lisp
+  ;; Enable to delete selection if you insert
+  (use-package delsel
+    :config
+    (delete-selection-mode 1))
 #+end_src
 
 ** Magit Config
