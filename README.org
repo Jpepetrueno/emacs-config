@@ -260,7 +260,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
   ;; Highlight brackets according to their depth.
   (use-package rainbow-delimiters
     :ensure t
-    :hook (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
 ** Lisp Config

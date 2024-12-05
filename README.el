@@ -146,7 +146,7 @@
 ;; Highlight brackets according to their depth.
 (use-package rainbow-delimiters
   :ensure t
-  :hook (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;; Config Emacs Lisp
 (use-package lisp-mode
