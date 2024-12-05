@@ -1,56 +1,55 @@
-#+TITLE: Emacs Configuration
-#+PROPERTY: header-args :tangle README.el
-#+WARNING: Don't forget to run `org-babel-tangle` to generate README.el!
+#+title: Emacs Configuration
+#+author: David Dimagid
+#+property: header-args :tangle README.el
+#+warning: Don't forget to run `org-babel-tangle` to generate README.el!
 
 * My Emacs Configuration File
 ** Intro
-This is my Emacs configuration file, currently in development. Feel
-free to use it as a starting point for creating your own personalized
-Emacs setup.
-
-I use [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to organize my Emacs configuration. This package
-provides a simple and efficient way to manage my Emacs setup, allowing
-me to easily install and configure packages, as well as define custom
+This is my Emacs configuration repository, currently under
+development. I leverage [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to simplify my Emacs setup,
+making it easy to install and configure packages, and define custom
 settings and keybindings.
 
 ** Customization
-When you customize Emacs through the menu bar or sometimes when you
-make changes to your init.el file, Emacs generates configuration lines
-that are typically stored in the custom-set-variables and
-custom-set-faces sections. To keep my configuration organized and
-clean, I redirect these auto-generated lines to a separate file called
-custom.el, located in your user Emacs directory.
+When customizing Emacs through the menu bar or modifying init.el,
+Emacs generates configuration lines that are typically stored in
+custom-set-variables and custom-set-faces sections. To maintain a
+clean and organized configuration, I redirect these auto-generated
+lines to a separate custom.el file, located in my Emacs configuration
+directory.
 
-** Loading Configuration Files
-Here Emacs loads two configuration files:
+** How Emacs Loads Configuration Files
+Emacs loads several configuration files, and I will focus on the
+following three:
 
-1. `init.el`: Your personal Emacs configuration file, where you can
-   add custom settings and code. In my case, init.el also loads the
-   README.el file, which is generated from the README.org file. This
-   allows me to display my Emacs configuration directly in the README
-   of my Emacs configuration repository.
-2. `custom.el`: The auto-generated configuration file that stores
-   your customized settings, redirected from the custom-set-variables
-   and custom-set-faces sections.
+**early-init.el**: If present, this file is loaded before init.el and
+is used to perform early initialization tasks, such as setting up the
+file system and environment variables.
 
-By separating your customizations into these two files, you can keep
-your init.el file clean and organized, while still benefiting from
-Emacs's auto-generated configuration features.
+**init.el**: Your personal Emacs configuration file, where you can add
+custom settings and code.
 
-`Note`: To use this configuration, simply add your custom settings to
-README.org and let Emacs generate the custom.el file automatically.
-This way, you can easily manage your Emacs configuration and keep your
-repository up-to-date.
+**custom.el**: The automatically generated configuration file that
+stores your customized settings, redirected from the
+"custom-set-variables" and "custom-set-faces" sections.
+
+**Note**: In my configuration, I use a README.org file to generate the
+README.el file, which is then loaded by init.el. This approach takes
+advantage of literate programming, allowing me to keep my
+configuration organized and easily maintainable.
 
 ** README.org to README.el
-To generate the README.el file from the README.org file, simply run
-~M-x org-babel-tangle RET~ in the README.org file. This will
-automatically create the README.el file, allowing you to display your
-Emacs configuration directly in the README of your Emacs
-configuration repository.
+To generate the README.el file, I use Org mode's built-in tangling
+feature. By running `M-x org-babel-tangle RET` in the README.org file,
+I can automatically extract the Emacs configuration code and create
+the  README.el file. This allows me to showcase my Emacs configuration
+directly in the README of my repository, making it easy to share and
+maintain.  For more information on this technique, see the Org mode
+manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Source Code with Org mode]].
 
 ** Emacs Core Config
 #+begin_src emacs-lisp
+  ;;; -*- lexical-binding: t -*-
   ;; Configure Emacs core settings
   (use-package emacs
     :bind
@@ -89,8 +88,7 @@ configuration repository.
   ;; Enable marginalia to add completion annotations to existing commands.
   (use-package marginalia
     :ensure t
-    :config
-    (marginalia-mode))
+    :config (marginalia-mode))
 #+end_src
 
 ** Corfu Config
@@ -112,14 +110,14 @@ configuration repository.
 
 ** Nerd-icons Config
 #+begin_src emacs-lisp
-  ;; Enable nerd icons
+  ;; Emacs nerd font icons library.
   (use-package nerd-icons
     :ensure t)
 #+end_src
 
 ** Nerd-icons-completion Config
 #+begin_src emacs-lisp
-  ;; Enable nerd icons completion
+  ;; Add icons to completion candidates.
   (use-package nerd-icons-completion
     :ensure t
     :after marginalia
@@ -129,7 +127,7 @@ configuration repository.
 
 ** Nerd-icons-corfu Config
 #+begin_src emacs-lisp
-  ;; Enable nerd icons corfu
+  ;; Introduces a margin formatter for Corfu which adds icons.
   (use-package nerd-icons-corfu
     :ensure t
     :after corfu
@@ -139,19 +137,25 @@ configuration repository.
 
 ** Nerd-icons-dired Config
 #+begin_src emacs-lisp
-  ;; Enable nerd icons dired
+  ;; Shows icons for each file in dired mode.
   (use-package nerd-icons-dired
     :ensure t
-    :hook
-    (dired-mode . nerd-icons-dired-mode))
+    :hook (dired-mode . nerd-icons-dired-mode))
+#+end_src
+
+** Nerd-icons-ibuffer Config
+#+begin_src emacs-lisp
+  ;; Display nerd icons in ibuffer.
+  (use-package nerd-icons-ibuffer
+    :ensure t
+    :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 
 ** Recentf Config
 #+begin_src emacs-lisp
   ;; Enable recentf to track recently opened files
   (use-package recentf
-    :config
-    (recentf-mode 1))
+    :config (recentf-mode 1))
 #+end_src
 
 ** Autorevert Config
@@ -165,39 +169,37 @@ configuration repository.
 
 ** Desktop Config
 #+begin_src emacs-lisp
-  ;; Enable Desktop mode
   ;; Save partial status of Emacs when killed
   (use-package desktop
-    :config
-    (desktop-save-mode 1))
+    :config (desktop-save-mode 1))
 #+end_src
 
 ** Delsel Config
 #+begin_src emacs-lisp
   ;; Enable to delete selection if you insert
   (use-package delsel
-    :config
-    (delete-selection-mode 1))
+    :config (delete-selection-mode 1))
 #+end_src
 
 ** Magit Config
 #+begin_src emacs-lisp
-  ;; Install Magit package for a more user-friendly Git interface
+  ;; A git porcelain inside Emacs
   (use-package magit
     :ensure t)
 #+end_src
 
 ** Smartparens Config
 #+begin_src emacs-lisp
-  ;; smartparens configuration
-  (use-package smartparens
-    :ensure t
-    :hook (prog-mode text-mode markdown-mode)
-    :config
-    ;; enable global strict-mode
-    (smartparens-global-strict-mode)
-    ;; enable the pres-set bindings
-    (sp-use-smartparens-bindings))
+    ;; Automatic insertion, wrapping and paredit-like
+    ;; navigation with user defined pairs.
+    (use-package smartparens
+      :ensure t
+      :hook (prog-mode text-mode markdown-mode)
+      :config
+      ;; enable global strict-mode
+      (smartparens-global-strict-mode)
+      ;; enable the pres-set bindings
+      (sp-use-smartparens-bindings))
 #+end_src
 
 ** Auto-fill Config
@@ -215,16 +217,15 @@ configuration repository.
 
 ** Keycast Config
 #+begin_src emacs-lisp
-  ;; Enable keycast mode to display key sequences
+  ;; Show current command and its binding
   (use-package keycast
     :ensure t
-    :config
-    (keycast-tab-bar-mode 1))
+    :config (keycast-tab-bar-mode 1))
 #+end_src
 
 ** Undo-tree Config
 #+begin_src emacs-lisp
-  ;; Enable undo tree
+  ;; Treat undo history as a tree
   (use-package undo-tree
     :ensure t
     :config
@@ -234,34 +235,32 @@ configuration repository.
 
 ** Display Line Numbers Config
 #+begin_src emacs-lisp
-  ;; Enable global-display-line-numbers-mode
+  ;; Interface for display-line-numbers
   (use-package display-line-numbers
-    :config
-    (global-display-line-numbers-mode))
+    :config (global-display-line-numbers-mode))
 #+end_src
 
 ** Flyspell Config
 #+begin_src emacs-lisp
-  ;; Enable Flyspell
+  ;; On-the-fly spell checker
   (use-package flyspell
-    :config
-    (flyspell-prog-mode))
+    :config (flyspell-prog-mode))
 #+end_src
 
 ** Which Key Config
 #+begin_src emacs-lisp
-  ;; Enable which-key
+  ;; Display available keybindings in popup
   (use-package which-key
     :ensure t
-    :config
-    (which-key-mode))
+    :config (which-key-mode))
 #+end_src
+
 ** Rainbow-delimiters Config
 #+begin_src emacs-lisp
-  ;; Config Rainbow delimiters
+  ;; Highlight brackets according to their depth.
   (use-package rainbow-delimiters
     :ensure t
-    :hook (prog-mode))
+    :hook (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 #+end_src
 
 ** Lisp Config
@@ -278,13 +277,12 @@ configuration repository.
       (ert 't))
     :bind (:map emacs-lisp-mode-map
 		("C-c e b" . my-elisp-eval-and-run-all-tests-in-buffer))
-    :hook
-    (emacs-lisp-mode . flymake-mode))
+    :hook (emacs-lisp-mode . flymake-mode))
 #+end_src
 
 ** Windmove Config
 #+begin_src emacs-lisp
-  ;; Config windmove mode
+  ;; Directional window-selection routines
   (use-package windmove
     :config
     ;; use shift + arrow keys to switch between visible buffers
@@ -293,11 +291,15 @@ configuration repository.
 
 ** Winner Config
 #+begin_src emacs-lisp
-  ;; Enable winner mode
+  ;; Restore old window configurations
   ;; Use C-c right and C-c left for undo or redo window configurations
   (use-package winner
-    :config
-    (winner-mode)
-    ;; (winner-boring-buffers-regexp "^*")
-    )
+    :config (winner-mode))
+  #+end_src
+
+** Whitespace Config
+#+begin_src emacs-lisp
+  ;; Minor mode to visualize TAB, (HARD) SPACE, NEWLINE
+  (use-package whitespace
+    :config (global-whitespace-mode))
   #+end_src

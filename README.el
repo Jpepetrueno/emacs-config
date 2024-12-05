@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t -*-
 ;; Configure Emacs core settings
 (use-package emacs
   :bind
@@ -30,8 +31,7 @@
 ;; Enable marginalia to add completion annotations to existing commands.
 (use-package marginalia
   :ensure t
-  :config
-  (marginalia-mode))
+  :config (marginalia-mode))
 
 ;; Corfu enhances in-buffer completion with a small completion popup.
 (use-package corfu
@@ -47,34 +47,37 @@
   (corfu-history-mode 1)
   (add-to-list 'savehist-additional-variables 'corfu-history))
 
-;; Enable nerd icons
+;; Emacs nerd font icons library.
 (use-package nerd-icons
   :ensure t)
 
-;; Enable nerd icons completion
+;; Add icons to completion candidates.
 (use-package nerd-icons-completion
   :ensure t
   :after marginalia
   :config
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
-;; Enable nerd icons corfu
+;; Introduces a margin formatter for Corfu which adds icons.
 (use-package nerd-icons-corfu
   :ensure t
   :after corfu
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
-;; Enable nerd icons dired
+;; Shows icons for each file in dired mode.
 (use-package nerd-icons-dired
   :ensure t
-  :hook
-  (dired-mode . nerd-icons-dired-mode))
+  :hook (dired-mode . nerd-icons-dired-mode))
+
+;; Display nerd icons in ibuffer.
+(use-package nerd-icons-ibuffer
+  :ensure t
+  :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
 ;; Enable recentf to track recently opened files
 (use-package recentf
-  :config
-  (recentf-mode 1))
+  :config (recentf-mode 1))
 
 ;; Enable autorevert to revert buffers when files change on disk
 (use-package autorevert
@@ -82,22 +85,20 @@
   (global-auto-revert-mode 1)
   (setq global-auto-revert-non-file-buffers t))
 
-;; Enable Desktop mode
 ;; Save partial status of Emacs when killed
 (use-package desktop
-  :config
-  (desktop-save-mode 1))
+  :config (desktop-save-mode 1))
 
 ;; Enable to delete selection if you insert
 (use-package delsel
-  :config
-  (delete-selection-mode 1))
+  :config (delete-selection-mode 1))
 
-;; Install Magit package for a more user-friendly Git interface
+;; A git porcelain inside Emacs
 (use-package magit
   :ensure t)
 
-;; smartparens configuration
+;; Automatic insertion, wrapping and paredit-like
+;; navigation with user defined pairs.
 (use-package smartparens
   :ensure t
   :hook (prog-mode text-mode markdown-mode)
@@ -117,39 +118,35 @@
   (auto-fill-mode 1)
   :delight " AF")
 
-;; Enable keycast mode to display key sequences
+;; Show current command and its binding
 (use-package keycast
   :ensure t
-  :config
-  (keycast-tab-bar-mode 1))
+  :config (keycast-tab-bar-mode 1))
 
-;; Enable undo tree
+;; Treat undo history as a tree
 (use-package undo-tree
   :ensure t
   :config
   (setq undo-tree-auto-save-history t)
   (global-undo-tree-mode 1))
 
-;; Enable global-display-line-numbers-mode
+;; Interface for display-line-numbers
 (use-package display-line-numbers
-  :config
-  (global-display-line-numbers-mode))
+  :config (global-display-line-numbers-mode))
 
-;; Enable Flyspell
+;; On-the-fly spell checker
 (use-package flyspell
-  :config
-  (flyspell-prog-mode))
+  :config (flyspell-prog-mode))
 
-;; Enable which-key
+;; Display available keybindings in popup
 (use-package which-key
   :ensure t
-  :config
-  (which-key-mode))
+  :config (which-key-mode))
 
-;; Config Rainbow delimiters
+;; Highlight brackets according to their depth.
 (use-package rainbow-delimiters
   :ensure t
-  :hook (prog-mode))
+  :hook (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
 ;; Config Emacs Lisp
 (use-package lisp-mode
@@ -163,19 +160,19 @@
     (ert 't))
   :bind (:map emacs-lisp-mode-map
 	      ("C-c e b" . my-elisp-eval-and-run-all-tests-in-buffer))
-  :hook
-  (emacs-lisp-mode . flymake-mode))
+  :hook (emacs-lisp-mode . flymake-mode))
 
-;; Config windmove mode
+;; Directional window-selection routines
 (use-package windmove
   :config
   ;; use shift + arrow keys to switch between visible buffers
   (windmove-default-keybindings))
 
-;; Enable winner mode
+;; Restore old window configurations
 ;; Use C-c right and C-c left for undo or redo window configurations
 (use-package winner
-  :config
-  (winner-mode)
-  ;; (winner-boring-buffers-regexp "^*")
-  )
+  :config (winner-mode))
+
+;; Minor mode to visualize TAB, (HARD) SPACE, NEWLINE
+(use-package whitespace
+  :config (global-whitespace-mode))
