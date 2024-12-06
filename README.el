@@ -176,3 +176,8 @@
 ;; Minor mode to visualize TAB, (HARD) SPACE, NEWLINE
 (use-package whitespace
   :config (global-whitespace-mode))
+
+;; Evaluation Result OverlayS for Emacs Lisp.
+(use-package eros
+  :ensure t
+  :config (eros-mode))

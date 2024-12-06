@@ -303,3 +303,11 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
   (use-package whitespace
     :config (global-whitespace-mode))
   #+end_src
+
+** Eros Config
+#+begin_src emacs-lisp
+  ;; Evaluation Result OverlayS for Emacs Lisp.
+  (use-package eros
+    :ensure t
+    :config (eros-mode))
+  #+end_src
