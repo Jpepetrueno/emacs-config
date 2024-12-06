@@ -4,7 +4,7 @@
   :bind
   ("C-x C-b" . ibuffer)
   :init
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
   (setq load-prefer-newer t
 	custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)

@@ -30,6 +30,23 @@
 ;; and make the packages available for installation and updating.
 (package-initialize)
 
+;; Load environment variables from the shell, such as $PATH,
+;; when running Emacs on a graphical display.
+(when (memq window-system '(mac ns x))
+  (exec-path-from-shell-initialize))
+
+;; Load environment variables from the shell, such as $PATH,
+;; when running Emacs on a Wayland display (pgtk).
+(when (eq window-system 'pgtk)
+  (exec-path-from-shell-initialize))
+
+;; Load environment variables from the shell, such as $PATH,
+;; when running Emacs as a daemon from systemd or similar.
+;; This ensures that the daemon has access to the same environment
+;; variables as the shell.
+(when (daemonp)
+  (exec-path-from-shell-initialize))
+
 ;; Load the README.el file from the user's Emacs configuration directory
 (load (locate-user-emacs-file "README.el"))
 
