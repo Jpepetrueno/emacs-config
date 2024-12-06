@@ -268,15 +268,23 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
   ;; Config Emacs Lisp
   (use-package lisp-mode
     :config
-    (defun my-elisp-eval-and-run-all-tests-in-buffer ()
-      "Deletes all loaded tests from the runtime, evaluates the current
-	buffer and runs all loaded tests with ert."
+    (defun my-elisp-ert-run-tests-in-buffer ()
+      "Deletes all loaded tests from the runtime, saves the current
+       buffer and the file being loaded, evaluates the current buffer
+       and runs all loaded tests with ert."
       (interactive)
+      (save-buffer)
+      (let ((file-to-load (progn
+			    (goto-char (point-min))
+			    (re-search-forward "(load-file \"\\([^)]+\\)\"")
+			    (match-string 1))))
+	(with-current-buffer (find-file-noselect file-to-load)
+	  (save-buffer)))
       (ert-delete-all-tests)
       (eval-buffer)
       (ert 't))
     :bind (:map emacs-lisp-mode-map
-		("C-c e b" . my-elisp-eval-and-run-all-tests-in-buffer))
+		("C-c e b" . my-elisp-ert-run-tests-in-buffer))
     :hook (emacs-lisp-mode . flymake-mode))
 #+end_src
 
