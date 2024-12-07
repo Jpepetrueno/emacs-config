@@ -11,6 +11,7 @@ eln-cache/
 recentf
 savefile/
 tramp/
+tramp
 var/
 
 elpa/
@@ -54,6 +55,7 @@ transient/
 tutorial/
 history
 undo-fu-session/
+tree-sitter/
 
 # Other files and directories
 eshell/
@@ -85,6 +87,7 @@ flycheck_*.el
 
 # projectiles files
 .projectile
+projectile-bookmarks.eld
 
 # network security
 /network-security.data

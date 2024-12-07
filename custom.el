@@ -6,7 +6,7 @@
  '(custom-enabled-themes '(tsdh-dark))
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(eros exec-path-from-shell nerd-icons-ibuffer nerd-icons-dired nerd-icons-corfu nerd-icons-completion nerd-icons corfu marginalia undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
+   '(projectile cider clojure-ts-mode eros exec-path-from-shell nerd-icons-ibuffer nerd-icons-dired nerd-icons-corfu nerd-icons-completion nerd-icons corfu marginalia undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
  '(tool-bar-mode nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

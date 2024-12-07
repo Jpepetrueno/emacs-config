@@ -190,16 +190,19 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
 
 ** Smartparens Config
 #+begin_src emacs-lisp
-    ;; Automatic insertion, wrapping and paredit-like
-    ;; navigation with user defined pairs.
-    (use-package smartparens
-      :ensure t
-      :hook (prog-mode text-mode markdown-mode)
-      :config
-      ;; enable global strict-mode
-      (smartparens-global-strict-mode)
-      ;; enable the pres-set bindings
-      (sp-use-smartparens-bindings))
+  ;; Automatic insertion, wrapping and paredit-like
+  ;; navigation with user defined pairs.
+  (use-package smartparens
+    :ensure t
+    :hook (prog-mode text-mode markdown-mode)
+    :config
+    ;; enable global strict-mode
+    (smartparens-global-strict-mode)
+    ;; enable the pres-set bindings
+    (sp-use-smartparens-bindings)
+    ;; disable autoclose for ' and ` in Emacs Lisp mode
+    (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
+    (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 #+end_src
 
 ** Auto-fill Config
@@ -318,4 +321,14 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
   (use-package eros
     :ensure t
     :config (eros-mode))
+  #+end_src
+
+** Projectile Config
+#+begin_src emacs-lisp
+  ;; Manage and navigate projects in Emacs easily.
+  (use-package projectile
+    :ensure t
+    :bind (:map projectile-mode-map
+		("C-c p" . projectile-command-map))
+    :init (projectile-mode +1))
   #+end_src

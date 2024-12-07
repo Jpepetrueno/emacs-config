@@ -106,7 +106,10 @@
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
   ;; enable the pres-set bindings
-  (sp-use-smartparens-bindings))
+  (sp-use-smartparens-bindings)
+  ;; disable autoclose for ' and ` in Emacs Lisp mode
+  (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
+  (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 
 ;; Enable auto-fill mode to automatically wrap text
 (use-package auto-fill
@@ -189,3 +192,10 @@
 (use-package eros
   :ensure t
   :config (eros-mode))
+
+;; Manage and navigate projects in Emacs easily.
+(use-package projectile
+  :ensure t
+  :bind (:map projectile-mode-map
+	      ("C-c p" . projectile-command-map))
+  :init (projectile-mode +1))
