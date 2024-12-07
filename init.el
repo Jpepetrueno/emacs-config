@@ -20,31 +20,24 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-;; Add the MELPA package archive to the list of package repositories.
-
 ;;; Code:
-(defvar package-archives nil)
-(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
+;;
+;; Add the MELPA package archive to the list of package repositories.
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
 ;; Initialize the package system, which will load the package archives
 ;; and make the packages available for installation and updating.
 (package-initialize)
 
-;; Load environment variables from the shell, such as $PATH,
-;; when running Emacs on a graphical display.
-(when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize))
+;; Check if exec-path-from-shell package is installed, if not, install it
+(unless (package-installed-p 'exec-path-from-shell)
+  (package-refresh-contents)
+  (package-install 'exec-path-from-shell))
 
-;; Load environment variables from the shell, such as $PATH,
-;; when running Emacs on a Wayland display (pgtk).
-(when (eq window-system 'pgtk)
-  (exec-path-from-shell-initialize))
-
-;; Load environment variables from the shell, such as $PATH,
-;; when running Emacs as a daemon from systemd or similar.
-;; This ensures that the daemon has access to the same environment
-;; variables as the shell.
-(when (daemonp)
+;; Initialize exec-path-from-shell in various Emacs environments.
+(when (or (memq window-system '(mac ns x))
+          (eq window-system 'pgtk)
+          (daemonp))
   (exec-path-from-shell-initialize))
 
 ;; Load the README.el file from the user's Emacs configuration directory
