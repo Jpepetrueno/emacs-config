@@ -240,3 +240,11 @@
   (setq trashed-use-header-line t)
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
+
+;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
+;; (Note: RFC 2229 is an informational document.
+;;        RFC: Request for Comments, a system of Internet documents)
+(use-package dictionary
+  :bind (("C-c d" . dictionary-lookup-definition)
+	 ("<f5>" . dictionary-lookup-definition))
+  :config (setq dictionary-server "dict.org"))

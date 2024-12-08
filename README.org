@@ -11,12 +11,12 @@ making it easy to install and configure packages, and define custom
 settings and keybindings.
 
 ** Customization
-When customizing Emacs through the menu bar or modifying init.el,
-Emacs generates configuration lines that are typically stored in
-custom-set-variables and custom-set-faces sections. To maintain a
-clean and organized configuration, I redirect these auto-generated
-lines to a separate custom.el file, located in my Emacs configuration
-directory.
+When customizing Emacs through the menu bar (Customize Emacs) or
+directly in your init.el, Emacs generates configuration lines that are
+typically stored in custom-set-variables and custom-set-faces
+sections. To maintain a clean and organized configuration, you can redirect
+these auto-generated lines to a separate custom.el file, located in your
+Emacs configuration directory.
 
 ** How Emacs Loads Configuration Files
 Emacs loads several configuration files, and I will focus on the
@@ -370,7 +370,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (setq dired-subtree-use-backgrounds nil))
   #+end_src
 
-** trashed
+** Trashed Config
 #+begin_src emacs-lisp
   ;; Viewing/editing system trash can.
   (use-package trashed
@@ -381,4 +381,15 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (setq trashed-use-header-line t)
     (setq trashed-sort-key '("Date deleted" . t))
     (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
+#+end_src
+
+** Dictionary Config
+#+begin_src emacs-lisp
+  ;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
+  ;; (Note: RFC 2229 is an informational document.
+  ;;        RFC: Request for Comments, a system of Internet documents)
+  (use-package dictionary
+    :bind (("C-c d" . dictionary-lookup-definition)
+	   ("<f5>" . dictionary-lookup-definition))
+    :config (setq dictionary-server "dict.org"))
 #+end_src
