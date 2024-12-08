@@ -43,5 +43,4 @@
 ;; Load the README.el file from the user's Emacs configuration directory
 (load (locate-user-emacs-file "README.el"))
 
-(provide 'init)
-;;; init.el ends here
+(put 'erase-buffer 'disabled nil)

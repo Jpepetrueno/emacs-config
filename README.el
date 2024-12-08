@@ -248,3 +248,22 @@
   :bind (("C-c d" . dictionary-lookup-definition)
 	 ("<f5>" . dictionary-lookup-definition))
   :config (setq dictionary-server "dict.org"))
+
+;; Interaction mode for Emacs Lisp
+(use-package ielm
+  :bind (("C-c C-q" . ielm/clear-repl)
+	 ("<S-return>" . ielm/insert-newline))
+  :config
+
+  (defun ielm/clear-repl ()
+    "Clear current REPL buffer."
+    (interactive)
+    (let ((inhibit-read-only t))
+      (erase-buffer)
+      (ielm-send-input)))
+
+  (defun ielm/insert-newline ()
+    "Insert a newline without evaluating the sexp."
+    (interactive)
+    (let ((ielm-dynamic-return nil))
+      (ielm-return))))
