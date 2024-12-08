@@ -36,16 +36,20 @@
 ;; Corfu enhances in-buffer completion with a small completion popup.
 (use-package corfu
   :ensure t
+  :hook (after-init . global-corfu-mode)
   :bind (:map corfu-map ("<tab>" . corfu-complete))
-  :after savehist
   :config
-  (setq corfu-preview-current nil
-	corfu-min-width 20
-	corfu-popupinfo-delay '(1.25 . 0.5))
-  (global-corfu-mode)
-  (corfu-popupinfo-mode 1)
-  (corfu-history-mode 1)
-  (add-to-list 'savehist-additional-variables 'corfu-history))
+  (setq tab-always-indent 'complete)
+  (setq corfu-preview-current nil)
+  (setq corfu-min-width 20)
+
+  (setq corfu-popupinfo-delay '(1.25 . 0.5))
+  (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
+
+  ;; Sort by input history (no need to modify `corfu-sort-function').
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 ;; Emacs nerd font icons library.
 (use-package nerd-icons
@@ -101,6 +105,8 @@
 ;; navigation with user defined pairs.
 (use-package smartparens
   :ensure t
+  :bind (:map smartparens-mode-map
+	      ("C-c s" . smartparens-command-map))
   :hook (prog-mode text-mode markdown-mode)
   :config
   ;; enable global strict-mode
@@ -199,3 +205,38 @@
   :bind (:map projectile-mode-map
 	      ("C-c p" . projectile-command-map))
   :init (projectile-mode +1))
+
+;; Dired
+(use-package dired
+  :commands (dired)
+  :hook
+  ((dired-mode . dired-hide-details-mode)
+   (dired-mode . hl-line-mode))
+  :config
+  (setq dired-recursive-copies 'always)
+  (setq dired-recursive-deletes 'always)
+  (setq delete-by-moving-to-trash t)
+  (setq dired-dwim-target t))
+
+;; Manage and navigate projects in Emacs easily.
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB" . dired-subtree-remove))
+  :config
+  (setq dired-subtree-use-backgrounds nil))
+
+;; Viewing/editing system trash can.
+(use-package trashed
+  :ensure t
+  :commands (trashed)
+  :config
+  (setq trashed-action-confirmer 'y-or-n-p)
+  (setq trashed-use-header-line t)
+  (setq trashed-sort-key '("Date deleted" . t))
+  (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
