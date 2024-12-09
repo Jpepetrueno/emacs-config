@@ -29,17 +29,6 @@
 ;; and make the packages available for installation and updating.
 (package-initialize)
 
-;; Check if exec-path-from-shell package is installed, if not, install it
-(unless (package-installed-p 'exec-path-from-shell)
-  (package-refresh-contents)
-  (package-install 'exec-path-from-shell))
-
-;; Initialize exec-path-from-shell in various Emacs environments.
-(when (or (memq window-system '(mac ns x))
-          (eq window-system 'pgtk)
-          (daemonp))
-  (exec-path-from-shell-initialize))
-
 ;; Load the README.el file from the user's Emacs configuration directory
 (load (locate-user-emacs-file "README.el"))
 

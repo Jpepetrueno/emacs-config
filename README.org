@@ -6,9 +6,9 @@
 * My Emacs Configuration File
 ** Intro
 This is my Emacs configuration repository, currently under
-development. I leverage [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to simplify my Emacs setup,
-making it easy to install and configure packages, and define custom
-settings and keybindings.
+development. I frequently invoke the macro [[https://github.com/jwiegley/use-package/blob/master/README.md][use-package]] to simplify my
+Emacs setup, making it easy to configure and load packages, and to
+define custom settings and keybindings.
 
 ** Customization
 When customizing Emacs through the menu bar (Customize Emacs) or
@@ -39,15 +39,16 @@ advantage of literate programming, allowing me to keep my
 configuration organized and easily maintainable.
 
 ** README.org to README.el
-To generate the README.el file, I use Org mode's built-in tangling
-feature. By running `M-x org-babel-tangle RET` in the README.org file,
-I can automatically extract the Emacs configuration code and create
-the  README.el file. This allows me to showcase my Emacs configuration
-directly in the README of my repository, making it easy to share and
-maintain.  For more information on this technique, see the Org mode
-manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Source Code with Org mode]].
+To generate the README.el file, I utilize [[https://orgmode.org/manual/Extracting-Source-Code.html][Org mode's powerful tangling
+feature]]. By running ~M-x org-babel-tangle RET~ in the README.org file,
+this technique automatically extracts the Emacs configuration code and
+creates the README.el file. This approach allows anyone to showcase
+their Emacs configuration directly in the repository's README, making
+it easy to share and maintain.
 
-** Emacs Core Config
+** Package Configuration
+Now, let's take a look at my packages configurations:
+*** Emacs Core Config
 #+begin_src emacs-lisp
   ;;; -*- lexical-binding: t -*-
   ;; Configure Emacs core settings
@@ -74,7 +75,20 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
 	  tab-always-indent 'complete))
 #+end_src
 
-** Savehist Config
+*** Exec-path-from-shell Config
+#+begin_src emacs-lisp
+  ;; Get environment variables such as $PATH from the shell.
+  (use-package exec-path-from-shell
+    :ensure t
+    :init
+  ;;;; Initialize exec-path-from-shell in various Emacs environments.
+    (when (or (memq window-system '(mac ns x))
+	      (eq window-system 'pgtk)
+	      (daemonp))
+      (exec-path-from-shell-initialize)))
+#+end_src
+
+*** Savehist Config
 #+begin_src emacs-lisp
   ;; Configure savehist to save minibuffer history
   (use-package savehist
@@ -83,7 +97,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (add-to-list 'savehist-additional-variables 'kill-ring))
 #+end_src
 
-** Marginalia Config
+*** Marginalia Config
 #+begin_src emacs-lisp
   ;; Enable marginalia to add completion annotations to existing commands.
   (use-package marginalia
@@ -91,7 +105,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :config (marginalia-mode))
 #+end_src
 
-** Corfu Config
+*** Corfu Config
 #+begin_src emacs-lisp
   ;; Corfu enhances in-buffer completion with a small completion popup.
   (use-package corfu
@@ -112,14 +126,14 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
       (add-to-list 'savehist-additional-variables 'corfu-history)))
 #+end_src
 
-** Nerd-icons Config
+*** Nerd-icons Config
 #+begin_src emacs-lisp
   ;; Emacs nerd font icons library.
   (use-package nerd-icons
     :ensure t)
 #+end_src
 
-** Nerd-icons-completion Config
+*** Nerd-icons-completion Config
 #+begin_src emacs-lisp
   ;; Add icons to completion candidates.
   (use-package nerd-icons-completion
@@ -129,7 +143,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+end_src
 
-** Nerd-icons-corfu Config
+*** Nerd-icons-corfu Config
 #+begin_src emacs-lisp
   ;; Introduces a margin formatter for Corfu which adds icons.
   (use-package nerd-icons-corfu
@@ -139,7 +153,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
 
-** Nerd-icons-dired Config
+*** Nerd-icons-dired Config
 #+begin_src emacs-lisp
   ;; Shows icons for each file in dired mode.
   (use-package nerd-icons-dired
@@ -147,7 +161,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :hook (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
-** Nerd-icons-ibuffer Config
+*** Nerd-icons-ibuffer Config
 #+begin_src emacs-lisp
   ;; Display nerd icons in ibuffer.
   (use-package nerd-icons-ibuffer
@@ -155,14 +169,14 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 
-** Recentf Config
+*** Recentf Config
 #+begin_src emacs-lisp
   ;; Enable recentf to track recently opened files
   (use-package recentf
     :config (recentf-mode 1))
 #+end_src
 
-** Autorevert Config
+*** Autorevert Config
 #+begin_src emacs-lisp
   ;; Enable autorevert to revert buffers when files change on disk
   (use-package autorevert
@@ -171,28 +185,28 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (setq global-auto-revert-non-file-buffers t))
 #+end_src
 
-** Desktop Config
+*** Desktop Config
 #+begin_src emacs-lisp
   ;; Save partial status of Emacs when killed
   (use-package desktop
     :config (desktop-save-mode 1))
 #+end_src
 
-** Delsel Config
+*** Delsel Config
 #+begin_src emacs-lisp
   ;; Enable to delete selection if you insert
   (use-package delsel
     :config (delete-selection-mode 1))
 #+end_src
 
-** Magit Config
+*** Magit Config
 #+begin_src emacs-lisp
   ;; A git porcelain inside Emacs
   (use-package magit
     :ensure t)
 #+end_src
 
-** Smartparens Config
+*** Smartparens Config
 #+begin_src emacs-lisp
   ;; Automatic insertion, wrapping and paredit-like
   ;; navigation with user defined pairs.
@@ -211,7 +225,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 #+end_src
 
-** Auto-fill Config
+*** Auto-fill Config
 #+begin_src emacs-lisp
   ;; Enable auto-fill mode to automatically wrap text
   (use-package auto-fill
@@ -224,7 +238,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :delight " AF")
 #+end_src
 
-** Keycast Config
+*** Keycast Config
 #+begin_src emacs-lisp
   ;; Show current command and its binding
   (use-package keycast
@@ -232,7 +246,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :config (keycast-tab-bar-mode 1))
 #+end_src
 
-** Undo-tree Config
+*** Undo-tree Config
 #+begin_src emacs-lisp
   ;; Treat undo history as a tree
   (use-package undo-tree
@@ -242,21 +256,21 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (global-undo-tree-mode 1))
 #+end_src
 
-** Display Line Numbers Config
+*** Display Line Numbers Config
 #+begin_src emacs-lisp
   ;; Interface for display-line-numbers
   (use-package display-line-numbers
     :config (global-display-line-numbers-mode))
 #+end_src
 
-** Flyspell Config
+*** Flyspell Config
 #+begin_src emacs-lisp
   ;; On-the-fly spell checker
   (use-package flyspell
     :config (flyspell-prog-mode))
 #+end_src
 
-** Which Key Config
+*** Which Key Config
 #+begin_src emacs-lisp
   ;; Display available keybindings in popup
   (use-package which-key
@@ -264,7 +278,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :config (which-key-mode))
 #+end_src
 
-** Rainbow-delimiters Config
+*** Rainbow-delimiters Config
 #+begin_src emacs-lisp
   ;; Highlight brackets according to their depth.
   (use-package rainbow-delimiters
@@ -272,12 +286,12 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
-** Lisp Config
+*** Lisp Config
 #+begin_src emacs-lisp
   ;; Config Emacs Lisp
   (use-package lisp-mode
     :config
-    (defun my-elisp-ert-run-tests-in-buffer ()
+    (defun elisp/ert-run-tests-in-buffer ()
       "Deletes all loaded tests from the runtime, saves the current
        buffer and the file being loaded, evaluates the current buffer
        and runs all loaded tests with ert."
@@ -293,11 +307,11 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
       (eval-buffer)
       (ert 't))
     :bind (:map emacs-lisp-mode-map
-		("C-c e b" . my-elisp-ert-run-tests-in-buffer))
+		("C-c e b" . elisp/ert-run-tests-in-buffer))
     :hook (emacs-lisp-mode . flymake-mode))
 #+end_src
 
-** Windmove Config
+*** Windmove Config
 #+begin_src emacs-lisp
   ;; Directional window-selection routines
   (use-package windmove
@@ -306,7 +320,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (windmove-default-keybindings))
 #+end_src
 
-** Winner Config
+*** Winner Config
 #+begin_src emacs-lisp
   ;; Restore old window configurations
   ;; Use C-c right and C-c left for undo or redo window configurations
@@ -314,14 +328,14 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :config (winner-mode))
   #+end_src
 
-** Whitespace Config
+*** Whitespace Config
 #+begin_src emacs-lisp
-  ;; Minor mode to visualize TAB, (HARD) SPACE, NEWLINE
+  ;; This package is a minor mode to visualize blanks
   (use-package whitespace
-    :config (global-whitespace-mode))
+    :hook (prog-mode text-mode markdown-mode))
   #+end_src
 
-** Eros Config
+*** Eros Config
 #+begin_src emacs-lisp
   ;; Evaluation Result OverlayS for Emacs Lisp.
   (use-package eros
@@ -329,7 +343,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :config (eros-mode))
   #+end_src
 
-** Projectile Config
+*** Projectile Config
 #+begin_src emacs-lisp
   ;; Manage and navigate projects in Emacs easily.
   (use-package projectile
@@ -339,22 +353,23 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     :init (projectile-mode +1))
   #+end_src
 
-** Dired Config
+*** Dired Config
 #+begin_src emacs-lisp
   ;; Dired
   (use-package dired
     :commands (dired)
     :hook
     ((dired-mode . dired-hide-details-mode)
-     (dired-mode . hl-line-mode))
+     (dired-mode . hl-line-mode)
+     (dired-mode . dired-omit-mode))
     :config
-    (setq dired-recursive-copies 'always)
-    (setq dired-recursive-deletes 'always)
-    (setq delete-by-moving-to-trash t)
-    (setq dired-dwim-target t))
-#+end_src
+    (setq dired-recursive-copies 'always
+	  dired-recursive-deletes 'always
+	  delete-by-moving-to-trash t
+	  dired-dwim-target t))
+  #+end_src
 
-** Dired-subtree Config
+*** Dired-subtree Config
 #+begin_src emacs-lisp
   ;; Manage and navigate projects in Emacs easily.
   (use-package dired-subtree
@@ -370,7 +385,7 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (setq dired-subtree-use-backgrounds nil))
   #+end_src
 
-** Trashed Config
+*** Trashed Config
 #+begin_src emacs-lisp
   ;; Viewing/editing system trash can.
   (use-package trashed
@@ -383,18 +398,17 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
     (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
 
-** Dictionary Config
+*** Dictionary Config
 #+begin_src emacs-lisp
   ;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
   ;; (Note: RFC 2229 is an informational document.
   ;;        RFC: Request for Comments, a system of Internet documents)
   (use-package dictionary
-    :bind (("C-c d" . dictionary-lookup-definition)
-	   ("<f5>" . dictionary-lookup-definition))
+    :bind ("<f5>" . dictionary-lookup-definition)
     :config (setq dictionary-server "dict.org"))
 #+end_src
 
-** Ielm Config
+*** Ielm Config
 #+begin_src emacs-lisp
   ;; Interaction mode for Emacs Lisp
   (use-package ielm
@@ -415,3 +429,12 @@ manual: [[https://orgmode.org/manual/Extracting-Source-Code.html][Extracting Sou
       (let ((ielm-dynamic-return nil))
 	(ielm-return))))
 #+end_src
+
+** Conclusion
+If you're interested in using [[https://github.com/Jpepetrueno/emacs-config.git][my Emacs configuration]] directly, I
+recommend cloning or forking the repository and using it as a starting
+point for your own setup.
+
+Thank you for taking the time to review my Emacs configuration. I hope
+it inspires you to create a personalized Emacs experience that suits
+your needs.

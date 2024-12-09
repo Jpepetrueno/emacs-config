@@ -22,6 +22,16 @@
 	require-final-newline t
 	tab-always-indent 'complete))
 
+;; Get environment variables such as $PATH from the shell.
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+;;;; Initialize exec-path-from-shell in various Emacs environments.
+  (when (or (memq window-system '(mac ns x))
+	    (eq window-system 'pgtk)
+	    (daemonp))
+    (exec-path-from-shell-initialize)))
+
 ;; Configure savehist to save minibuffer history
 (use-package savehist
   :config
@@ -160,7 +170,7 @@
 ;; Config Emacs Lisp
 (use-package lisp-mode
   :config
-  (defun my-elisp-ert-run-tests-in-buffer ()
+  (defun elisp/ert-run-tests-in-buffer ()
     "Deletes all loaded tests from the runtime, saves the current
      buffer and the file being loaded, evaluates the current buffer
      and runs all loaded tests with ert."
@@ -176,7 +186,7 @@
     (eval-buffer)
     (ert 't))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c e b" . my-elisp-ert-run-tests-in-buffer))
+	      ("C-c e b" . elisp/ert-run-tests-in-buffer))
   :hook (emacs-lisp-mode . flymake-mode))
 
 ;; Directional window-selection routines
@@ -190,9 +200,9 @@
 (use-package winner
   :config (winner-mode))
 
-;; Minor mode to visualize TAB, (HARD) SPACE, NEWLINE
+;; This package is a minor mode to visualize blanks
 (use-package whitespace
-  :config (global-whitespace-mode))
+  :hook (prog-mode text-mode markdown-mode))
 
 ;; Evaluation Result OverlayS for Emacs Lisp.
 (use-package eros
@@ -211,12 +221,13 @@
   :commands (dired)
   :hook
   ((dired-mode . dired-hide-details-mode)
-   (dired-mode . hl-line-mode))
+   (dired-mode . hl-line-mode)
+   (dired-mode . dired-omit-mode))
   :config
-  (setq dired-recursive-copies 'always)
-  (setq dired-recursive-deletes 'always)
-  (setq delete-by-moving-to-trash t)
-  (setq dired-dwim-target t))
+  (setq dired-recursive-copies 'always
+	dired-recursive-deletes 'always
+	delete-by-moving-to-trash t
+	dired-dwim-target t))
 
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree
@@ -245,8 +256,7 @@
 ;; (Note: RFC 2229 is an informational document.
 ;;        RFC: Request for Comments, a system of Internet documents)
 (use-package dictionary
-  :bind (("C-c d" . dictionary-lookup-definition)
-	 ("<f5>" . dictionary-lookup-definition))
+  :bind ("<f5>" . dictionary-lookup-definition)
   :config (setq dictionary-server "dict.org"))
 
 ;; Interaction mode for Emacs Lisp
