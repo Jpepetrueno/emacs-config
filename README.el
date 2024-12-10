@@ -26,7 +26,7 @@
 (use-package exec-path-from-shell
   :ensure t
   :init
-;;;; Initialize exec-path-from-shell in various Emacs environments.
+  ;; Initialize exec-path-from-shell in various Emacs environments.
   (when (or (memq window-system '(mac ns x))
 	    (eq window-system 'pgtk)
 	    (daemonp))
@@ -115,8 +115,6 @@
 ;; navigation with user defined pairs.
 (use-package smartparens
   :ensure t
-  :bind (:map smartparens-mode-map
-	      ("C-c s" . smartparens-command-map))
   :hook (prog-mode text-mode markdown-mode)
   :config
   ;; enable global strict-mode
@@ -186,7 +184,7 @@
     (eval-buffer)
     (ert 't))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c e b" . elisp/ert-run-tests-in-buffer))
+	      ("C-c o b" . elisp/ert-run-tests-in-buffer))
   :hook (emacs-lisp-mode . flymake-mode))
 
 ;; Directional window-selection routines
@@ -256,13 +254,14 @@
 ;; (Note: RFC 2229 is an informational document.
 ;;        RFC: Request for Comments, a system of Internet documents)
 (use-package dictionary
-  :bind ("<f5>" . dictionary-lookup-definition)
+  :bind ("<f7>" . dictionary-lookup-definition)
   :config (setq dictionary-server "dict.org"))
 
 ;; Interaction mode for Emacs Lisp
 (use-package ielm
-  :bind (("C-c C-q" . ielm/clear-repl)
-	 ("<S-return>" . ielm/insert-newline))
+  :bind (:map ielm-map
+	      ("C-c C-q" . ielm/clear-repl)
+	      ("<S-return>" . ielm/insert-newline))
   :config
 
   (defun ielm/clear-repl ()
@@ -277,3 +276,40 @@
     (interactive)
     (let ((ielm-dynamic-return nil))
       (ielm-return))))
+
+(use-package eglot
+  :bind (:map eglot-mode-map
+		("C-c e a" . eglot-code-actions)
+		("C-c e d" . eldoc)
+		("C-c e f" . eglot-format)
+		("<f6>" . eglot-format)
+		("C-c e r" . eglot-rename)
+		("C-c e s" . eglot-shutdown)
+		("C-c e S" . eglot-shutdown-all)
+		("C-c e i" . eglot-inlay-hints-mode)
+		("C-c e e" . eglot-events-buffer)
+		("C-c e x" . eglot-stderr-buffer)
+		("C-c e c" . eglot-clear-status)
+		("C-c e p" . eglot-forget-pending-continuations)
+		("C-c e u" . eglot-signal-didChangeConfiguration)
+		("C-c e o" . eglot-code-action-organize-imports)
+		("C-c e q" . eglot-code-action-quickfix)
+		("C-c e X" . eglot-code-action-extract)
+		("C-c e n" . eglot-code-action-inline)
+		("C-c e w" . eglot-code-action-rewrite)
+		("C-c e b" . eglot-format-buffer)
+		("C-c e R" . eglot-reconnect)
+		("C-c e B" . flymake-show-buffer-diagnostics)
+		("C-c e P" . flymake-show-project-diagnostics)
+		("C-c e g" . xref-find-definitions)
+		("C-c e m" . imenu)
+		("C-c e C" . completion-at-point)))
+
+;; Python's flying circus support for Emacs
+(use-package python
+  :bind (:map python-ts-mode-map
+	      ("<f5>" . recompile))
+  :hook
+  ((python-ts-mode . eglot-ensure))
+  :mode
+  (("\\.py\\'" . python-ts-mode)))
