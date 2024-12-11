@@ -495,6 +495,19 @@ Now, let's take a look at my packages configurations:
 	  (expand-file-name "~/condapython")))
 #+end_src
 
+*** Helpful Config
+#+begin_src emacs-lisp
+  ;; A better *help* buffer.
+  (use-package helpful
+    :ensure t
+    :bind (("C-h f" . helpful-callable)
+	   ("C-h v" . helpful-variable)
+	   ("C-h k" . helpful-key)
+	   ("C-h x" . helpful-command)
+	   ("C-c C-d" . helpful-at-point)
+	   ("C-h F" . helpful-function)))
+#+end_src
+
 ** Conclusion
 If you're interested in using [[https://github.com/Jpepetrueno/emacs-config.git][my Emacs configuration]] directly, I
 recommend cloning or forking the repository and using it as a starting

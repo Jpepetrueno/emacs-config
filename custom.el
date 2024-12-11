@@ -7,7 +7,7 @@
  '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(ellama dired-preview trashed dired-subtree projectile cider clojure-ts-mode eros exec-path-from-shell nerd-icons-ibuffer nerd-icons-dired nerd-icons-corfu nerd-icons-completion nerd-icons corfu marginalia undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
+   '(helpful markdown-mode live-py-mode ellama dired-preview trashed dired-subtree projectile cider clojure-ts-mode eros exec-path-from-shell nerd-icons-ibuffer nerd-icons-dired nerd-icons-corfu nerd-icons-completion nerd-icons corfu marginalia undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
