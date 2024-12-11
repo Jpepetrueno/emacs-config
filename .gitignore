@@ -98,3 +98,6 @@ projectile-bookmarks.eld
 
 # Compiled Emacs Lisp files
 *.elc
+
+# Ellama
+ellama-sessions/

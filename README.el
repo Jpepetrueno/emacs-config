@@ -125,16 +125,6 @@
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 
-;; Enable auto-fill mode to automatically wrap text
-(use-package auto-fill
-  :hook
-  (prog-mode text-mode markdown-mode org-mode)
-  :config
-  (setq fill-column 80)
-  (setq-default auto-fill-function 'do-auto-fill)
-  (auto-fill-mode 1)
-  :delight " AF")
-
 ;; Show current command and its binding
 (use-package keycast
   :ensure t
@@ -197,6 +187,14 @@
 ;; Use C-c right and C-c left for undo or redo window configurations
 (use-package winner
   :config (winner-mode))
+
+;; Enable auto-fill mode to automatically wrap text
+(use-package auto-fill
+  :hook
+  (prog-mode text-mode markdown-mode)
+  :config
+  (auto-fill-mode)
+  :delight "AF")
 
 ;; This package is a minor mode to visualize blanks
 (use-package whitespace
@@ -279,31 +277,43 @@
 
 (use-package eglot
   :bind (:map eglot-mode-map
-		("C-c e a" . eglot-code-actions)
-		("C-c e d" . eldoc)
-		("C-c e f" . eglot-format)
-		("<f6>" . eglot-format)
-		("C-c e r" . eglot-rename)
-		("C-c e s" . eglot-shutdown)
-		("C-c e S" . eglot-shutdown-all)
-		("C-c e i" . eglot-inlay-hints-mode)
-		("C-c e e" . eglot-events-buffer)
-		("C-c e x" . eglot-stderr-buffer)
-		("C-c e c" . eglot-clear-status)
-		("C-c e p" . eglot-forget-pending-continuations)
-		("C-c e u" . eglot-signal-didChangeConfiguration)
-		("C-c e o" . eglot-code-action-organize-imports)
-		("C-c e q" . eglot-code-action-quickfix)
-		("C-c e X" . eglot-code-action-extract)
-		("C-c e n" . eglot-code-action-inline)
-		("C-c e w" . eglot-code-action-rewrite)
-		("C-c e b" . eglot-format-buffer)
-		("C-c e R" . eglot-reconnect)
-		("C-c e B" . flymake-show-buffer-diagnostics)
-		("C-c e P" . flymake-show-project-diagnostics)
-		("C-c e g" . xref-find-definitions)
-		("C-c e m" . imenu)
-		("C-c e C" . completion-at-point)))
+	      ("C-c l a" . eglot-code-actions)
+	      ("C-c l d" . eldoc)
+	      ("C-c l f" . eglot-format)
+	      ("<f6>" . eglot-format)
+	      ("C-c l r" . eglot-rename)
+	      ("C-c l s" . eglot-shutdown)
+	      ("C-c l S" . eglot-shutdown-all)
+	      ("C-c l i" . eglot-inlay-hints-mode)
+	      ("C-c l e" . eglot-events-buffer)
+	      ("C-c l x" . eglot-stderr-buffer)
+	      ("C-c l c" . eglot-clear-status)
+	      ("C-c l u" . eglot-signal-didChangeConfiguration)
+	      ("C-c l o" . eglot-code-action-organize-imports)
+	      ("C-c l q" . eglot-code-action-quickfix)
+	      ("C-c l X" . eglot-code-action-extract)
+	      ("C-c l n" . eglot-code-action-inline)
+	      ("C-c l w" . eglot-code-action-rewrite)
+	      ("C-c l b" . eglot-format-buffer)
+	      ("C-c l R" . eglot-reconnect)
+	      ("C-c l B" . flymake-show-buffer-diagnostics)
+	      ("C-c l P" . flymake-show-project-diagnostics)
+	      ("C-c l g" . xref-find-definitions)
+	      ("C-c l m" . imenu)
+	      ("C-c l C" . completion-at-point)))
+
+(use-package ellama
+  :bind ("C-c e" . ellama-transient-main-menu)
+  :init
+  ;; customize display buffer behaviour
+  ;; see ~(info "(elisp) Buffer Display Action Functions")~
+  (setopt ellama-chat-display-action-function #'display-buffer-full-frame)
+  (setopt ellama-instant-display-action-function #'display-buffer-at-bottom)
+  :config
+  ;; set ellama-long-lines-length to fill-column
+  (setq ellama-long-lines-length fill-column)
+  :hook
+  (ellama-session-mode . (lambda () (whitespace-mode -1))))
 
 ;; Python's flying circus support for Emacs
 (use-package python
