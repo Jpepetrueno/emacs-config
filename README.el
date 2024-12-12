@@ -9,8 +9,9 @@
 	custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
   :config
-  (fido-mode t)
-  (fido-vertical-mode t)
+  (fido-mode)
+  (fido-vertical-mode)
+  (column-number-mode)
   (setq visible-bell t
 	use-short-answers t
 	debugger-stack-frame-as-list t
@@ -333,3 +334,11 @@
 	 ("C-h x" . helpful-command)
 	 ("C-c C-d" . helpful-at-point)
 	 ("C-h F" . helpful-function)))
+
+;; A cornucopia of useful interactive commands to make your Emacs experience
+;; more enjoyable.
+(use-package crux
+  :ensure t
+  :bind
+  ("M-o" . crux-smart-open-line)
+  ("M-O" . crux-smart-open-line-above))
