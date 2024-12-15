@@ -48,7 +48,7 @@ it easy to share and maintain.
 
 ** Package Configuration
 Now, let's take a look at my packages configurations:
-*** Emacs Core Config
+*** Emacs Core
 #+begin_src emacs-lisp
   ;; Configure Emacs core settings
   (use-package emacs
@@ -80,7 +80,7 @@ Now, let's take a look at my packages configurations:
       (find-file-other-window (concat "~/.config/emacs/README.org"))))
 #+end_src
 
-*** COMMENT Exec-path-from-shell Config
+*** COMMENT Exec-path-from-shell
 #+begin_src emacs-lisp
   ;; Get environment variables such as $PATH from the shell.
   (use-package exec-path-from-shell
@@ -93,7 +93,7 @@ Now, let's take a look at my packages configurations:
       (exec-path-from-shell-initialize)))
 #+end_src
 
-*** Savehist Config
+*** Savehist
 #+begin_src emacs-lisp
   ;; Configure savehist to save minibuffer history
   (use-package savehist
@@ -102,7 +102,7 @@ Now, let's take a look at my packages configurations:
     (add-to-list 'savehist-additional-variables 'kill-ring))
 #+end_src
 
-*** Marginalia Config
+*** Marginalia
 #+begin_src emacs-lisp
   ;; Enable marginalia to add completion annotations to existing commands.
   (use-package marginalia
@@ -110,7 +110,7 @@ Now, let's take a look at my packages configurations:
     :config (marginalia-mode))
 #+end_src
 
-*** Corfu Config
+*** Corfu
 #+begin_src emacs-lisp
   ;; Corfu enhances in-buffer completion with a small completion popup.
   (use-package corfu
@@ -131,14 +131,14 @@ Now, let's take a look at my packages configurations:
       (add-to-list 'savehist-additional-variables 'corfu-history)))
 #+end_src
 
-*** Nerd-icons Config
+*** Nerd-icons
 #+begin_src emacs-lisp
   ;; Emacs nerd font icons library.
   (use-package nerd-icons
     :ensure t)
 #+end_src
 
-*** Nerd-icons-completion Config
+*** Nerd-icons-completion
 #+begin_src emacs-lisp
   ;; Add icons to completion candidates.
   (use-package nerd-icons-completion
@@ -148,7 +148,7 @@ Now, let's take a look at my packages configurations:
     (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+end_src
 
-*** Nerd-icons-corfu Config
+*** Nerd-icons-corfu
 #+begin_src emacs-lisp
   ;; Introduces a margin formatter for Corfu which adds icons.
   (use-package nerd-icons-corfu
@@ -158,7 +158,7 @@ Now, let's take a look at my packages configurations:
     (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 #+end_src
 
-*** Nerd-icons-dired Config
+*** Nerd-icons-dired
 #+begin_src emacs-lisp
   ;; Shows icons for each file in dired mode.
   (use-package nerd-icons-dired
@@ -166,7 +166,7 @@ Now, let's take a look at my packages configurations:
     :hook (dired-mode . nerd-icons-dired-mode))
 #+end_src
 
-*** Nerd-icons-ibuffer Config
+*** Nerd-icons-ibuffer
 #+begin_src emacs-lisp
   ;; Display nerd icons in ibuffer.
   (use-package nerd-icons-ibuffer
@@ -174,14 +174,14 @@ Now, let's take a look at my packages configurations:
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 
-*** Recentf Config
+*** Recentf
 #+begin_src emacs-lisp
   ;; Enable recentf to track recently opened files
   (use-package recentf
     :config (recentf-mode 1))
 #+end_src
 
-*** Autorevert Config
+*** Autorevert
 #+begin_src emacs-lisp
   ;; Enable autorevert to revert buffers when files change on disk
   (use-package autorevert
@@ -190,28 +190,28 @@ Now, let's take a look at my packages configurations:
     (setq global-auto-revert-non-file-buffers t))
 #+end_src
 
-*** Desktop Config
+*** Desktop
 #+begin_src emacs-lisp
   ;; Save partial status of Emacs when killed
   (use-package desktop
     :config (desktop-save-mode 1))
 #+end_src
 
-*** Delsel Config
+*** Delsel
 #+begin_src emacs-lisp
   ;; Enable to delete selection if you insert
   (use-package delsel
     :config (delete-selection-mode 1))
 #+end_src
 
-*** Magit Config
+*** Magit
 #+begin_src emacs-lisp
   ;; A git porcelain inside Emacs
   (use-package magit
     :ensure t)
 #+end_src
 
-*** Smartparens Config
+*** Smartparens
 #+begin_src emacs-lisp
   ;; Automatic insertion, wrapping and paredit-like
   ;; navigation with user defined pairs.
@@ -228,7 +228,7 @@ Now, let's take a look at my packages configurations:
     (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 #+end_src
 
-*** Keycast Config
+*** Keycast
 #+begin_src emacs-lisp
   ;; Show current command and its binding
   (use-package keycast
@@ -236,7 +236,7 @@ Now, let's take a look at my packages configurations:
     :config (keycast-tab-bar-mode 1))
 #+end_src
 
-*** Undo-tree Config
+*** Undo-tree
 #+begin_src emacs-lisp
   ;; Treat undo history as a tree
   (use-package undo-tree
@@ -246,21 +246,21 @@ Now, let's take a look at my packages configurations:
     (global-undo-tree-mode 1))
 #+end_src
 
-*** Display Line Numbers Config
+*** Display Line Numbers
 #+begin_src emacs-lisp
   ;; Interface for display-line-numbers
   (use-package display-line-numbers
     :config (global-display-line-numbers-mode))
 #+end_src
 
-*** Flyspell Config
+*** Flyspell
 #+begin_src emacs-lisp
   ;; On-the-fly spell checker
   (use-package flyspell
     :config (flyspell-prog-mode))
 #+end_src
 
-*** Which Key Config
+*** Which Key
 #+begin_src emacs-lisp
   ;; Display available keybindings in popup
   (use-package which-key
@@ -268,7 +268,7 @@ Now, let's take a look at my packages configurations:
     :config (which-key-mode))
 #+end_src
 
-*** Rainbow-delimiters Config
+*** Rainbow-delimiters
 #+begin_src emacs-lisp
   ;; Highlight brackets according to their depth.
   (use-package rainbow-delimiters
@@ -276,7 +276,7 @@ Now, let's take a look at my packages configurations:
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 
-*** Lisp Config
+*** Emacs Lisp
 #+begin_src emacs-lisp
   ;; Config Emacs Lisp
   (use-package lisp-mode
@@ -301,7 +301,7 @@ Now, let's take a look at my packages configurations:
     :hook (emacs-lisp-mode . flymake-mode))
 #+end_src
 
-*** Windmove Config
+*** Windmove
 #+begin_src emacs-lisp
   ;; Directional window-selection routines
   (use-package windmove
@@ -310,7 +310,7 @@ Now, let's take a look at my packages configurations:
     (windmove-default-keybindings))
 #+end_src
 
-*** Winner Config
+*** Winner
 #+begin_src emacs-lisp
   ;; Restore old window configurations
   ;; Use C-c right and C-c left for undo or redo window configurations
@@ -318,7 +318,7 @@ Now, let's take a look at my packages configurations:
     :config (winner-mode))
   #+end_src
 
-*** Auto-fill Config
+*** Auto-fill
 #+begin_src emacs-lisp
   ;; Enable auto-fill mode to automatically wrap text
   (use-package auto-fill
@@ -329,14 +329,14 @@ Now, let's take a look at my packages configurations:
     :delight "AF")
 #+end_src
 
-*** Whitespace Config
+*** Whitespace
 #+begin_src emacs-lisp
   ;; This package is a minor mode to visualize blanks
   (use-package whitespace
     :hook (prog-mode text-mode markdown-mode))
   #+end_src
 
-*** Eros Config
+*** Eros
 #+begin_src emacs-lisp
   ;; Evaluation Result OverlayS for Emacs Lisp.
   (use-package eros
@@ -344,7 +344,7 @@ Now, let's take a look at my packages configurations:
     :config (eros-mode))
   #+end_src
 
-*** Projectile Config
+*** Projectile
 #+begin_src emacs-lisp
   ;; Manage and navigate projects in Emacs easily.
   (use-package projectile
@@ -354,7 +354,7 @@ Now, let's take a look at my packages configurations:
     :init (projectile-mode +1))
   #+end_src
 
-*** Dired Config
+*** Dired
 #+begin_src emacs-lisp
   ;; Dired
   (use-package dired
@@ -370,7 +370,7 @@ Now, let's take a look at my packages configurations:
 	  dired-dwim-target t))
   #+end_src
 
-*** Dired-subtree Config
+*** Dired-subtree
 #+begin_src emacs-lisp
   ;; Manage and navigate projects in Emacs easily.
   (use-package dired-subtree
@@ -386,7 +386,7 @@ Now, let's take a look at my packages configurations:
     (setq dired-subtree-use-backgrounds nil))
   #+end_src
 
-*** Trashed Config
+*** Trashed
 #+begin_src emacs-lisp
   ;; Viewing/editing system trash can.
   (use-package trashed
@@ -399,7 +399,7 @@ Now, let's take a look at my packages configurations:
     (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 #+end_src
 
-*** Dictionary Config
+*** Dictionary
 #+begin_src emacs-lisp
   ;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
   ;; (Note: RFC 2229 is an informational document.
@@ -409,7 +409,7 @@ Now, let's take a look at my packages configurations:
     :config (setq dictionary-server "dict.org"))
 #+end_src
 
-*** Ielm Config
+*** Ielm
 #+begin_src emacs-lisp
   ;; Interaction mode for Emacs Lisp
   (use-package ielm
@@ -432,7 +432,7 @@ Now, let's take a look at my packages configurations:
 	(ielm-return))))
 #+end_src
 
-*** Eglot Config
+*** Eglot
 #+begin_src emacs-lisp
 (use-package eglot
   :bind (:map eglot-mode-map
@@ -462,7 +462,7 @@ Now, let's take a look at my packages configurations:
 	      ("C-c l C" . completion-at-point)))
 #+end_src
 
-*** Ellama Config
+*** Ellama
 #+begin_src emacs-lisp
   (use-package ellama
     :bind ("C-c e" . ellama-transient-main-menu)
@@ -478,7 +478,7 @@ Now, let's take a look at my packages configurations:
     (ellama-session-mode . (lambda () (whitespace-mode -1))))
 #+end_src
 
-*** Python Config
+*** Python
 #+begin_src emacs-lisp
   ;; Python's flying circus support for Emacs
   (use-package python
@@ -490,7 +490,7 @@ Now, let's take a look at my packages configurations:
     (("\\.py\\'" . python-ts-mode)))
 #+end_src
 
-*** COMMENT Conda Config
+*** COMMENT Conda
 #+begin_src emacs-lisp
   ;; Work with your conda environments
   (use-package conda
@@ -500,7 +500,7 @@ Now, let's take a look at my packages configurations:
 	  (expand-file-name "~/condapython")))
 #+end_src
 
-*** Helpful Config
+*** Helpful
 #+begin_src emacs-lisp
   ;; A better *help* buffer.
   (use-package helpful
@@ -513,7 +513,7 @@ Now, let's take a look at my packages configurations:
 	   ("C-h F" . helpful-function)))
 #+end_src
 
-*** Crux Config
+*** Crux
 #+begin_src emacs-lisp
   ;; A cornucopia of useful interactive commands to make your Emacs experience
   ;; more enjoyable.
@@ -521,10 +521,12 @@ Now, let's take a look at my packages configurations:
     :ensure t
     :bind
     ("M-o" . crux-smart-open-line)
-    ("M-O" . crux-smart-open-line-above))
+    ("M-O" . crux-smart-open-line-above)
+    (:map ctl-x-4-map
+	  ("t" . crux-transpose-windows)))
 #+end_src
 
-*** Keyfreq Config
+*** Keyfreq
 #+begin_src emacs-lisp
   ;; Track command frequencies.
   (use-package keyfreq
@@ -541,7 +543,7 @@ Now, let's take a look at my packages configurations:
     (keyfreq-autosave-mode))
 #+end_src
 
-*** Pulsar Config
+*** Pulsar
 #+begin_src emacs-lisp
   ;; Pulse highlight on demand or after select functions.
   (use-package pulsar
@@ -551,6 +553,14 @@ Now, let's take a look at my packages configurations:
     :config
     (setq pulsar-face 'pulsar-green)
     (pulsar-global-mode))
+#+end_src
+
+*** Yasnippet
+#+begin_src emacs-lisp
+  ;; Yet another snippet extension for Emacs
+  (use-package yasnippet
+    :config
+    (yas-global-mode))
 #+end_src
 
 ** Conclusion

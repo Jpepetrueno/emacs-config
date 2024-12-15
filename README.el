@@ -335,7 +335,9 @@
   :ensure t
   :bind
   ("M-o" . crux-smart-open-line)
-  ("M-O" . crux-smart-open-line-above))
+  ("M-O" . crux-smart-open-line-above)
+  (:map ctl-x-4-map
+	("t" . crux-transpose-windows)))
 
 ;; Track command frequencies.
 (use-package keyfreq
@@ -359,3 +361,8 @@
   :config
   (setq pulsar-face 'pulsar-green)
   (pulsar-global-mode))
+
+;; Yet another snippet extension for Emacs
+(use-package yasnippet
+  :config
+  (yas-global-mode))
