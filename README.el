@@ -1,8 +1,8 @@
-;;; -*- lexical-binding: t -*-
 ;; Configure Emacs core settings
 (use-package emacs
   :bind
   ("C-x C-b" . ibuffer)
+  ("C-c i" . dimagid/find-user-readme-org-file)
   :init
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
   (setq load-prefer-newer t
@@ -21,17 +21,11 @@
 	read-buffer-completion-ignore-case t
 	switch-to-buffer-obey-display-actions t
 	require-final-newline t
-	tab-always-indent 'complete))
-
-;; Get environment variables such as $PATH from the shell.
-(use-package exec-path-from-shell
-  :ensure t
-  :init
-  ;; Initialize exec-path-from-shell in various Emacs environments.
-  (when (or (memq window-system '(mac ns x))
-	    (eq window-system 'pgtk)
-	    (daemonp))
-    (exec-path-from-shell-initialize)))
+	tab-always-indent 'complete)
+  (defun dimagid/find-user-readme-org-file ()
+    "Edit the README.org file in another window."
+    (interactive)
+    (find-file-other-window (concat "~/.config/emacs/README.org"))))
 
 ;; Configure savehist to save minibuffer history
 (use-package savehist
@@ -159,7 +153,7 @@
 ;; Config Emacs Lisp
 (use-package lisp-mode
   :config
-  (defun elisp/ert-run-tests-in-buffer ()
+  (defun dimagid/elisp-ert-run-tests-in-buffer ()
     "Deletes all loaded tests from the runtime, saves the current
      buffer and the file being loaded, evaluates the current buffer
      and runs all loaded tests with ert."
@@ -175,7 +169,7 @@
     (eval-buffer)
     (ert 't))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c o b" . elisp/ert-run-tests-in-buffer))
+	      ("C-c o b" . dimagid/elisp-ert-run-tests-in-buffer))
   :hook (emacs-lisp-mode . flymake-mode))
 
 ;; Directional window-selection routines
@@ -259,18 +253,18 @@
 ;; Interaction mode for Emacs Lisp
 (use-package ielm
   :bind (:map ielm-map
-	      ("C-c C-q" . ielm/clear-repl)
-	      ("<S-return>" . ielm/insert-newline))
+	      ("C-c C-q" . dimagid/ielm-clear-repl)
+	      ("<S-return>" . dimagid/ielm-insert-newline))
   :config
 
-  (defun ielm/clear-repl ()
+  (defun dimagid/ielm-clear-repl ()
     "Clear current REPL buffer."
     (interactive)
     (let ((inhibit-read-only t))
       (erase-buffer)
       (ielm-send-input)))
 
-  (defun ielm/insert-newline ()
+  (defun dimagid/ielm-insert-newline ()
     "Insert a newline without evaluating the sexp."
     (interactive)
     (let ((ielm-dynamic-return nil))
@@ -360,5 +354,8 @@
 ;; Pulse highlight on demand or after select functions.
 (use-package pulsar
   :ensure t
+  :custom
+  (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
+  (setq pulsar-face 'pulsar-green)
   (pulsar-global-mode))
