@@ -520,6 +520,32 @@ Now, let's take a look at my packages configurations:
     ("M-O" . crux-smart-open-line-above))
 #+end_src
 
+*** Keyfreq Config
+#+begin_src emacs-lisp
+  ;; Track command frequencies.
+  (use-package keyfreq
+    :ensure t
+    :config
+    (setq keyfreq-excluded-commands
+	  '(self-insert-command
+	    forward-char
+	    backward-char
+	    previous-line
+	    next-line
+	    mwheel-scroll))
+    (keyfreq-mode)
+    (keyfreq-autosave-mode))
+#+end_src
+
+*** Pulsar Config
+#+begin_src emacs-lisp
+  ;; Pulse highlight on demand or after select functions.
+  (use-package pulsar
+    :ensure t
+    :config
+    (pulsar-global-mode))
+#+end_src
+
 ** Conclusion
 If you're interested in using [[https://github.com/Jpepetrueno/emacs-config.git][my Emacs configuration]] directly, I
 recommend cloning or forking the repository and using it as a starting

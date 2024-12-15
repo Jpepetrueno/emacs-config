@@ -33,3 +33,5 @@
 (load (locate-user-emacs-file "README.el"))
 
 (put 'erase-buffer 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)

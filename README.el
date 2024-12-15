@@ -342,3 +342,23 @@
   :bind
   ("M-o" . crux-smart-open-line)
   ("M-O" . crux-smart-open-line-above))
+
+;; Track command frequencies.
+(use-package keyfreq
+  :ensure t
+  :config
+  (setq keyfreq-excluded-commands
+	'(self-insert-command
+	  forward-char
+	  backward-char
+	  previous-line
+	  next-line
+	  mwheel-scroll))
+  (keyfreq-mode)
+  (keyfreq-autosave-mode))
+
+;; Pulse highlight on demand or after select functions.
+(use-package pulsar
+  :ensure t
+  :config
+  (pulsar-global-mode))
