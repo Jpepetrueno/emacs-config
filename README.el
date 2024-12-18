@@ -3,6 +3,7 @@
   :bind
   ("C-x C-b" . ibuffer)
   ("C-c i" . dimagid/find-user-readme-org-file)
+  ("C-c d" . eldoc)
   :init
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
   (setq load-prefer-newer t
@@ -21,6 +22,7 @@
 	read-buffer-completion-ignore-case t
 	switch-to-buffer-obey-display-actions t
 	require-final-newline t
+	Info-hide-note-references nil
 	tab-always-indent 'complete)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
@@ -112,6 +114,7 @@
   :ensure t
   :hook (prog-mode text-mode markdown-mode)
   :config
+  (set-face-attribute 'sp-pair-overlay-face nil :background "#444444")
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
   ;; enable the pres-set bindings
@@ -193,7 +196,7 @@
 
 ;; This package is a minor mode to visualize blanks
 (use-package whitespace
-  :hook (prog-mode text-mode markdown-mode))
+  :hook (text-mode markdown-mode))
 
 ;; Evaluation Result OverlayS for Emacs Lisp.
 (use-package eros
@@ -273,12 +276,13 @@
 (use-package eglot
   :bind (:map eglot-mode-map
 	      ("C-c l a" . eglot-code-actions)
-	      ("C-c l d" . eldoc)
 	      ("C-c l f" . eglot-format)
 	      ("<f6>" . eglot-format)
 	      ("C-c l r" . eglot-rename)
-	      ("C-c l s" . eglot-shutdown)
-	      ("C-c l S" . eglot-shutdown-all)
+	      ("C-c l n" . flymake-goto-next-error)
+	      ("C-c l p" . flymake-goto-prev-error)
+	      ("C-c l s" . flymake-show-buffer-diagnostics)
+	      ("C-c l S" . flymake-show-project-diagnostics)
 	      ("C-c l i" . eglot-inlay-hints-mode)
 	      ("C-c l e" . eglot-events-buffer)
 	      ("C-c l x" . eglot-stderr-buffer)
@@ -287,15 +291,10 @@
 	      ("C-c l o" . eglot-code-action-organize-imports)
 	      ("C-c l q" . eglot-code-action-quickfix)
 	      ("C-c l X" . eglot-code-action-extract)
-	      ("C-c l n" . eglot-code-action-inline)
+	      ("C-c l I" . eglot-code-action-inline)
 	      ("C-c l w" . eglot-code-action-rewrite)
 	      ("C-c l b" . eglot-format-buffer)
-	      ("C-c l R" . eglot-reconnect)
-	      ("C-c l B" . flymake-show-buffer-diagnostics)
-	      ("C-c l P" . flymake-show-project-diagnostics)
-	      ("C-c l g" . xref-find-definitions)
-	      ("C-c l m" . imenu)
-	      ("C-c l C" . completion-at-point)))
+	      ("C-c l R" . eglot-reconnect)))
 
 (use-package ellama
   :bind ("C-c e" . ellama-transient-main-menu)
@@ -318,6 +317,19 @@
   ((python-ts-mode . eglot-ensure))
   :mode
   (("\\.py\\'" . python-ts-mode)))
+
+;; Major mode for editing C and similar languages
+(use-package cc-mode
+  :bind (:map c-mode-map
+	      ("<f5>" . recompile))
+  :hook
+  ((c-mode . eglot-ensure)
+   (c++-mode . eglot-ensure))
+  :mode
+  ("\\.c\\'" . c-mode)
+  ("\\.cpp\\'" . c++-mode)
+  ("\\.h\\'" . c-mode)
+  ("\\.hpp\\'" . c++-mode))
 
 ;; A better *help* buffer.
 (use-package helpful
@@ -366,3 +378,18 @@
 (use-package yasnippet
   :config
   (yas-global-mode))
+
+;; Specialized comint.el for running the shell
+(use-package shell
+  :ensure nil
+  :hook (shell-mode . my-shell-mode-hook-func)
+  :config
+  (defun my-shell-mode-hook-func ()
+    (set-process-sentinel (get-buffer-process (current-buffer))
+			  'my-shell-mode-kill-buffer-on-exit))
+  (defun my-shell-mode-kill-buffer-on-exit (process state)
+    (message "%s" state)
+    (if (or
+	 (string-match "exited abnormally with code.*" state)
+	 (string-match "finished" state))
+	(kill-buffer (current-buffer)))))
