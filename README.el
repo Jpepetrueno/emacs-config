@@ -109,7 +109,12 @@
 
 ;; Save partial status of Emacs when killed
 (use-package desktop
-  :config (desktop-save-mode 1))
+  :config
+  (setq
+   desktop-dirname "~/.config/emacs/desktop/"
+   desktop-base-file-name "~/.config/emacs/desktop/.emacs.desktop"
+   desktop-base-lock-name "~/.config/emacs/desktop/.emacs.desktop.lock")
+  (desktop-save-mode))
 
 ;; Enable to delete selection if you insert
 (use-package delsel

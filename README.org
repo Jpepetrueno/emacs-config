@@ -197,7 +197,12 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Save partial status of Emacs when killed
   (use-package desktop
-    :config (desktop-save-mode 1))
+    :config
+    (setq
+     desktop-dirname "~/.config/emacs/desktop/"
+     desktop-base-file-name "~/.config/emacs/desktop/.emacs.desktop"
+     desktop-base-lock-name "~/.config/emacs/desktop/.emacs.desktop.lock")
+    (desktop-save-mode))
 #+end_src
 
 *** Delsel
