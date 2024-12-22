@@ -18,6 +18,7 @@
 	debugger-stack-frame-as-list t
 	history-length 50
 	history-delete-duplicates t
+	kill-do-not-save-duplicates t
 	completion-ignore-case t
 	read-buffer-completion-ignore-case t
 	switch-to-buffer-obey-display-actions t
@@ -28,6 +29,16 @@
     "Edit the README.org file in another window."
     (interactive)
     (find-file-other-window (concat "~/.config/emacs/README.org"))))
+
+;; Get environment variables such as $PATH from the shell.
+(use-package exec-path-from-shell
+  :ensure t
+  :init
+  ;; Initialize exec-path-from-shell in various Emacs environments.
+  (when (or (memq window-system '(mac ns x))
+	    (eq window-system 'pgtk)
+	    (daemonp))
+    (exec-path-from-shell-initialize)))
 
 ;; Configure savehist to save minibuffer history
 (use-package savehist
@@ -371,7 +382,8 @@
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
-  (setq pulsar-face 'pulsar-green)
+  (setq pulsar-face 'pulsar-green
+	pulsar-iterations 5)
   (pulsar-global-mode))
 
 ;; Yet another snippet extension for Emacs

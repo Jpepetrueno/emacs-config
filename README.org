@@ -70,6 +70,7 @@ Now, let's take a look at my packages configurations:
 	  debugger-stack-frame-as-list t
 	  history-length 50
 	  history-delete-duplicates t
+	  kill-do-not-save-duplicates t
 	  completion-ignore-case t
 	  read-buffer-completion-ignore-case t
 	  switch-to-buffer-obey-display-actions t
@@ -82,7 +83,7 @@ Now, let's take a look at my packages configurations:
       (find-file-other-window (concat "~/.config/emacs/README.org"))))
 #+end_src
 
-*** COMMENT Exec-path-from-shell
+*** Exec-path-from-shell
 #+begin_src emacs-lisp
   ;; Get environment variables such as $PATH from the shell.
   (use-package exec-path-from-shell
@@ -566,7 +567,8 @@ Now, let's take a look at my packages configurations:
     :custom
     (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
     :config
-    (setq pulsar-face 'pulsar-green)
+    (setq pulsar-face 'pulsar-green
+	  pulsar-iterations 5)
     (pulsar-global-mode))
 #+end_src
 
