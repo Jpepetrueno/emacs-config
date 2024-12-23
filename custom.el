@@ -7,7 +7,12 @@
  '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(yasnippet-snippets yasnippet pulsar keyfreq crux helpful markdown-mode live-py-mode ellama dired-preview trashed dired-subtree projectile cider clojure-ts-mode eros nerd-icons-ibuffer nerd-icons-dired nerd-icons-corfu nerd-icons-completion nerd-icons corfu marginalia undo-tree eglot rainbow-delimiters which-key keycast smartparens magit))
+   '(cider clojure-ts-mode corfu crux dired-preview dired-subtree eglot
+	   ellama eros exec-path-from-shell helpful keycast keyfreq
+	   live-py-mode magit marginalia markdown-mode
+	   nerd-icons-completion nerd-icons-corfu nerd-icons-dired
+	   nerd-icons-ibuffer projectile pulsar rainbow-delimiters
+	   smartparens trashed undo-tree which-key yasnippet-snippets))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

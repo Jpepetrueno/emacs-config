@@ -13,6 +13,7 @@
   (fido-mode)
   (fido-vertical-mode)
   (column-number-mode)
+  (tty-tip-mode)
   (setq visible-bell t
 	use-short-answers t
 	debugger-stack-frame-as-list t
@@ -40,6 +41,16 @@
 	    (daemonp))
     (exec-path-from-shell-initialize)))
 
+;; Preview completion with inline overlay
+(use-package completion-preview
+  :bind (:map completion-preview-active-mode-map
+	      ("M-n" . completion-preview-next-candidate)
+	      ("M-p" . completion-preview-prev-candidate))
+  :hook (prog-mode text-mode markdown-mode)
+  :config
+  (completion-preview-mode)
+  (global-completion-preview-mode))
+
 ;; Configure savehist to save minibuffer history
 (use-package savehist
   :config
@@ -55,13 +66,10 @@
 (use-package corfu
   :ensure t
   :hook (after-init . global-corfu-mode)
-  :bind (:map corfu-map ("<tab>" . corfu-complete))
   :config
-  (setq tab-always-indent 'complete)
-  (setq corfu-preview-current nil)
-  (setq corfu-min-width 20)
-
-  (setq corfu-popupinfo-delay '(1.25 . 0.5))
+  (setq corfu-preview-current nil
+	corfu-min-width 20
+	corfu-popupinfo-delay '(1.25 . 0.5))
   (corfu-popupinfo-mode 1) ; shows documentation after `corfu-popupinfo-delay'
 
   ;; Sort by input history (no need to modify `corfu-sort-function').
@@ -179,16 +187,16 @@
     (interactive)
     (save-buffer)
     (let ((file-to-load (progn
-			  (goto-char (point-min))
-			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
-			  (match-string 1))))
-      (with-current-buffer (find-file-noselect file-to-load)
-	(save-buffer)))
+			    (goto-char (point-min))
+			    (re-search-forward "(load-file \"\\([^)]+\\)\"")
+			    (match-string 1))))
+	(with-current-buffer (find-file-noselect file-to-load)
+	  (save-buffer)))
     (ert-delete-all-tests)
     (eval-buffer)
     (ert 't))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c o b" . dimagid/elisp-ert-run-tests-in-buffer))
+		("C-c o b" . dimagid/elisp-ert-run-tests-in-buffer))
   :hook (emacs-lisp-mode . flymake-mode))
 
 ;; Directional window-selection routines
@@ -223,7 +231,7 @@
 (use-package projectile
   :ensure t
   :bind (:map projectile-mode-map
-	      ("C-c p" . projectile-command-map))
+		("C-c p" . projectile-command-map))
   :init (projectile-mode +1))
 
 ;; Dired
@@ -235,9 +243,9 @@
    (dired-mode . dired-omit-mode))
   :config
   (setq dired-recursive-copies 'always
-	dired-recursive-deletes 'always
-	delete-by-moving-to-trash t
-	dired-dwim-target t))
+	  dired-recursive-deletes 'always
+	  delete-by-moving-to-trash t
+	  dired-dwim-target t))
 
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree
@@ -272,45 +280,45 @@
 ;; Interaction mode for Emacs Lisp
 (use-package ielm
   :bind (:map ielm-map
-	      ("C-c C-q" . dimagid/ielm-clear-repl)
-	      ("<S-return>" . dimagid/ielm-insert-newline))
+		("C-c C-q" . dimagid/ielm-clear-repl)
+		("<S-return>" . dimagid/ielm-insert-newline))
   :config
 
   (defun dimagid/ielm-clear-repl ()
     "Clear current REPL buffer."
     (interactive)
     (let ((inhibit-read-only t))
-      (erase-buffer)
-      (ielm-send-input)))
+	(erase-buffer)
+	(ielm-send-input)))
 
   (defun dimagid/ielm-insert-newline ()
     "Insert a newline without evaluating the sexp."
     (interactive)
     (let ((ielm-dynamic-return nil))
-      (ielm-return))))
+	(ielm-return))))
 
 (use-package eglot
   :bind (:map eglot-mode-map
-	      ("C-c l a" . eglot-code-actions)
-	      ("C-c l f" . eglot-format)
-	      ("<f6>" . eglot-format)
-	      ("C-c l r" . eglot-rename)
-	      ("C-c l n" . flymake-goto-next-error)
-	      ("C-c l p" . flymake-goto-prev-error)
-	      ("C-c l s" . flymake-show-buffer-diagnostics)
-	      ("C-c l S" . flymake-show-project-diagnostics)
-	      ("C-c l i" . eglot-inlay-hints-mode)
-	      ("C-c l e" . eglot-events-buffer)
-	      ("C-c l x" . eglot-stderr-buffer)
-	      ("C-c l c" . eglot-clear-status)
-	      ("C-c l u" . eglot-signal-didChangeConfiguration)
-	      ("C-c l o" . eglot-code-action-organize-imports)
-	      ("C-c l q" . eglot-code-action-quickfix)
-	      ("C-c l X" . eglot-code-action-extract)
-	      ("C-c l I" . eglot-code-action-inline)
-	      ("C-c l w" . eglot-code-action-rewrite)
-	      ("C-c l b" . eglot-format-buffer)
-	      ("C-c l R" . eglot-reconnect)))
+		("C-c l a" . eglot-code-actions)
+		("C-c l f" . eglot-format)
+		("<f6>" . eglot-format)
+		("C-c l r" . eglot-rename)
+		("C-c l n" . flymake-goto-next-error)
+		("C-c l p" . flymake-goto-prev-error)
+		("C-c l s" . flymake-show-buffer-diagnostics)
+		("C-c l S" . flymake-show-project-diagnostics)
+		("C-c l i" . eglot-inlay-hints-mode)
+		("C-c l e" . eglot-events-buffer)
+		("C-c l x" . eglot-stderr-buffer)
+		("C-c l c" . eglot-clear-status)
+		("C-c l u" . eglot-signal-didChangeConfiguration)
+		("C-c l o" . eglot-code-action-organize-imports)
+		("C-c l q" . eglot-code-action-quickfix)
+		("C-c l X" . eglot-code-action-extract)
+		("C-c l I" . eglot-code-action-inline)
+		("C-c l w" . eglot-code-action-rewrite)
+		("C-c l b" . eglot-format-buffer)
+		("C-c l R" . eglot-reconnect)))
 
 (use-package ellama
   :bind ("C-c e" . ellama-transient-main-menu)
@@ -328,7 +336,7 @@
 ;; Python's flying circus support for Emacs
 (use-package python
   :bind (:map python-ts-mode-map
-	      ("<f5>" . recompile))
+		("<f5>" . recompile))
   :hook
   ((python-ts-mode . eglot-ensure))
   :mode
@@ -337,7 +345,7 @@
 ;; Major mode for editing C and similar languages
 (use-package cc-mode
   :bind (:map c-mode-map
-	      ("<f5>" . recompile))
+		("<f5>" . recompile))
   :hook
   ((c-mode . eglot-ensure)
    (c++-mode . eglot-ensure))
@@ -351,11 +359,11 @@
 (use-package helpful
   :ensure t
   :bind (("C-h f" . helpful-callable)
-	 ("C-h v" . helpful-variable)
-	 ("C-h k" . helpful-key)
-	 ("C-h x" . helpful-command)
-	 ("C-c C-d" . helpful-at-point)
-	 ("C-h F" . helpful-function)))
+	   ("C-h v" . helpful-variable)
+	   ("C-h k" . helpful-key)
+	   ("C-h x" . helpful-command)
+	   ("C-c C-d" . helpful-at-point)
+	   ("C-h F" . helpful-function)))
 
 ;; A cornucopia of useful interactive commands to make your Emacs experience
 ;; more enjoyable.
@@ -365,19 +373,19 @@
   ("M-o" . crux-smart-open-line)
   ("M-O" . crux-smart-open-line-above)
   (:map ctl-x-4-map
-	("t" . crux-transpose-windows)))
+	  ("t" . crux-transpose-windows)))
 
 ;; Track command frequencies.
 (use-package keyfreq
   :ensure t
   :config
   (setq keyfreq-excluded-commands
-	'(self-insert-command
-	  forward-char
-	  backward-char
-	  previous-line
-	  next-line
-	  mwheel-scroll))
+	  '(self-insert-command
+	    forward-char
+	    backward-char
+	    previous-line
+	    next-line
+	    mwheel-scroll))
   (keyfreq-mode)
   (keyfreq-autosave-mode))
 
@@ -388,7 +396,7 @@
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
   (setq pulsar-face 'pulsar-green
-	pulsar-iterations 5)
+	  pulsar-iterations 5)
   (pulsar-global-mode))
 
 ;; Yet another snippet extension for Emacs
@@ -403,10 +411,10 @@
   :config
   (defun my-shell-mode-hook-func ()
     (set-process-sentinel (get-buffer-process (current-buffer))
-			  'my-shell-mode-kill-buffer-on-exit))
+			    'my-shell-mode-kill-buffer-on-exit))
   (defun my-shell-mode-kill-buffer-on-exit (process state)
     (message "%s" state)
     (if (or
-	 (string-match "exited abnormally with code.*" state)
-	 (string-match "finished" state))
-	(kill-buffer (current-buffer)))))
+	   (string-match "exited abnormally with code.*" state)
+	   (string-match "finished" state))
+	  (kill-buffer (current-buffer)))))
