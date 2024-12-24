@@ -21,16 +21,14 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Code:
-;;
-;; Add the MELPA package archive to the list of package repositories.
+
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-;; Initialize the package system, which will load the package archives
-;; and make the packages available for installation and updating.
-(package-initialize)
+(package-initialize) ; Initialize the package system
 
-;; Load the README.el file from the user's Emacs configuration directory
-(load (locate-user-emacs-file "README.el"))
+(setq use-package-compute-statistics t) ; Gather statistics on package loading times
+
+(load (locate-user-emacs-file "README.el")) ; Load the README.el
 
 (put 'erase-buffer 'disabled nil)
 (put 'upcase-region 'disabled nil)
