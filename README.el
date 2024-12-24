@@ -20,6 +20,10 @@
   (debugger-stack-frame-as-list t)
   (history-delete-duplicates t)
   (kill-do-not-save-duplicates t)
+  (display-buffer-alist
+   '(("\\*Occur\\*"
+      (display-buffer-reuse-mode-window
+       display-buffer-below-selected))))
   :config
   (fido-mode)
   (fido-vertical-mode)
@@ -84,8 +88,9 @@
 (use-package nerd-icons-completion
   :ensure t
   :after marginalia
-  :hook
-  (marginalia-mode . nerd-icons-completion-marginalia-setup))
+  :config
+  (nerd-icons-completion-mode)
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 ;; Introduces a margin formatter for Corfu which adds icons.
 (use-package nerd-icons-corfu
@@ -97,7 +102,8 @@
 ;; Shows icons for each file in dired mode.
 (use-package nerd-icons-dired
   :ensure t
-  :hook dired-mode)
+  :hook dired-mode
+  :delight " NID")
 
 ;; Display nerd icons in ibuffer.
 (use-package nerd-icons-ibuffer
@@ -156,7 +162,8 @@
   :ensure t
   :config
   (setq undo-tree-auto-save-history t)
-  (global-undo-tree-mode 1))
+  (global-undo-tree-mode 1)
+  :delight " UTree")
 
 ;; Interface for display-line-numbers
 (use-package display-line-numbers
@@ -231,7 +238,8 @@
   :ensure t
   :bind (:map projectile-mode-map
 	      ("C-c p" . projectile-command-map))
-  :init (projectile-mode +1))
+  :init (projectile-mode +1)
+  :delight " PJILE")
 
 ;; Dired
 (use-package dired
@@ -242,9 +250,10 @@
    (dired-mode . dired-omit-mode))
   :config
   (setq dired-recursive-copies 'always
-	  dired-recursive-deletes 'always
-	  delete-by-moving-to-trash t
-	  dired-dwim-target t))
+	dired-recursive-deletes 'always
+	delete-by-moving-to-trash t
+	dired-dwim-target t)
+  :delight "Dired")
 
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree

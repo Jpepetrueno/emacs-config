@@ -72,6 +72,10 @@ Now, let's take a look at my packages configurations:
     (debugger-stack-frame-as-list t)
     (history-delete-duplicates t)
     (kill-do-not-save-duplicates t)
+    (display-buffer-alist
+     '(("\\*Occur\\*"
+        (display-buffer-reuse-mode-window
+         display-buffer-below-selected))))
     :config
     (fido-mode)
     (fido-vertical-mode)
@@ -157,8 +161,9 @@ Now, let's take a look at my packages configurations:
   (use-package nerd-icons-completion
     :ensure t
     :after marginalia
-    :hook
-    (marginalia-mode . nerd-icons-completion-marginalia-setup))
+    :config
+    (nerd-icons-completion-mode)
+    (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 #+end_src
 
 *** Nerd-icons-corfu
@@ -173,10 +178,11 @@ Now, let's take a look at my packages configurations:
 
 *** Nerd-icons-dired
 #+begin_src emacs-lisp
-  ;; Shows icons for each file in dired mode.
-  (use-package nerd-icons-dired
-    :ensure t
-    :hook dired-mode)
+    ;; Shows icons for each file in dired mode.
+    (use-package nerd-icons-dired
+      :ensure t
+      :hook dired-mode
+      :delight " NID")
 #+end_src
 
 *** Nerd-icons-ibuffer
@@ -257,12 +263,13 @@ Now, let's take a look at my packages configurations:
 
 *** Undo-tree
 #+begin_src emacs-lisp
-  ;; Treat undo history as a tree
-  (use-package undo-tree
-    :ensure t
-    :config
-    (setq undo-tree-auto-save-history t)
-    (global-undo-tree-mode 1))
+    ;; Treat undo history as a tree
+    (use-package undo-tree
+      :ensure t
+      :config
+      (setq undo-tree-auto-save-history t)
+      (global-undo-tree-mode 1)
+      :delight " UTree")
 #+end_src
 
 *** Display Line Numbers
@@ -370,7 +377,8 @@ Now, let's take a look at my packages configurations:
     :ensure t
     :bind (:map projectile-mode-map
   	      ("C-c p" . projectile-command-map))
-    :init (projectile-mode +1))
+    :init (projectile-mode +1)
+    :delight " PJILE")
   #+end_src
 
 *** Dired
@@ -384,9 +392,10 @@ Now, let's take a look at my packages configurations:
      (dired-mode . dired-omit-mode))
     :config
     (setq dired-recursive-copies 'always
-	  dired-recursive-deletes 'always
-	  delete-by-moving-to-trash t
-	  dired-dwim-target t))
+  	dired-recursive-deletes 'always
+  	delete-by-moving-to-trash t
+  	dired-dwim-target t)
+    :delight "Dired")
   #+end_src
 
 *** Dired-subtree
