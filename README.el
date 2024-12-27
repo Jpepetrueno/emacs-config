@@ -202,7 +202,7 @@
     (eval-buffer)
     (ert 't))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c o b" . dimagid/elisp-ert-run-tests-in-buffer))
+	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer))
   :hook (emacs-lisp-mode . flymake-mode))
 
 ;; Directional window-selection routines
