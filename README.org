@@ -81,6 +81,7 @@ Now, let's take a look at my packages configurations:
     (fido-vertical-mode)
     (column-number-mode)
     (tty-tip-mode)
+    (repeat-mode)
     (defun dimagid/find-user-readme-org-file ()
       "Edit the README.org file in another window."
       (interactive)
@@ -232,7 +233,19 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; A git porcelain inside Emacs
   (use-package magit
-    :ensure t)
+    :ensure t
+    :config
+    (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+#+end_src
+
+*** diff-hl
+#+begin_src emacs-lisp
+  ;; Highlight uncommitted changes using VC
+  (use-package diff-hl
+    :ensure t
+    :config
+    (diff-hl-dired-mode)
+    (global-diff-hl-mode))
 #+end_src
 
 *** Smartparens
@@ -324,7 +337,7 @@ Now, let's take a look at my packages configurations:
       (ert 't))
     :bind (:map emacs-lisp-mode-map
   	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer))
-    :hook (emacs-lisp-mode . flymake-mode))
+    :hook (emacs-lisp-mode . package-lint-flymake-setup))
 #+end_src
 
 *** Windmove

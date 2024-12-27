@@ -29,6 +29,7 @@
   (fido-vertical-mode)
   (column-number-mode)
   (tty-tip-mode)
+  (repeat-mode)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
     (interactive)
@@ -135,7 +136,16 @@
 
 ;; A git porcelain inside Emacs
 (use-package magit
-  :ensure t)
+  :ensure t
+  :config
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+
+;; Highlight uncommitted changes using VC
+(use-package diff-hl
+  :ensure t
+  :config
+  (diff-hl-dired-mode)
+  (global-diff-hl-mode))
 
 ;; Automatic insertion, wrapping and paredit-like
 ;; navigation with user defined pairs.
@@ -203,7 +213,7 @@
     (ert 't))
   :bind (:map emacs-lisp-mode-map
 	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer))
-  :hook (emacs-lisp-mode . flymake-mode))
+  :hook (emacs-lisp-mode . package-lint-flymake-setup))
 
 ;; Directional window-selection routines
 (use-package windmove

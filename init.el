@@ -1,4 +1,4 @@
-;;; package --- init.el --- david dimagid's init.el -*- lexical-binding: t; -*-
+;;; init.el --- David Dimagid's Emacs file init -*- lexical-binding: t; -*-
 ;;; Commentary:
 ;; Copyright (C) 2024 David Dimagid
 ;;

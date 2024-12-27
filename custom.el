@@ -8,13 +8,13 @@
  '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(cider clojure-ts-mode corfu crux debbugs delight dired-preview
-	   dired-subtree eglot ellama eros exec-path-from-shell
-	   helpful keycast keyfreq live-py-mode magit marginalia
-	   markdown-mode nerd-icons-completion nerd-icons-corfu
-	   nerd-icons-dired nerd-icons-ibuffer projectile pulsar
-	   rainbow-delimiters smartparens trashed undo-tree which-key
-	   yasnippet-snippets))
+   '(cider clojure-ts-mode corfu crux debbugs delight diff-hl
+	   dired-preview dired-subtree eglot ellama eros
+	   exec-path-from-shell helpful keycast keyfreq live-py-mode
+	   magit marginalia markdown-mode nerd-icons-completion
+	   nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer
+	   package-lint-flymake projectile pulsar rainbow-delimiters
+	   smartparens trashed undo-tree which-key yasnippet-snippets))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
