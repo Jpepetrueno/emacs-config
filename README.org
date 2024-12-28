@@ -144,6 +144,51 @@ Now, let's take a look at my packages configurations:
     :config (marginalia-mode))
 #+end_src
 
+*** Consult
+#+begin_src emacs-lisp
+  ;; Consulting completing-read
+  (use-package consult
+    :ensure t
+    :bind (;; A recursive grep
+           ("M-s M-g" . consult-grep)
+           ;; Search for files names recursively
+           ("M-s M-f" . consult-find)
+           ;; Search through the outline (headings) of the file
+           ("M-s M-o" . consult-outline)
+           ;; Search the current buffer
+           ("M-s M-l" . consult-line)
+           ;; Switch to another buffer, or bookmarked file, or recently
+           ;; opened file.
+           ("M-s M-b" . consult-buffer)))
+#+end_src
+
+*** Embark
+#+begin_src emacs-lisp
+  ;; Conveniently act on minibuffer completions
+  (use-package embark
+    :ensure t
+    :bind (("C-." . embark-act)
+  	 :map minibuffer-local-map
+  	 ("C-c C-c" . embark-collect)
+  	 ("C-c C-e" . embark-export))
+    :config
+    (define-key icomplete-minibuffer-map (kbd "C-.") nil))
+#+end_src
+
+*** Embark-consult
+#+begin_src emacs-lisp
+  ;; Consult integration for Embark
+  (use-package embark-consult
+    :ensure t)
+#+end_src
+
+*** wgrep
+#+begin_src emacs-lisp
+  ;; Writable grep buffer
+  (use-package wgrep
+    :ensure t)
+#+end_src
+
 *** Corfu
 #+begin_src emacs-lisp
   ;; Corfu enhances in-buffer completion with a small completion popup.

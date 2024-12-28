@@ -76,6 +76,39 @@
   :ensure t
   :config (marginalia-mode))
 
+;; Consulting completing-read
+(use-package consult
+  :ensure t
+  :bind (;; A recursive grep
+         ("M-s M-g" . consult-grep)
+         ;; Search for files names recursively
+         ("M-s M-f" . consult-find)
+         ;; Search through the outline (headings) of the file
+         ("M-s M-o" . consult-outline)
+         ;; Search the current buffer
+         ("M-s M-l" . consult-line)
+         ;; Switch to another buffer, or bookmarked file, or recently
+         ;; opened file.
+         ("M-s M-b" . consult-buffer)))
+
+;; Conveniently act on minibuffer completions
+(use-package embark
+  :ensure t
+  :bind (("C-." . embark-act)
+	 :map minibuffer-local-map
+	 ("C-c C-c" . embark-collect)
+	 ("C-c C-e" . embark-export))
+  :config
+  (define-key icomplete-minibuffer-map (kbd "C-.") nil))
+
+;; Consult integration for Embark
+(use-package embark-consult
+  :ensure t)
+
+;; Writable grep buffer
+(use-package wgrep
+  :ensure t)
+
 ;; Corfu enhances in-buffer completion with a small completion popup.
 (use-package corfu
   :ensure t
