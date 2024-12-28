@@ -1,9 +1,10 @@
 ;;; init.el --- David Dimagid's Emacs file init -*- lexical-binding: t; -*-
-;;; Commentary:
+;;
 ;; Copyright (C) 2024 David Dimagid
 ;;
 ;; Author: David Dimagid
 ;; Created: 29 Nov 2024
+;; URL: https://github.com/Jpepetrueno/emacs-config/blob/main/init.el
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
@@ -19,7 +20,11 @@
 ;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+;;
+;;; Commentary:
+;; See my Emacs configuration in:
+;; https://github.com/Jpepetrueno/emacs-config
+;;
 ;;; Code:
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)

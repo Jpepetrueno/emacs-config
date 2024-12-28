@@ -20,6 +20,7 @@
   (debugger-stack-frame-as-list t)
   (history-delete-duplicates t)
   (kill-do-not-save-duplicates t)
+  (transient-align-variable-pitch t)
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -34,6 +35,15 @@
     "Edit the README.org file in another window."
     (interactive)
     (find-file-other-window (concat "~/.config/emacs/README.org"))))
+
+;; Colorful and legible themes
+(use-package ef-themes
+  :init
+  (mapc #'disable-theme custom-enabled-themes)
+  :config
+  (ef-themes-select 'ef-owl)
+  (setq ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
+        ef-themes-variable-pitch-ui t))
 
 ;; Get environment variables such as $PATH from the shell.
 (use-package exec-path-from-shell
@@ -438,3 +448,8 @@
 	 (string-match "exited abnormally with code.*" state)
 	 (string-match "finished" state))
 	(kill-buffer (current-buffer)))))
+
+;; Suggest elisp functions that give the output requested.
+(use-package suggest
+  :ensure t
+  :defer t)

@@ -72,6 +72,7 @@ Now, let's take a look at my packages configurations:
     (debugger-stack-frame-as-list t)
     (history-delete-duplicates t)
     (kill-do-not-save-duplicates t)
+    (transient-align-variable-pitch t)
     (display-buffer-alist
      '(("\\*Occur\\*"
         (display-buffer-reuse-mode-window
@@ -86,6 +87,18 @@ Now, let's take a look at my packages configurations:
       "Edit the README.org file in another window."
       (interactive)
       (find-file-other-window (concat "~/.config/emacs/README.org"))))
+#+end_src
+
+*** Ef-themes
+#+begin_src emacs-lisp
+  ;; Colorful and legible themes
+  (use-package ef-themes
+    :init
+    (mapc #'disable-theme custom-enabled-themes)
+    :config
+    (ef-themes-select 'ef-owl)
+    (setq ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
+          ef-themes-variable-pitch-ui t))
 #+end_src
 
 *** Exec-path-from-shell
@@ -635,6 +648,14 @@ Now, let's take a look at my packages configurations:
   	 (string-match "exited abnormally with code.*" state)
   	 (string-match "finished" state))
   	(kill-buffer (current-buffer)))))
+#+end_src
+
+*** Suggest
+#+begin_src emacs-lisp
+  ;; Suggest elisp functions that give the output requested.
+  (use-package suggest
+    :ensure t
+    :defer t)
 #+end_src
 
 ** Conclusion
