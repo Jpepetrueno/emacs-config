@@ -31,6 +31,8 @@
   (column-number-mode)
   (tty-tip-mode)
   (repeat-mode)
+  (global-prettify-symbols-mode)
+  (add-hook 'after-save-hook 'check-parens)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
     (interactive)
@@ -54,6 +56,28 @@
 	    (eq window-system 'pgtk)
 	    (daemonp))
     (exec-path-from-shell-initialize)))
+
+;; Config Emacs Lisp
+(use-package lisp-mode
+  :config
+  (defun dimagid/elisp-ert-run-tests-in-buffer ()
+    "Deletes all loaded tests from the runtime, saves the current
+     buffer and the file being loaded, evaluates the current buffer
+     and runs all loaded tests with ert."
+    (interactive)
+    (save-buffer)
+    (let ((file-to-load (progn
+			  (goto-char (point-min))
+			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
+			  (match-string 1))))
+      (with-current-buffer (find-file-noselect file-to-load)
+	(save-buffer)))
+    (ert-delete-all-tests)
+    (eval-buffer)
+    (ert 't))
+  :bind (:map emacs-lisp-mode-map
+	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer))
+  :hook (emacs-lisp-mode . package-lint-flymake-setup))
 
 ;; Preview completion with inline overlay
 (use-package completion-preview
@@ -235,28 +259,6 @@
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
-
-;; Config Emacs Lisp
-(use-package lisp-mode
-  :config
-  (defun dimagid/elisp-ert-run-tests-in-buffer ()
-    "Deletes all loaded tests from the runtime, saves the current
-     buffer and the file being loaded, evaluates the current buffer
-     and runs all loaded tests with ert."
-    (interactive)
-    (save-buffer)
-    (let ((file-to-load (progn
-			  (goto-char (point-min))
-			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
-			  (match-string 1))))
-      (with-current-buffer (find-file-noselect file-to-load)
-	(save-buffer)))
-    (ert-delete-all-tests)
-    (eval-buffer)
-    (ert 't))
-  :bind (:map emacs-lisp-mode-map
-	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer))
-  :hook (emacs-lisp-mode . package-lint-flymake-setup))
 
 ;; Directional window-selection routines
 (use-package windmove
