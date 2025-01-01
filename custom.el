@@ -3,6 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(casual-lib-use-unicode t)
  '(column-number-mode t)
  '(custom-enabled-themes '(ef-owl))
  '(custom-safe-themes
@@ -15,14 +16,14 @@
  '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(cider clojure-ts-mode corfu crux debbugs delight diff-hl
-	   dired-preview dired-subtree ef-themes eglot ellama
-	   embark-consult eros exec-path-from-shell helpful keycast
-	   keyfreq live-py-mode magit marginalia markdown-mode
-	   nerd-icons-completion nerd-icons-corfu nerd-icons-dired
-	   nerd-icons-ibuffer package-lint-flymake projectile pulsar
-	   rainbow-delimiters smartparens suggest trashed undo-tree
-	   wgrep which-key yasnippet-snippets))
+   '(casual cider clojure-ts-mode corfu crux debbugs delight diff-hl
+	    dired-preview dired-subtree ef-themes eglot ellama
+	    embark-consult eros exec-path-from-shell helpful keycast
+	    keyfreq live-py-mode magit marginalia markdown-mode
+	    nerd-icons-completion nerd-icons-corfu nerd-icons-dired
+	    nerd-icons-ibuffer package-lint-flymake projectile pulsar
+	    rainbow-delimiters smartparens suggest trashed undo-tree
+	    wgrep which-key yasnippet-snippets))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

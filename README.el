@@ -40,6 +40,7 @@
 
 ;; Colorful and legible themes
 (use-package ef-themes
+  :ensure t
   :init
   (mapc #'disable-theme custom-enabled-themes)
   :config
@@ -88,6 +89,10 @@
   :config
   (completion-preview-mode)
   (global-completion-preview-mode))
+
+;; Transient user interfaces for various modes.
+(use-package casual
+  :ensure t)
 
 ;; Configure savehist to save minibuffer history
 (use-package savehist
@@ -299,6 +304,14 @@
 ;; Dired
 (use-package dired
   :commands (dired)
+  :bind (:map dired-mode-map
+	      ("C-o" . casual-dired-tmenu) ; casual-dired transient menu
+	      ("s" . casual-dired-sort-by-tmenu)
+	      ("/" . casual-dired-search-replace-tmenu)
+	      ("<tab>" . dired-subtree-toggle)
+	      ("TAB" . dired-subtree-toggle)
+	      ("<backtab>" . dired-subtree-remove)
+	      ("S-TAB" . dired-subtree-remove))
   :hook
   ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode)
@@ -314,14 +327,19 @@
 (use-package dired-subtree
   :ensure t
   :after dired
-  :bind
-  ( :map dired-mode-map
-    ("<tab>" . dired-subtree-toggle)
-    ("TAB" . dired-subtree-toggle)
-    ("<backtab>" . dired-subtree-remove)
-    ("S-TAB" . dired-subtree-remove))
   :config
   (setq dired-subtree-use-backgrounds nil))
+
+;; Operate on buffers like dired
+(use-package ibuffer
+  :bind (:map ibuffer-mode-map
+	      ("C-o" . casual-ibuffer-tmenu)))
+
+;; The GNU Emacs calculator
+(use-package calc
+  :bind
+  (:map calc-mode-map
+  	("C-o" . casual-calc-tmenu)))
 
 ;; Viewing/editing system trash can.
 (use-package trashed
