@@ -97,8 +97,11 @@
 ;; Configure savehist to save minibuffer history
 (use-package savehist
   :config
-  (savehist-mode 1)
-  (add-to-list 'savehist-additional-variables 'kill-ring))
+  (setq savehist-additional-variables '(projectile-project-command-history
+					corfu-history
+					register-alist
+					kill-ring))
+  (savehist-mode))
 
 ;; Enable marginalia to add completion annotations to existing commands.
 (use-package marginalia
