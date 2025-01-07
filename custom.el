@@ -16,14 +16,15 @@
  '(global-display-line-numbers-mode t)
  '(inhibit-startup-screen t)
  '(package-selected-packages
-   '(casual cider clojure-ts-mode corfu crux debbugs delight diff-hl
-	    dired-preview dired-subtree ef-themes eglot ellama
-	    embark-consult eros exec-path-from-shell helpful keycast
-	    keyfreq live-py-mode magit marginalia markdown-mode
-	    nerd-icons-completion nerd-icons-corfu nerd-icons-dired
-	    nerd-icons-ibuffer package-lint-flymake projectile pulsar
-	    rainbow-delimiters smartparens suggest trashed undo-tree
-	    wgrep which-key yasnippet-snippets))
+   '(casual cider clojure-ts-mode consult corfu crux debbugs delight
+	    diff-hl dired-preview dired-subtree ef-themes eglot ellama
+	    embark embark-consult eros exec-path-from-shell helpful
+	    keycast keyfreq live-py-mode magit marginalia
+	    markdown-mode nerd-icons-completion nerd-icons-corfu
+	    nerd-icons-dired nerd-icons-ibuffer package-lint
+	    package-lint-flymake projectile pulsar rainbow-delimiters
+	    smartparens suggest trashed undo-tree wgrep which-key
+	    yasnippet-snippets))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

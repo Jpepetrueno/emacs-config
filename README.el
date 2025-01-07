@@ -339,7 +339,9 @@
 (use-package calc
   :bind
   (:map calc-mode-map
-  	("C-o" . casual-calc-tmenu)))
+    	("C-o" . casual-calc-tmenu))
+  :hook
+  (calc-mode . (lambda () (display-line-numbers-mode -1))))
 
 ;; Viewing/editing system trash can.
 (use-package trashed
