@@ -2,8 +2,9 @@
 (use-package emacs
   :bind
   ("C-x C-b" . ibuffer)
-  ("C-c i" . dimagid/find-user-readme-org-file)
   ("C-c d" . eldoc)
+  ("C-c o i" . dimagid/find-user-readme-org-file)
+  ("C-c o r" . restart-emacs)
   :init
   (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   (setq custom-file (locate-user-emacs-file "custom.el"))
@@ -32,6 +33,7 @@
   (tty-tip-mode)
   (repeat-mode)
   (global-prettify-symbols-mode)
+  (save-place-mode)
   (add-hook 'after-save-hook 'check-parens)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
@@ -58,6 +60,19 @@
 	    (daemonp))
     (exec-path-from-shell-initialize)))
 
+;; Macro-aware go-to-definition for elisp.
+(use-package elisp-def
+  :ensure t)
+
+;; Elisp API Demos.
+(use-package elisp-demos
+  :ensure t
+  :config
+  (advice-add 'describe-function-1
+	      :after #'elisp-demos-advice-describe-function-1)
+  (advice-add 'helpful-update
+	      :after #'elisp-demos-advice-helpful-update))
+
 ;; Config Emacs Lisp
 (use-package lisp-mode
   :config
@@ -76,9 +91,31 @@
     (ert-delete-all-tests)
     (eval-buffer)
     (ert 't))
+  (defun dimagid/elisp-eval-and-comment ()
+    "Evaluate a Lisp expression and insert its value
+ as a comment at the end of the line.
+ Useful for documenting values or checking values."
+    (interactive)
+    (save-excursion
+      (backward-sexp)
+      (-let [result
+             (thread-last (thing-at-point 'sexp)
+			  read-from-string
+			  car
+			  eval
+			  (format " ;; ⇒ %s"))]
+	(forward-sexp)
+	(end-of-line)
+	(insert result))))
   :bind (:map emacs-lisp-mode-map
-	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer))
+	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
+	      ("C-c ;" . dimagid/elisp-eval-and-comment)
+	      ("M-." . elisp-def))
   :hook (emacs-lisp-mode . package-lint-flymake-setup))
+
+;; Syntax highlighting of known Elisp symbols.
+(use-package highlight-defined
+  :hook (emacs-lisp-mode . highlight-defined-mode))
 
 ;; Preview completion with inline overlay
 (use-package completion-preview
@@ -511,3 +548,11 @@
 (use-package suggest
   :ensure t
   :defer t)
+
+;; Support library for PDF documents
+(use-package pdf-tools
+  :config (pdf-tools-install))
+
+;; Insert dummy pseudo Latin text
+(use-package lorem-ipsum
+  :ensure t)

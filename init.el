@@ -31,6 +31,8 @@
 
 (package-initialize) ; Initialize the package system
 
+(package-refresh-contents t) ; Refresh package list in background
+
 (setq use-package-compute-statistics t) ; Gather statistics on package loading times
 
 (load (locate-user-emacs-file "README.el")) ; Load the README.el
