@@ -21,7 +21,9 @@
   (debugger-stack-frame-as-list t)
   (history-delete-duplicates t)
   (kill-do-not-save-duplicates t)
+  (enable-recursive-minibuffers t)
   (transient-align-variable-pitch t)
+  (set-mark-command-repeat-pop t)
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -34,6 +36,7 @@
   (repeat-mode)
   (global-prettify-symbols-mode)
   (save-place-mode)
+  (minibuffer-depth-indicate-mode)
   (add-hook 'after-save-hook 'check-parens)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
@@ -225,7 +228,9 @@
 
 ;; Enable recentf to track recently opened files
 (use-package recentf
-  :config (recentf-mode 1))
+  :config
+  (setopt recentf-max-saved-items 50)
+  (recentf-mode 1))
 
 ;; Enable autorevert to revert buffers when files change on disk
 (use-package autorevert
