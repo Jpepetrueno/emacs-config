@@ -3,6 +3,8 @@
   :bind
   ("C-x C-b" . ibuffer)
   ("C-c d" . eldoc)
+  ("<down-mouse-8>" . kill-ring-save)
+  ("<down-mouse-9>" . yank)
   ("C-c o i" . dimagid/find-user-readme-org-file)
   ("C-c o r" . restart-emacs)
   :init
@@ -482,6 +484,20 @@
   ("\\.cpp\\'" . c++-mode)
   ("\\.h\\'" . c-mode)
   ("\\.hpp\\'" . c++-mode))
+
+;; Open project dependencies in jar archives
+(use-package jarchive
+  :ensure t
+  :config
+  (jarchive-mode))
+
+;; Major mode for editing Clojure code.
+(use-package clojure-mode
+  :ensure t
+  :hook
+  ((clojure-mode . eglot-ensure))
+  :config
+  (setq cider-eldoc-display-for-symbol-at-point nil))
 
 ;; A better *help* buffer.
 (use-package helpful

@@ -55,6 +55,8 @@ Now, let's take a look at my packages configurations:
     :bind
     ("C-x C-b" . ibuffer)
     ("C-c d" . eldoc)
+    ("<down-mouse-8>" . kill-ring-save)
+    ("<down-mouse-9>" . yank)
     ("C-c o i" . dimagid/find-user-readme-org-file)
     ("C-c o r" . restart-emacs)
     :init
@@ -684,6 +686,26 @@ Now, let's take a look at my packages configurations:
     ("\\.cpp\\'" . c++-mode)
     ("\\.h\\'" . c-mode)
     ("\\.hpp\\'" . c++-mode))
+#+end_src
+
+*** Jarchive
+#+begin_src emacs-lisp
+  ;; Open project dependencies in jar archives
+  (use-package jarchive
+    :ensure t
+    :config
+    (jarchive-mode))
+#+end_src
+
+*** Clojure
+#+begin_src emacs-lisp
+  ;; Major mode for editing Clojure code.
+  (use-package clojure-mode
+    :ensure t
+    :hook
+    ((clojure-mode . eglot-ensure))
+    :config
+    (setq cider-eldoc-display-for-symbol-at-point nil))
 #+end_src
 
 *** COMMENT Conda

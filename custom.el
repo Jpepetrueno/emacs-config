@@ -19,8 +19,8 @@
    '(casual cider clojure-ts-mode consult corfu crux debbugs delight
 	    diff-hl dired-preview dired-subtree ef-themes eglot
 	    elisp-def elisp-demos ellama embark embark-consult eros
-	    exec-path-from-shell helpful highlight-defined keycast
-	    keyfreq live-py-mode lorem-ipsum magit marginalia
+	    exec-path-from-shell helpful highlight-defined jarchive
+	    keycast keyfreq live-py-mode lorem-ipsum magit marginalia
 	    markdown-mode nerd-icons-completion nerd-icons-corfu
 	    nerd-icons-dired nerd-icons-ibuffer package-lint
 	    package-lint-flymake pdf-tools projectile pulsar

@@ -15,6 +15,7 @@ savefile/
 tramp/
 tramp
 var/
+games/
 
 elpa/
 .cask/
@@ -107,3 +108,5 @@ ellama-sessions/
 playground.el
 bookmarks
 projects
+common-english-words.txt
+
