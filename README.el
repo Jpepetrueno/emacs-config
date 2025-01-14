@@ -120,10 +120,12 @@
 
 ;; Syntax highlighting of known Elisp symbols.
 (use-package highlight-defined
+  :ensure t
   :hook (emacs-lisp-mode . highlight-defined-mode))
 
 ;; Preview completion with inline overlay
 (use-package completion-preview
+  :ensure t
   :bind (:map completion-preview-active-mode-map
 	      ("M-n" . completion-preview-next-candidate)
 	      ("M-p" . completion-preview-prev-candidate))
@@ -545,8 +547,9 @@
 	pulsar-iterations 5)
   (pulsar-global-mode))
 
-;; Yet another snippet extension for Emacs
-(use-package yasnippet
+;; Collection of yasnippet snippets
+(use-package yasnippet-snippets
+  :ensure t
   :config
   (yas-global-mode))
 
@@ -572,6 +575,7 @@
 
 ;; Support library for PDF documents
 (use-package pdf-tools
+  :ensure t
   :config (pdf-tools-install))
 
 ;; Insert dummy pseudo Latin text

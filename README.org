@@ -190,6 +190,7 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Syntax highlighting of known Elisp symbols.
   (use-package highlight-defined
+    :ensure t
     :hook (emacs-lisp-mode . highlight-defined-mode))
 #+end_src
 
@@ -197,6 +198,7 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Preview completion with inline overlay
   (use-package completion-preview
+    :ensure t
     :bind (:map completion-preview-active-mode-map
   	      ("M-n" . completion-preview-next-candidate)
   	      ("M-p" . completion-preview-prev-candidate))
@@ -776,10 +778,11 @@ Now, let's take a look at my packages configurations:
     (pulsar-global-mode))
 #+end_src
 
-*** Yasnippet
+*** Yasnippet-snippets
 #+begin_src emacs-lisp
-  ;; Yet another snippet extension for Emacs
-  (use-package yasnippet
+  ;; Collection of yasnippet snippets
+  (use-package yasnippet-snippets
+    :ensure t
     :config
     (yas-global-mode))
 #+end_src
@@ -814,6 +817,7 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Support library for PDF documents
   (use-package pdf-tools
+    :ensure t
     :config (pdf-tools-install))
 #+end_src
 
