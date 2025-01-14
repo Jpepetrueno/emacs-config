@@ -26,6 +26,8 @@
   (enable-recursive-minibuffers t)
   (transient-align-variable-pitch t)
   (set-mark-command-repeat-pop t)
+  (global-auto-revert-non-file-buffers t)
+  (recentf-max-saved-items 50)
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -40,6 +42,11 @@
   (save-place-mode)
   (minibuffer-depth-indicate-mode)
   (global-display-line-numbers-mode)
+  (global-auto-revert-mode)
+  (recentf-mode)
+  (delete-selection-mode)
+  (winner-mode)
+  (windmove-default-keybindings)
   (add-hook 'after-save-hook 'check-parens)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
@@ -231,18 +238,6 @@
   :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
-;; Enable recentf to track recently opened files
-(use-package recentf
-  :config
-  (setopt recentf-max-saved-items 50)
-  (recentf-mode 1))
-
-;; Enable autorevert to revert buffers when files change on disk
-(use-package autorevert
-  :config
-  (global-auto-revert-mode 1)
-  (setq global-auto-revert-non-file-buffers t))
-
 ;; Save partial status of Emacs when killed
 (use-package desktop
   :config
@@ -251,10 +246,6 @@
    desktop-base-file-name "~/.config/emacs/desktop/.emacs.desktop"
    desktop-base-lock-name "~/.config/emacs/desktop/.emacs.desktop.lock")
   (desktop-save-mode))
-
-;; Enable to delete selection if you insert
-(use-package delsel
-  :config (delete-selection-mode 1))
 
 ;; A git porcelain inside Emacs
 (use-package magit
@@ -306,17 +297,6 @@
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
-
-;; Directional window-selection routines
-(use-package windmove
-  :config
-  ;; use shift + arrow keys to switch between visible buffers
-  (windmove-default-keybindings))
-
-;; Restore old window configurations
-;; Use C-c right and C-c left for undo or redo window configurations
-(use-package winner
-  :config (winner-mode))
 
 ;; Enable auto-fill mode to automatically wrap text
 (use-package auto-fill

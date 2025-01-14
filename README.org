@@ -78,6 +78,8 @@ Now, let's take a look at my packages configurations:
     (enable-recursive-minibuffers t)
     (transient-align-variable-pitch t)
     (set-mark-command-repeat-pop t)
+    (global-auto-revert-non-file-buffers t)
+    (recentf-max-saved-items 50)
     (display-buffer-alist
      '(("\\*Occur\\*"
         (display-buffer-reuse-mode-window
@@ -92,6 +94,11 @@ Now, let's take a look at my packages configurations:
     (save-place-mode)
     (minibuffer-depth-indicate-mode)
     (global-display-line-numbers-mode)
+    (global-auto-revert-mode)
+    (recentf-mode)
+    (delete-selection-mode)
+    (winner-mode)
+    (windmove-default-keybindings)
     (add-hook 'after-save-hook 'check-parens)
     (defun dimagid/find-user-readme-org-file ()
       "Edit the README.org file in another window."
@@ -344,24 +351,6 @@ Now, let's take a look at my packages configurations:
     :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 #+end_src
 
-*** Recentf
-#+begin_src emacs-lisp
-  ;; Enable recentf to track recently opened files
-  (use-package recentf
-    :config
-    (setopt recentf-max-saved-items 50)
-    (recentf-mode 1))
-#+end_src
-
-*** Autorevert
-#+begin_src emacs-lisp
-  ;; Enable autorevert to revert buffers when files change on disk
-  (use-package autorevert
-    :config
-    (global-auto-revert-mode 1)
-    (setq global-auto-revert-non-file-buffers t))
-#+end_src
-
 *** Desktop
 #+begin_src emacs-lisp
   ;; Save partial status of Emacs when killed
@@ -372,13 +361,6 @@ Now, let's take a look at my packages configurations:
      desktop-base-file-name "~/.config/emacs/desktop/.emacs.desktop"
      desktop-base-lock-name "~/.config/emacs/desktop/.emacs.desktop.lock")
     (desktop-save-mode))
-#+end_src
-
-*** Delsel
-#+begin_src emacs-lisp
-  ;; Enable to delete selection if you insert
-  (use-package delsel
-    :config (delete-selection-mode 1))
 #+end_src
 
 *** Magit
@@ -452,23 +434,6 @@ Now, let's take a look at my packages configurations:
     :ensure t
     :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
-
-*** Windmove
-#+begin_src emacs-lisp
-  ;; Directional window-selection routines
-  (use-package windmove
-    :config
-    ;; use shift + arrow keys to switch between visible buffers
-    (windmove-default-keybindings))
-#+end_src
-
-*** Winner
-#+begin_src emacs-lisp
-  ;; Restore old window configurations
-  ;; Use C-c right and C-c left for undo or redo window configurations
-  (use-package winner
-    :config (winner-mode))
-  #+end_src
 
 *** Auto-fill
 #+begin_src emacs-lisp
