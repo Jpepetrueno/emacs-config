@@ -39,6 +39,7 @@
   (global-prettify-symbols-mode)
   (save-place-mode)
   (minibuffer-depth-indicate-mode)
+  (global-display-line-numbers-mode)
   (add-hook 'after-save-hook 'check-parens)
   (defun dimagid/find-user-readme-org-file ()
     "Edit the README.org file in another window."
@@ -296,14 +297,6 @@
   (global-undo-tree-mode 1)
   :delight " UTree")
 
-;; Interface for display-line-numbers
-(use-package display-line-numbers
-  :config (global-display-line-numbers-mode))
-
-;; On-the-fly spell checker
-(use-package flyspell
-  :config (flyspell-prog-mode))
-
 ;; Display available keybindings in popup
 (use-package which-key
   :ensure t
@@ -555,7 +548,6 @@
 
 ;; Specialized comint.el for running the shell
 (use-package shell
-  :ensure nil
   :hook (shell-mode . my-shell-mode-hook-func)
   :config
   (defun my-shell-mode-hook-func ()

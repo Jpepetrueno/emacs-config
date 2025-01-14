@@ -91,6 +91,7 @@ Now, let's take a look at my packages configurations:
     (global-prettify-symbols-mode)
     (save-place-mode)
     (minibuffer-depth-indicate-mode)
+    (global-display-line-numbers-mode)
     (add-hook 'after-save-hook 'check-parens)
     (defun dimagid/find-user-readme-org-file ()
       "Edit the README.org file in another window."
@@ -328,11 +329,11 @@ Now, let's take a look at my packages configurations:
 
 *** Nerd-icons-dired
 #+begin_src emacs-lisp
-    ;; Shows icons for each file in dired mode.
-    (use-package nerd-icons-dired
-      :ensure t
-      :hook dired-mode
-      :delight " NID")
+  ;; Shows icons for each file in dired mode.
+  (use-package nerd-icons-dired
+    :ensure t
+    :hook dired-mode
+    :delight " NID")
 #+end_src
 
 *** Nerd-icons-ibuffer
@@ -427,27 +428,13 @@ Now, let's take a look at my packages configurations:
 
 *** Undo-tree
 #+begin_src emacs-lisp
-    ;; Treat undo history as a tree
-    (use-package undo-tree
-      :ensure t
-      :config
-      (setq undo-tree-auto-save-history t)
-      (global-undo-tree-mode 1)
-      :delight " UTree")
-#+end_src
-
-*** Display Line Numbers
-#+begin_src emacs-lisp
-  ;; Interface for display-line-numbers
-  (use-package display-line-numbers
-    :config (global-display-line-numbers-mode))
-#+end_src
-
-*** Flyspell
-#+begin_src emacs-lisp
-  ;; On-the-fly spell checker
-  (use-package flyspell
-    :config (flyspell-prog-mode))
+  ;; Treat undo history as a tree
+  (use-package undo-tree
+    :ensure t
+    :config
+    (setq undo-tree-auto-save-history t)
+    (global-undo-tree-mode 1)
+    :delight " UTree")
 #+end_src
 
 *** Which Key
@@ -791,7 +778,6 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Specialized comint.el for running the shell
   (use-package shell
-    :ensure nil
     :hook (shell-mode . my-shell-mode-hook-func)
     :config
     (defun my-shell-mode-hook-func ()
