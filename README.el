@@ -5,10 +5,9 @@
   ("C-c d" . eldoc)
   ("<down-mouse-8>" . kill-ring-save)
   ("<down-mouse-9>" . yank)
-  ("C-c o i" . dimagid/find-user-readme-org-file)
+  ("C-c o i" . dimagid/find-user-config-org-file)
   ("C-c o r" . restart-emacs)
   :init
-  (add-to-list 'initial-frame-alist '(fullscreen . maximized))
   (setq custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
   :custom
@@ -48,8 +47,13 @@
   (winner-mode)
   (windmove-default-keybindings)
   (add-hook 'after-save-hook 'check-parens)
-  (defun dimagid/find-user-readme-org-file ()
-    "Edit the README.org file in another window."
+  (add-hook 'after-init-hook
+            (lambda ()
+              (setq gc-cons-threshold 800000)
+              (message "gc-cons-threshold restored to %.1f MB."
+                       (/ gc-cons-threshold 1000000.0))))
+  (defun dimagid/find-user-config-org-file ()
+    "Find Emacs config user README.org file in another window."
     (interactive)
     (find-file-other-window (concat "~/.config/emacs/README.org"))))
 
@@ -63,19 +67,10 @@
   (setq ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
         ef-themes-variable-pitch-ui t))
 
-;; Get environment variables such as $PATH from the shell.
-(use-package exec-path-from-shell
-  :ensure t
-  :init
-  ;; Initialize exec-path-from-shell in various Emacs environments.
-  (when (or (memq window-system '(mac ns x))
-	    (eq window-system 'pgtk)
-	    (daemonp))
-    (exec-path-from-shell-initialize)))
-
 ;; Macro-aware go-to-definition for elisp.
 (use-package elisp-def
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; Elisp API Demos.
 (use-package elisp-demos
@@ -250,14 +245,15 @@
 ;; A git porcelain inside Emacs
 (use-package magit
   :ensure t
+  :defer t
   :config
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
 ;; Highlight uncommitted changes using VC
 (use-package diff-hl
   :ensure t
+  :defer t
   :config
-  (diff-hl-dired-mode)
   (global-diff-hl-mode))
 
 ;; Automatic insertion, wrapping and paredit-like
@@ -523,6 +519,7 @@
 ;; Collection of yasnippet snippets
 (use-package yasnippet-snippets
   :ensure t
+  :defer t
   :config
   (yas-global-mode))
 
@@ -548,8 +545,14 @@
 ;; Support library for PDF documents
 (use-package pdf-tools
   :ensure t
+  :defer t
   :config (pdf-tools-install))
 
 ;; Insert dummy pseudo Latin text
 (use-package lorem-ipsum
   :ensure t)
+
+;; Increase selected region by semantic units.
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))

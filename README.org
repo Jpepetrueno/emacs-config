@@ -57,10 +57,9 @@ Now, let's take a look at my packages configurations:
     ("C-c d" . eldoc)
     ("<down-mouse-8>" . kill-ring-save)
     ("<down-mouse-9>" . yank)
-    ("C-c o i" . dimagid/find-user-readme-org-file)
+    ("C-c o i" . dimagid/find-user-config-org-file)
     ("C-c o r" . restart-emacs)
     :init
-    (add-to-list 'initial-frame-alist '(fullscreen . maximized))
     (setq custom-file (locate-user-emacs-file "custom.el"))
     (load custom-file :no-error-if-file-is-missing)
     :custom
@@ -100,8 +99,13 @@ Now, let's take a look at my packages configurations:
     (winner-mode)
     (windmove-default-keybindings)
     (add-hook 'after-save-hook 'check-parens)
-    (defun dimagid/find-user-readme-org-file ()
-      "Edit the README.org file in another window."
+    (add-hook 'after-init-hook
+              (lambda ()
+                (setq gc-cons-threshold 800000)
+                (message "gc-cons-threshold restored to %.1f MB."
+                         (/ gc-cons-threshold 1000000.0))))
+    (defun dimagid/find-user-config-org-file ()
+      "Find Emacs config user README.org file in another window."
       (interactive)
       (find-file-other-window (concat "~/.config/emacs/README.org"))))
 #+end_src
@@ -119,7 +123,7 @@ Now, let's take a look at my packages configurations:
           ef-themes-variable-pitch-ui t))
 #+end_src
 
-*** Exec-path-from-shell
+*** COMMENT Exec-path-from-shell
 #+begin_src emacs-lisp
   ;; Get environment variables such as $PATH from the shell.
   (use-package exec-path-from-shell
@@ -136,7 +140,8 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Macro-aware go-to-definition for elisp.
   (use-package elisp-def
-    :ensure t)
+    :ensure t
+    :defer t)
 #+end_src
 
 *** Elisp-demos
@@ -368,6 +373,7 @@ Now, let's take a look at my packages configurations:
   ;; A git porcelain inside Emacs
   (use-package magit
     :ensure t
+    :defer t
     :config
     (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 #+end_src
@@ -377,8 +383,8 @@ Now, let's take a look at my packages configurations:
   ;; Highlight uncommitted changes using VC
   (use-package diff-hl
     :ensure t
+    :defer t
     :config
-    (diff-hl-dired-mode)
     (global-diff-hl-mode))
 #+end_src
 
@@ -735,6 +741,7 @@ Now, let's take a look at my packages configurations:
   ;; Collection of yasnippet snippets
   (use-package yasnippet-snippets
     :ensure t
+    :defer t
     :config
     (yas-global-mode))
 #+end_src
@@ -769,6 +776,7 @@ Now, let's take a look at my packages configurations:
   ;; Support library for PDF documents
   (use-package pdf-tools
     :ensure t
+    :defer t
     :config (pdf-tools-install))
 #+end_src
 
@@ -777,6 +785,14 @@ Now, let's take a look at my packages configurations:
   ;; Insert dummy pseudo Latin text
   (use-package lorem-ipsum
     :ensure t)
+#+end_src
+
+*** Expand Region
+#+begin_src emacs-lisp
+  ;; Increase selected region by semantic units.
+  (use-package expand-region
+    :ensure t
+    :bind ("C-=" . er/expand-region))
 #+end_src
 
 ** Conclusion
