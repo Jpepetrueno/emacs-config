@@ -32,15 +32,12 @@
       (display-buffer-reuse-mode-window
        display-buffer-below-selected))))
   :config
-  (fido-mode)
   (fido-vertical-mode)
-  (column-number-mode)
   (tty-tip-mode)
   (repeat-mode)
   (global-prettify-symbols-mode)
   (save-place-mode)
   (minibuffer-depth-indicate-mode)
-  (global-display-line-numbers-mode)
   (global-auto-revert-mode)
   (recentf-mode)
   (delete-selection-mode)
@@ -50,15 +47,15 @@
   (add-hook 'after-init-hook
             (lambda ()
               (setq gc-cons-threshold 800000)
-              (message "gc-cons-threshold restored to %.1f MB."
-                       (/ gc-cons-threshold 1000000.0))))
+              (message "gc-cons-threshold restored to %.2f MB."
+                       (/ gc-cons-threshold 1048576.0))))
   (defun dimagid/find-user-config-org-file ()
     "Find Emacs config user README.org file in another window."
     (interactive)
     (find-file-other-window (concat "~/.config/emacs/README.org")))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
     "Call ORIG-FUN until the cursor moves.
-Try the repeated popping up to 10 times."
+  Try the repeated popping up to 10 times."
     (let ((p (point)))
       (dotimes (i 10)
 	(when (= p (point))
@@ -323,11 +320,11 @@ Try the repeated popping up to 10 times."
 (use-package projectile
   :ensure t
   :bind (:map projectile-mode-map
-	      ("C-c p" . projectile-command-map))
+			  ("C-c p" . projectile-command-map))
   :init (projectile-mode +1)
   :delight " PJILE")
 
-;; Dired
+;; Dired, the Directory Editor
 (use-package dired
   :commands (dired)
   :bind (:map dired-mode-map
@@ -341,6 +338,7 @@ Try the repeated popping up to 10 times."
   :hook
   ((dired-mode . dired-hide-details-mode)
    (dired-mode . hl-line-mode)
+   (dired-mode . diff-hl-dired-mode)
    (dired-mode . dired-omit-mode))
   :config
   (setq dired-recursive-copies 'always
@@ -365,7 +363,7 @@ Try the repeated popping up to 10 times."
 (use-package calc
   :bind
   (:map calc-mode-map
-    	("C-o" . casual-calc-tmenu))
+	("C-o" . casual-calc-tmenu))
   :hook
   (calc-mode . (lambda () (display-line-numbers-mode -1))))
 
