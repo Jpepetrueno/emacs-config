@@ -55,7 +55,15 @@
   (defun dimagid/find-user-config-org-file ()
     "Find Emacs config user README.org file in another window."
     (interactive)
-    (find-file-other-window (concat "~/.config/emacs/README.org"))))
+    (find-file-other-window (concat "~/.config/emacs/README.org")))
+  (defun modi/multi-pop-to-mark (orig-fun &rest args)
+    "Call ORIG-FUN until the cursor moves.
+Try the repeated popping up to 10 times."
+    (let ((p (point)))
+      (dotimes (i 10)
+	(when (= p (point))
+          (apply orig-fun args)))))
+  (advice-add 'pop-to-mark-command :around #'modi/multi-pop-to-mark))
 
 ;; Colorful and legible themes
 (use-package ef-themes
@@ -93,7 +101,7 @@
     (let ((file-to-load (progn
 			  (goto-char (point-min))
 			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
-			  (match-string 1))))
+			  (match-string 1)))) ; the ( is a kludge in README.org
       (with-current-buffer (find-file-noselect file-to-load)
 	(save-buffer)))
     (ert-delete-all-tests)
