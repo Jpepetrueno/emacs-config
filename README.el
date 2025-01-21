@@ -126,6 +126,20 @@
 	      ("M-." . elisp-def))
   :hook (emacs-lisp-mode . package-lint-flymake-setup))
 
+;; the Emacs command shell
+(use-package eshell
+  :defer t
+  :config
+  (setq eshell-hist-ignoredups 'erase))
+
+;; Peruse file or buffer without editing. Built-in package.
+(use-package view
+  :hook (Info-mode . (lambda ()
+                       (define-key Info-mode-map (kbd "{")
+				   'View-scroll-half-page-backward)
+                       (define-key Info-mode-map (kbd "}")
+				   'View-scroll-half-page-forward))))
+
 ;; Syntax highlighting of known Elisp symbols.
 (use-package highlight-defined
   :ensure t
@@ -146,7 +160,7 @@
 (use-package casual
   :ensure t)
 
-;; Configure savehist to save minibuffer history
+;; Configure savehist to save minibuffer history. Built-in package.
 (use-package savehist
   :config
   (setq savehist-additional-variables '(projectile-project-command-history
@@ -155,7 +169,8 @@
 					kill-ring))
   (savehist-mode))
 
-;; Enable marginalia to add completion annotations to existing commands.
+;; Enable marginalia to add completion annotations to existing
+;;commands.
 (use-package marginalia
   :ensure t
   :config (marginalia-mode))
@@ -171,8 +186,8 @@
          ("M-s M-o" . consult-outline)
          ;; Search the current buffer
          ("M-s M-l" . consult-line)
-         ;; Switch to another buffer, or bookmarked file, or recently
-         ;; opened file.
+         ;; Switch to another buffer, or bookmarked file, or
+	 ;; recently opened file.
          ("M-s M-b" . consult-buffer)))
 
 ;; Conveniently act on minibuffer completions
@@ -238,7 +253,7 @@
   :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
 
-;; Save partial status of Emacs when killed
+;; Save partial status of Emacs when killed. Built-in package.
 (use-package desktop
   :config
   (setq
@@ -276,6 +291,13 @@
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 
+;; On-the-fly spell checker. Built-in package.
+(use-package flyspell
+  :hook
+  (text-mode . flyspell-mode)
+  (markdown-mode . flyspell-mode)
+  (prog-mode . flyspell-prog-mode))
+
 ;; Show current command and its binding
 (use-package keycast
   :ensure t
@@ -307,7 +329,7 @@
   (auto-fill-mode)
   :delight "AF")
 
-;; This package is a minor mode to visualize blanks
+;; This package is a minor mode to visualize blanks. Built-in package.
 (use-package whitespace
   :hook (text-mode markdown-mode))
 
@@ -354,12 +376,18 @@
   :config
   (setq dired-subtree-use-backgrounds nil))
 
-;; Operate on buffers like dired
+;; Operate on buffers like dired. Built-in package.
 (use-package ibuffer
   :bind (:map ibuffer-mode-map
 	      ("C-o" . casual-ibuffer-tmenu)))
 
-;; The GNU Emacs calculator
+;; Info package for Emacs. Built-in package.
+(use-package info
+  :bind
+  (:map Info-mode-map
+	("C-o" . casual-info-tmenu)))
+
+;; The GNU Emacs calculator. Built-in package.
 (use-package calc
   :bind
   (:map calc-mode-map
@@ -378,13 +406,13 @@
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
 ;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
-;; (Note: RFC 2229 is an informational document.
-;;        RFC: Request for Comments, a system of Internet documents)
+;; (Note: RFC 2229 is an informational document. RFC: Request for Comments, a
+;; system of Internet documents). Built-in package.
 (use-package dictionary
   :bind ("<f7>" . dictionary-lookup-definition)
   :config (setq dictionary-server "dict.org"))
 
-;; Interaction mode for Emacs Lisp
+;; Interaction mode for Emacs Lisp. Built-in package.
 (use-package ielm
   :bind (:map ielm-map
 	      ("C-c C-q" . dimagid/ielm-clear-repl)
@@ -402,7 +430,7 @@
     (let ((ielm-dynamic-return nil))
 	(ielm-return))))
 
-;; The Emacs Client for LSP servers
+;; The Emacs Client for LSP servers. Built-in package.
 (use-package eglot
   :bind (:map eglot-mode-map
 	      ("C-c l a" . eglot-code-actions)
@@ -440,7 +468,7 @@
   :hook
   (ellama-session-mode . (lambda () (whitespace-mode -1))))
 
-;; Python's flying circus support for Emacs
+;; Python's flying circus support for Emacs. Built-in package.
 (use-package python
   :bind (:map python-ts-mode-map
 	      ("<f5>" . recompile))
@@ -449,7 +477,7 @@
   :mode
   (("\\.py\\'" . python-ts-mode)))
 
-;; Major mode for editing C and similar languages
+;; Major mode for editing C and similar languages. Built-in package.
 (use-package cc-mode
   :bind (:map c-mode-map
 	      ("<f5>" . recompile))

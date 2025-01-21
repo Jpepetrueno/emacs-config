@@ -204,6 +204,26 @@ Now, let's take a look at my packages configurations:
     :hook (emacs-lisp-mode . package-lint-flymake-setup))
 #+end_src
 
+*** Eshell
+#+begin_src emacs-lisp
+  ;; the Emacs command shell
+  (use-package eshell
+    :defer t
+    :config
+    (setq eshell-hist-ignoredups 'erase))
+#+end_src
+
+*** View
+#+begin_src emacs-lisp
+  ;; Peruse file or buffer without editing. Built-in package.
+  (use-package view
+    :hook (Info-mode . (lambda ()
+                         (define-key Info-mode-map (kbd "{")
+  				   'View-scroll-half-page-backward)
+                         (define-key Info-mode-map (kbd "}")
+  				   'View-scroll-half-page-forward))))
+#+end_src
+
 *** Highlight-defined
 #+begin_src emacs-lisp
   ;; Syntax highlighting of known Elisp symbols.
@@ -235,7 +255,7 @@ Now, let's take a look at my packages configurations:
 
 *** Savehist
 #+begin_src emacs-lisp
-  ;; Configure savehist to save minibuffer history
+  ;; Configure savehist to save minibuffer history. Built-in package.
   (use-package savehist
     :config
     (setq savehist-additional-variables '(projectile-project-command-history
@@ -247,7 +267,8 @@ Now, let's take a look at my packages configurations:
 
 *** Marginalia
 #+begin_src emacs-lisp
-  ;; Enable marginalia to add completion annotations to existing commands.
+  ;; Enable marginalia to add completion annotations to existing
+  ;;commands.
   (use-package marginalia
     :ensure t
     :config (marginalia-mode))
@@ -266,8 +287,8 @@ Now, let's take a look at my packages configurations:
            ("M-s M-o" . consult-outline)
            ;; Search the current buffer
            ("M-s M-l" . consult-line)
-           ;; Switch to another buffer, or bookmarked file, or recently
-           ;; opened file.
+           ;; Switch to another buffer, or bookmarked file, or
+  	 ;; recently opened file.
            ("M-s M-b" . consult-buffer)))
 #+end_src
 
@@ -363,7 +384,7 @@ Now, let's take a look at my packages configurations:
 
 *** Desktop
 #+begin_src emacs-lisp
-  ;; Save partial status of Emacs when killed
+  ;; Save partial status of Emacs when killed. Built-in package.
   (use-package desktop
     :config
     (setq
@@ -409,6 +430,16 @@ Now, let's take a look at my packages configurations:
     ;; disable autoclose for ' and ` in Emacs Lisp mode
     (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
     (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
+#+end_src
+
+*** Flyspell
+#+begin_src emacs-lisp
+  ;; On-the-fly spell checker. Built-in package.
+  (use-package flyspell
+    :hook
+    (text-mode . flyspell-mode)
+    (markdown-mode . flyspell-mode)
+    (prog-mode . flyspell-prog-mode))
 #+end_src
 
 *** Keycast
@@ -459,7 +490,7 @@ Now, let's take a look at my packages configurations:
 
 *** Whitespace
 #+begin_src emacs-lisp
-  ;; This package is a minor mode to visualize blanks
+  ;; This package is a minor mode to visualize blanks. Built-in package.
   (use-package whitespace
     :hook (text-mode markdown-mode))
   #+end_src
@@ -521,15 +552,24 @@ Now, let's take a look at my packages configurations:
 
 *** ibuffer
 #+begin_src emacs-lisp
-  ;; Operate on buffers like dired
+  ;; Operate on buffers like dired. Built-in package.
   (use-package ibuffer
     :bind (:map ibuffer-mode-map
   	      ("C-o" . casual-ibuffer-tmenu)))
 #+end_src
 
+*** Info
+#+begin_src emacs-lisp
+  ;; Info package for Emacs. Built-in package.
+  (use-package info
+    :bind
+    (:map Info-mode-map
+  	("C-o" . casual-info-tmenu)))
+#+end_src
+
 *** Calc
 #+begin_src emacs-lisp
-  ;; The GNU Emacs calculator
+  ;; The GNU Emacs calculator. Built-in package.
   (use-package calc
     :bind
     (:map calc-mode-map
@@ -554,8 +594,8 @@ Now, let's take a look at my packages configurations:
 *** Dictionary
 #+begin_src emacs-lisp
   ;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
-  ;; (Note: RFC 2229 is an informational document.
-  ;;        RFC: Request for Comments, a system of Internet documents)
+  ;; (Note: RFC 2229 is an informational document. RFC: Request for Comments, a
+  ;; system of Internet documents). Built-in package.
   (use-package dictionary
     :bind ("<f7>" . dictionary-lookup-definition)
     :config (setq dictionary-server "dict.org"))
@@ -563,7 +603,7 @@ Now, let's take a look at my packages configurations:
 
 *** Ielm
 #+begin_src emacs-lisp
-  ;; Interaction mode for Emacs Lisp
+  ;; Interaction mode for Emacs Lisp. Built-in package.
   (use-package ielm
     :bind (:map ielm-map
   	      ("C-c C-q" . dimagid/ielm-clear-repl)
@@ -584,7 +624,7 @@ Now, let's take a look at my packages configurations:
 
 *** Eglot
 #+begin_src emacs-lisp
-  ;; The Emacs Client for LSP servers
+  ;; The Emacs Client for LSP servers. Built-in package.
   (use-package eglot
     :bind (:map eglot-mode-map
   	      ("C-c l a" . eglot-code-actions)
@@ -628,7 +668,7 @@ Now, let's take a look at my packages configurations:
 
 *** Python
 #+begin_src emacs-lisp
-  ;; Python's flying circus support for Emacs
+  ;; Python's flying circus support for Emacs. Built-in package.
   (use-package python
     :bind (:map python-ts-mode-map
   	      ("<f5>" . recompile))
@@ -640,7 +680,7 @@ Now, let's take a look at my packages configurations:
 
 *** C/C++
 #+begin_src emacs-lisp
-  ;; Major mode for editing C and similar languages
+  ;; Major mode for editing C and similar languages. Built-in package.
   (use-package cc-mode
     :bind (:map c-mode-map
   	      ("<f5>" . recompile))
