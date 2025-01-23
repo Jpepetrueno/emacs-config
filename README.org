@@ -94,6 +94,7 @@ Now, let's take a look at my packages configurations:
     (recentf-mode)
     (delete-selection-mode)
     (winner-mode)
+    (size-indication-mode)
     (windmove-default-keybindings)
     (add-hook 'after-save-hook 'check-parens)
     (add-hook 'after-init-hook
@@ -536,8 +537,7 @@ Now, let's take a look at my packages configurations:
     (setq dired-recursive-copies 'always
   	dired-recursive-deletes 'always
   	delete-by-moving-to-trash t
-  	dired-dwim-target t)
-    :delight "Dired")
+  	dired-dwim-target t))
   #+end_src
 
 *** Dired-subtree

@@ -42,6 +42,7 @@
   (recentf-mode)
   (delete-selection-mode)
   (winner-mode)
+  (size-indication-mode)
   (windmove-default-keybindings)
   (add-hook 'after-save-hook 'check-parens)
   (add-hook 'after-init-hook
@@ -366,8 +367,7 @@
   (setq dired-recursive-copies 'always
 	dired-recursive-deletes 'always
 	delete-by-moving-to-trash t
-	dired-dwim-target t)
-  :delight "Dired")
+	dired-dwim-target t))
 
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree

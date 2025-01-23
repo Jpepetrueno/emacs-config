@@ -1,4 +1,4 @@
-;;; init.el --- David Dimagid's Emacs file init -*- lexical-binding: t; -*-
+;;; init.el --- My Emacs init file -*- lexical-binding: t; -*-
 ;;
 ;; Copyright (C) 2024 David Dimagid
 ;;
@@ -27,17 +27,36 @@
 ;;
 ;;; Code:
 
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+;; Add MELPA repository to Emacs package archives
+(add-to-list 'package-archives
+	     '("melpa" . "https://melpa.org/packages/")
+	     t)
 
-(package-initialize) ; Initialize the package system
+;; Initialize the package system
+(package-initialize)
 
-(package-refresh-contents t) ; Refresh package list in background
+;; Refresh package list in background
+(package-refresh-contents t)
 
-(setq use-package-compute-statistics t) ; Gather statistics on package loading times
+;; Gather statistics on package loading times
+(setq use-package-compute-statistics t)
 
-(load (locate-user-emacs-file "README.el")) ; Load the README.el
+;; Load the README.el
+(load (locate-user-emacs-file "README.el"))
+
+;; Display Emacs initialization time, garbage collections, and
+;; package information
+(message
+ "Emacs initialization took %s with %d garbage collections.
+%d packages loaded."
+ (emacs-init-time)
+ gcs-done
+ (length package-alist))
 
 (put 'erase-buffer 'disabled nil)
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
+
+
+;;; init.el ends here
