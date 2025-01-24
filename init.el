@@ -35,8 +35,10 @@
 ;; Initialize the package system
 (package-initialize)
 
-;; Refresh package list in background
-(package-refresh-contents t)
+;; Refresh package list in background only if it hasn't been
+;; loaded yet
+(unless package-archive-contents
+  (package-refresh-contents t))
 
 ;; Gather statistics on package loading times
 (setq use-package-compute-statistics t)

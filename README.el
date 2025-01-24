@@ -11,7 +11,7 @@
   (setq custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
   :custom
-  (visible-bell t)
+  (visible-bell t) ; Enable visual (flash screen) instead of audible
   (tab-always-indent 'complete)
   (use-short-answers t)
   (require-final-newline t)
@@ -27,6 +27,7 @@
   (set-mark-command-repeat-pop t)
   (global-auto-revert-non-file-buffers t)
   (recentf-max-saved-items 50)
+  (shr-width 70) ; Set HTML width to 70
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -36,14 +37,14 @@
   (tty-tip-mode)
   (repeat-mode)
   (global-prettify-symbols-mode)
-  (save-place-mode)
+  (save-place-mode) ; Enable saving and restoring cursor positions
   (minibuffer-depth-indicate-mode)
   (global-auto-revert-mode)
-  (recentf-mode)
+  (recentf-mode) ; Enable tracking recently opened files
   (delete-selection-mode)
-  (winner-mode)
+  (winner-mode) ; Undo/redo window configs with C-c <left>/<right>
   (size-indication-mode)
-  (windmove-default-keybindings)
+  (windmove-default-keybindings) ; Move between windows with Shift+arrows
   (add-hook 'after-save-hook 'check-parens)
   (add-hook 'after-init-hook
             (lambda ()
@@ -148,7 +149,6 @@
 
 ;; Preview completion with inline overlay
 (use-package completion-preview
-  :ensure t
   :bind (:map completion-preview-active-mode-map
 	      ("M-n" . completion-preview-next-candidate)
 	      ("M-p" . completion-preview-prev-candidate))
@@ -590,3 +590,20 @@
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
+
+;; An Emacs Atom/RSS feed reader.
+(use-package elfeed
+  :bind ("C-c w" . elfeed)
+  :config
+  (define-advice elfeed-search--header (:around (oldfun &rest args))
+    "Check if Elfeed database is loaded before searching"
+    (if elfeed-db
+        (apply oldfun args)
+      "No database loaded yet"))
+  (setq
+   elfeed-db-directory "~/.config/emacs/elfeed"
+   elfeed-feeds
+   '(("https://planet.emacslife.com/atom.xml" blog emacs)
+     ("https://nullprogram.com/feed/" blog emacs)
+     ("https://news.ycombinator.com/rss" news)
+     ("https://clojure.org/feed.xml" news clojure))))

@@ -18,8 +18,8 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    '(casual cider clojure-ts-mode corfu crux debbugs delight diff-hl
-	    dired-preview dired-subtree ef-themes eglot elisp-def
-	    elisp-demos ellama embark-consult eros
+	    dired-preview dired-subtree ef-themes eglot elfeed
+	    elisp-def elisp-demos ellama embark-consult eros
 	    exec-path-from-shell expand-region helpful
 	    highlight-defined jarchive keycast keyfreq live-py-mode
 	    lorem-ipsum magit marginalia markdown-mode
