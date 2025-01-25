@@ -159,13 +159,13 @@
 
 ;; Transient user interfaces for various modes.
 (use-package casual
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; Configure savehist to save minibuffer history. Built-in package.
 (use-package savehist
   :config
-  (setq savehist-additional-variables '(projectile-project-command-history
-					corfu-history
+  (setq savehist-additional-variables '(corfu-history
 					register-alist
 					kill-ring))
   (savehist-mode))
@@ -203,11 +203,13 @@
 
 ;; Consult integration for Embark
 (use-package embark-consult
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; Writable grep buffer
 (use-package wgrep
-  :ensure t)
+  :ensure t
+  :defer t)
 
 ;; Corfu enhances in-buffer completion with a small completion popup.
 (use-package corfu
@@ -258,9 +260,12 @@
 (use-package desktop
   :config
   (setq
-   desktop-dirname "~/.config/emacs/desktop/"
-   desktop-base-file-name "~/.config/emacs/desktop/.emacs.desktop"
-   desktop-base-lock-name "~/.config/emacs/desktop/.emacs.desktop.lock")
+   desktop-dirname
+   (expand-file-name "desktop" user-emacs-directory)
+   desktop-base-file-name
+   (expand-file-name ".emacs.desktop" desktop-dirname)
+   desktop-base-lock-name
+   (expand-file-name ".emacs.desktop.lock" desktop-dirname))
   (desktop-save-mode))
 
 ;; A git porcelain inside Emacs
@@ -338,14 +343,6 @@
 (use-package eros
   :ensure t
   :config (eros-mode))
-
-;; Manage and navigate projects in Emacs easily.
-(use-package projectile
-  :ensure t
-  :bind (:map projectile-mode-map
-			  ("C-c p" . projectile-command-map))
-  :init (projectile-mode +1)
-  :delight " PJILE")
 
 ;; Dired, the Directory Editor
 (use-package dired
@@ -493,6 +490,7 @@
 ;; Open project dependencies in jar archives
 (use-package jarchive
   :ensure t
+  :defer t
   :config
   (jarchive-mode))
 
@@ -593,7 +591,7 @@
 
 ;; An Emacs Atom/RSS feed reader.
 (use-package elfeed
-  :bind ("C-c w" . elfeed)
+  :bind ("C-c w e" . elfeed)
   :config
   (define-advice elfeed-search--header (:around (oldfun &rest args))
     "Check if Elfeed database is loaded before searching"
@@ -601,9 +599,13 @@
         (apply oldfun args)
       "No database loaded yet"))
   (setq
-   elfeed-db-directory "~/.config/emacs/elfeed"
+   elfeed-db-directory
+   (expand-file-name "elfeed" user-emacs-directory)
+   elfeed-show-entry-switch 'display-buffer
    elfeed-feeds
    '(("https://planet.emacslife.com/atom.xml" blog emacs)
      ("https://nullprogram.com/feed/" blog emacs)
      ("https://news.ycombinator.com/rss" news)
-     ("https://clojure.org/feed.xml" news clojure))))
+     ("https://clojure.org/feed.xml" news clojure)
+     ("https://lucidmanager.org/tags/emacs/index.xml" blog emacs)
+     ("https://www.reddit.com/r/emacs/.rss" reddit emacs))))

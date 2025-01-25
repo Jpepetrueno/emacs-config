@@ -251,7 +251,8 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Transient user interfaces for various modes.
   (use-package casual
-    :ensure t)
+    :ensure t
+    :defer t)
 #+end_src
 
 *** Savehist
@@ -259,8 +260,7 @@ Now, let's take a look at my packages configurations:
   ;; Configure savehist to save minibuffer history. Built-in package.
   (use-package savehist
     :config
-    (setq savehist-additional-variables '(projectile-project-command-history
-  					corfu-history
+    (setq savehist-additional-variables '(corfu-history
   					register-alist
   					kill-ring))
     (savehist-mode))
@@ -310,14 +310,16 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; Consult integration for Embark
   (use-package embark-consult
-    :ensure t)
+    :ensure t
+    :defer t)
 #+end_src
 
 *** wgrep
 #+begin_src emacs-lisp
   ;; Writable grep buffer
   (use-package wgrep
-    :ensure t)
+    :ensure t
+    :defer t)
 #+end_src
 
 *** Corfu
@@ -389,9 +391,12 @@ Now, let's take a look at my packages configurations:
   (use-package desktop
     :config
     (setq
-     desktop-dirname "~/.config/emacs/desktop/"
-     desktop-base-file-name "~/.config/emacs/desktop/.emacs.desktop"
-     desktop-base-lock-name "~/.config/emacs/desktop/.emacs.desktop.lock")
+     desktop-dirname
+     (expand-file-name "desktop" user-emacs-directory)
+     desktop-base-file-name
+     (expand-file-name ".emacs.desktop" desktop-dirname)
+     desktop-base-lock-name
+     (expand-file-name ".emacs.desktop.lock" desktop-dirname))
     (desktop-save-mode))
 #+end_src
 
@@ -504,15 +509,14 @@ Now, let's take a look at my packages configurations:
     :config (eros-mode))
   #+end_src
 
-*** Projectile
+*** COMMENT Projectile
 #+begin_src emacs-lisp
   ;; Manage and navigate projects in Emacs easily.
   (use-package projectile
     :ensure t
     :bind (:map projectile-mode-map
-  			  ("C-c p" . projectile-command-map))
-    :init (projectile-mode +1)
-    :delight " PJILE")
+  	      ("C-c p" . projectile-command-map))
+    :init (projectile-mode +1))
   #+end_src
 
 *** Dired
@@ -699,6 +703,7 @@ Now, let's take a look at my packages configurations:
   ;; Open project dependencies in jar archives
   (use-package jarchive
     :ensure t
+    :defer t
     :config
     (jarchive-mode))
 #+end_src
@@ -845,7 +850,7 @@ Now, let's take a look at my packages configurations:
 #+begin_src emacs-lisp
   ;; An Emacs Atom/RSS feed reader.
   (use-package elfeed
-    :bind ("C-c w" . elfeed)
+    :bind ("C-c w e" . elfeed)
     :config
     (define-advice elfeed-search--header (:around (oldfun &rest args))
       "Check if Elfeed database is loaded before searching"
@@ -853,12 +858,16 @@ Now, let's take a look at my packages configurations:
           (apply oldfun args)
         "No database loaded yet"))
     (setq
-     elfeed-db-directory "~/.config/emacs/elfeed"
+     elfeed-db-directory
+     (expand-file-name "elfeed" user-emacs-directory)
+     elfeed-show-entry-switch 'display-buffer
      elfeed-feeds
      '(("https://planet.emacslife.com/atom.xml" blog emacs)
        ("https://nullprogram.com/feed/" blog emacs)
        ("https://news.ycombinator.com/rss" news)
-       ("https://clojure.org/feed.xml" news clojure))))
+       ("https://clojure.org/feed.xml" news clojure)
+       ("https://lucidmanager.org/tags/emacs/index.xml" blog emacs)
+       ("https://www.reddit.com/r/emacs/.rss" reddit emacs))))
 #+end_src
 
 ** Conclusion
