@@ -7,6 +7,7 @@
   ("<down-mouse-9>" . yank)
   ("C-c o i" . dimagid/find-user-config-org-file)
   ("C-c o r" . restart-emacs)
+  ("C-c o c" . dimagid/check-init-batch-mode)
   :init
   (setq custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
@@ -23,7 +24,6 @@
   (history-delete-duplicates t)
   (kill-do-not-save-duplicates t)
   (enable-recursive-minibuffers t)
-  (transient-align-variable-pitch t)
   (set-mark-command-repeat-pop t)
   (global-auto-revert-non-file-buffers t)
   (recentf-max-saved-items 50)
@@ -54,13 +54,19 @@
   (defun dimagid/find-user-config-org-file ()
     "Find Emacs config user README.org file in another window."
     (interactive)
-    (find-file-other-window (concat "~/.config/emacs/README.org")))
+    (find-file-other-window (expand-file-name
+			     "README.org" user-emacs-directory)))
+  (defun dimagid/check-init-batch-mode ()
+    "Use batch mode to check emacs initialization."
+    (interactive)
+    (shell-command
+     (format "emacs -batch -l %sinit.el" user-emacs-directory)))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
     "Call ORIG-FUN until the cursor moves.
-  Try the repeated popping up to 10 times."
+           Try the repeated popping up to 10 times."
     (let ((p (point)))
       (dotimes (i 10)
-	(when (= p (point))
+        (when (= p (point))
           (apply orig-fun args)))))
   (advice-add 'pop-to-mark-command :around #'modi/multi-pop-to-mark))
 
@@ -314,8 +320,7 @@
   :ensure t
   :config
   (setq undo-tree-auto-save-history t)
-  (global-undo-tree-mode 1)
-  :delight " UTree")
+  (global-undo-tree-mode 1))
 
 ;; Display available keybindings in popup
 (use-package which-key
@@ -332,8 +337,7 @@
   :hook
   (prog-mode text-mode markdown-mode)
   :config
-  (auto-fill-mode)
-  :delight "AF")
+  (auto-fill-mode))
 
 ;; This package is a minor mode to visualize blanks. Built-in package.
 (use-package whitespace
@@ -593,11 +597,11 @@
 (use-package elfeed
   :bind ("C-c w e" . elfeed)
   :config
-  (define-advice elfeed-search--header (:around (oldfun &rest args))
-    "Check if Elfeed database is loaded before searching"
-    (if elfeed-db
-        (apply oldfun args)
-      "No database loaded yet"))
+  ;; (define-advice elfeed-search--header (:around (oldfun &rest args))
+  ;;   "Check if Elfeed database is loaded before searching"
+  ;;   (if elfeed-db
+  ;;       (apply oldfun args)
+  ;;     "No database loaded yet"))
   (setq
    elfeed-db-directory
    (expand-file-name "elfeed" user-emacs-directory)

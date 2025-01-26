@@ -27,6 +27,12 @@
 ;;
 ;;; Code:
 
+;; Load package manager in batch mode
+(if noninteractive
+    (require 'package)
+  (add-to-list 'package-archives
+	       '("melpa" . "https://melpa.org/packages/")))
+
 ;; Add MELPA repository to Emacs package archives
 (add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/")
@@ -35,8 +41,7 @@
 ;; Initialize the package system
 (package-initialize)
 
-;; Refresh package list in background only if it hasn't been
-;; loaded yet
+;; Refresh package list in background if not already loaded
 (unless package-archive-contents
   (package-refresh-contents t))
 

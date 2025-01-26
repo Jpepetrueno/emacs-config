@@ -1,18 +1,20 @@
-;;; early-init.el --- Early initialization code for Emacs -*- lexical-binding: t -*-
+;;; early-init.el --- Early init Emacs -*- lexical-binding: t -*-
 
 ;;; Commentary:
-;; This file contains early initialization code for Emacs, setting up the
-;; initial frame, garbage collection threshold, and other basic
+;; This file contains early initialization code for Emacs, setting up
+;; the initial frame, garbage collection threshold, and other basic
 ;; settings.
 
 ;;; Code:
 
 ;; Reduce garbage collection during startup to improve performance.
 (if noninteractive  ; in CLI sessions
-    ;; Adjust GC settings for CLI sessions to balance performance and memory usage.
+    ;; Adjust GC settings for CLI sessions to balance performance and
+    ;; memory usage.
     (setq gc-cons-threshold 536870912  ; 512 MB)
-  ;; Disable GC during interactive startup to improve performance.
-  ;; Note: This value is reset to its default value (0.76 MB) after `after-init-hook`.
+	  ;; Disable GC during interactive startup to improve
+	  ;; performance. This value is reset to its default value
+	  ;; (0.76 MB) after after-init-hook.
 	  (setq gc-cons-threshold most-positive-fixnum)))
 
 ;; Enable debugging mode for additional error information
