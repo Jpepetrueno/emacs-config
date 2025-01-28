@@ -211,7 +211,7 @@
   :ensure t
   :hook (emacs-lisp-mode . highlight-defined-mode))
 
-;; Preview completion with inline overlay
+;; Preview completion with inline overlay. Built-in package.
 (use-package completion-preview
   :bind (:map completion-preview-active-mode-map
 	      ("M-n" . completion-preview-next-candidate)
@@ -250,7 +250,11 @@
          ("C-c h" . consult-history)
          ("C-c k" . consult-kmacro)
          ("C-c m" . consult-man)
-         ("C-c i" . consult-info)
+	 ("C-c i c" . consult-info-completion)
+	 ("C-c i e" . consult-info-emacs)
+	 ("C-c i g" . consult-info-magit)
+         ("C-c i i" . consult-info)
+         ("C-c i o" . consult-info-org)
          ([remap Info-search] . consult-info)
          ;; C-x bindings in `ctl-x-map'            ;; previous bindings
 	 ("C-x M-:" . consult-complex-command)     ;; repeat-complex-command
@@ -297,15 +301,15 @@
          ;; :map minibuffer-local-map
          ;; ("M-s" . consult-history)       ;; next-matching-history-element
 	 )
-  ;; Enable automatic preview at point in the *Completions* buffer. This is
-  ;; relevant when you use the default completion UI.
+  ;; Enable automatic preview at point in the *Completions*
+  ;; buffer. This is relevant when you use the default completion UI.
   :hook (completion-list-mode . consult-preview-at-point-mode)
   ;; The :init configuration is always executed (Not lazy)
   :init
   ;; Tweak the register preview for `consult-register-load',
-  ;; `consult-register-store' and the built-in commands.  This improves the
-  ;; register formatting, adds thin separator lines, register sorting and hides
-  ;; the window mode line.
+  ;; `consult-register-store' and the built-in commands.  This
+  ;; improves the register formatting, adds thin separator lines,
+  ;; register sorting and hides the window mode line.
   (advice-add #'register-preview :override #'consult-register-window)
   (setopt register-preview-delay 0.5)
   ;; Use Consult to select xref locations with preview
@@ -320,7 +324,8 @@
   ;; (setq consult-preview-key "M-.")
   ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
   ;; For some commands and buffer sources it is useful to configure the
-  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  ;; :preview-key on a per-command basis using the `consult-customize'
+  ;; macro.
   (consult-customize
    consult-theme :preview-key '(:debounce 0.2 any)
    consult-ripgrep consult-git-grep consult-grep consult-man
@@ -333,9 +338,27 @@
   ;; Both < and C-+ work reasonably well.
   (setopt consult-narrow-key "<") ;; "C-+"
   ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; You may want to use `embark-prefix-help-command' or which-key
+  ;; instead.
   (keymap-set consult-narrow-map
-	      (concat consult-narrow-key " ?") #'embark-prefix-help-command))
+	      (concat consult-narrow-key " ?")
+	      #'embark-prefix-help-command)
+  (defun consult-info-emacs ()
+    "Search through Emacs info pages."
+    (interactive)
+    (consult-info "emacs" "efaq" "elisp" "cl"))
+  (defun consult-info-org ()
+    "Search through the Org info page."
+    (interactive)
+    (consult-info "org"))
+  (defun consult-info-completion ()
+    "Search through completion info pages."
+    (interactive)
+    (consult-info "embark" "ido"))
+  (defun consult-info-magit ()
+    "Search through completion info pages."
+    (interactive)
+    (consult-info "magit" "magit-section")))
 
 ;; Conveniently act on minibuffer completions
 (use-package embark
