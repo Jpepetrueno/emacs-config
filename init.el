@@ -27,19 +27,21 @@
 ;;
 ;;; Code:
 
-;;; Load package manager in batch mode
+;;; Code:
+
+;; Load package manager in batch mode
 (if noninteractive
     (require 'package))
-
-;;; Add MELPA repository to Emacs package archives
-(add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/")
-	     t)
 
 ;; Initialize the package system
 (package-initialize)
 
-;;; Refresh package list in background if not already loaded
+;; Add MELPA repository to Emacs package archives
+(add-to-list #'package-archives
+	     '("melpa" . "https://melpa.org/packages/")
+	     t)
+
+;; Refresh package list in background if not already loaded
 (unless package-archive-contents
   (package-refresh-contents t))
 
@@ -50,27 +52,24 @@
 (use-package emacs
   :bind
   ("C-x C-b" . ibuffer)
-  ("C-c d" . eldoc)
   ("<down-mouse-8>" . kill-ring-save)
   ("<down-mouse-9>" . yank)
   ("C-c o i" . dimagid/find-user-init-file)
   ("C-c o c" . dimagid/check-init-batch-mode)
   ("C-c o e" . dimagid/eshell-other-window)
   ("C-c o p" . use-package-report)
-  ("C-c o w" . wdired-change-to-wdired-mode)
   ("C-c o r" . restart-emacs)
   :init
-  (setq custom-file (locate-user-emacs-file "custom.el"))
+  (setopt custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
   :custom
   (visible-bell t) ; Enable visual (flash screen) instead of audible
-  (tab-always-indent 'complete)
+  (tab-always-indent #'complete)
   (use-short-answers t)
   (require-final-newline t)
   (completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (switch-to-buffer-obey-display-actions t)
-  (Info-hide-note-references nil)
   (debugger-stack-frame-as-list t)
   (history-delete-duplicates t)
   (kill-do-not-save-duplicates t)
@@ -85,7 +84,6 @@
        display-buffer-below-selected))))
   :config
   (fido-vertical-mode)
-  (tty-tip-mode)
   (repeat-mode)
   (global-prettify-symbols-mode)
   (save-place-mode) ; Enable saving and restoring cursor positions
@@ -93,10 +91,10 @@
   (global-auto-revert-mode)
   (recentf-mode) ; Enable tracking recently opened files
   (delete-selection-mode)
-  (winner-mode) ; Undo/redo window configs with C-c <left>/<right>
   (size-indication-mode)
+  (winner-mode) ; Undo/redo window configs with C-c <left>/<right>
   (windmove-default-keybindings) ; Move between windows with Shift+arrows
-  (add-hook 'after-save-hook 'check-parens)
+  (add-hook 'after-save-hook #'check-parens)
   (add-hook 'after-init-hook
             (lambda ()
               (setq gc-cons-threshold 800000)
@@ -133,8 +131,8 @@
   :init
   (mapc #'disable-theme custom-enabled-themes)
   :config
-  (ef-themes-select 'ef-owl)
-  (setq ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
+  (ef-themes-select #'ef-owl)
+  (setopt ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
         ef-themes-variable-pitch-ui t))
 
 ;; Macro-aware go-to-definition for elisp.
@@ -177,7 +175,7 @@
     (save-excursion
       (backward-sexp)
       (-let [result
-             (thread-last (thing-at-point 'sexp)
+             (thread-last (thing-at-point #'sexp)
 			  read-from-string
 			  car
 			  eval
@@ -195,15 +193,21 @@
 (use-package eshell
   :defer t
   :config
-  (setq eshell-hist-ignoredups 'erase))
+  (setopt eshell-hist-ignoredups #'erase))
+
+;; Info package for Emacs
+(use-package info
+  :config
+  (setopt Info-hide-note-references nil))
 
 ;; Peruse file or buffer without editing. Built-in package.
 (use-package view
+  :defer t
   :hook (Info-mode . (lambda ()
                        (define-key Info-mode-map (kbd "{")
-				   'View-scroll-half-page-backward)
+				   #'View-scroll-half-page-backward)
                        (define-key Info-mode-map (kbd "}")
-				   'View-scroll-half-page-forward))))
+				   #'View-scroll-half-page-forward))))
 
 ;; Syntax highlighting of known Elisp symbols.
 (use-package highlight-defined
@@ -217,7 +221,6 @@
 	      ("M-p" . completion-preview-prev-candidate))
   :hook (prog-mode text-mode markdown-mode)
   :config
-  (completion-preview-mode)
   (global-completion-preview-mode))
 
 ;; Transient user interfaces for various modes.
@@ -228,9 +231,9 @@
 ;; Configure savehist to save minibuffer history. Built-in package.
 (use-package savehist
   :config
-  (setq savehist-additional-variables '(corfu-history
-					register-alist
-					kill-ring))
+  (setopt savehist-additional-variables '(corfu-history
+					  register-alist
+					  kill-ring))
   (savehist-mode))
 
 ;; Enable marginalia to add completion annotations to existing
@@ -307,10 +310,10 @@
   ;; register formatting, adds thin separator lines, register sorting and hides
   ;; the window mode line.
   (advice-add #'register-preview :override #'consult-register-window)
-  (setq register-preview-delay 0.5)
+  (setopt register-preview-delay 0.5)
   ;; Use Consult to select xref locations with preview
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
+  (setopt xref-show-xrefs-function #'consult-xref
+          xref-show-definitions-function #'consult-xref)
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
@@ -331,7 +334,7 @@
    :preview-key '(:debounce 0.4 any))
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
-  (setq consult-narrow-key "<") ;; "C-+"
+  (setopt consult-narrow-key "<") ;; "C-+"
   ;; Optionally make narrowing help available in the minibuffer.
   ;; You may want to use `embark-prefix-help-command' or which-key instead.
   (keymap-set consult-narrow-map
@@ -349,7 +352,7 @@
    ("C-c C-e" . embark-export))
   :init
   ;; Optionally replace the key help with a completing-read interface
-  (setq prefix-help-command #'embark-prefix-help-command)
+  (setopt prefix-help-command #'embark-prefix-help-command)
   :config
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
@@ -374,7 +377,7 @@
   :ensure t
   :defer t
   :init
-  (setq corfu-preview-current nil
+  (setopt corfu-preview-current nil
 	corfu-min-width 20
 	corfu-popupinfo-delay '(1.25 . 0.5))
   :config
@@ -383,7 +386,7 @@
   ;; Sort by input history (no need to modify `corfu-sort-function').
   (with-eval-after-load 'savehist
     (corfu-history-mode 1)
-    (add-to-list 'savehist-additional-variables 'corfu-history)))
+    (add-to-list #'savehist-additional-variables #'corfu-history)))
 
 ;; Emacs nerd font icons library.
 (use-package nerd-icons
@@ -418,7 +421,7 @@
 ;; Save partial status of Emacs when killed. Built-in package.
 (use-package desktop
   :config
-  (setq
+  (setopt
    desktop-dirname
    (expand-file-name "desktop" user-emacs-directory)
    desktop-base-file-name
@@ -432,7 +435,7 @@
   :ensure t
   :defer t
   :config
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
 
 ;; Highlight uncommitted changes using VC
 (use-package diff-hl
@@ -447,7 +450,7 @@
   :ensure t
   :hook (prog-mode text-mode markdown-mode)
   :config
-  (set-face-attribute 'sp-pair-overlay-face nil :background "#444444")
+  (set-face-attribute #'sp-pair-overlay-face nil :background "#444444")
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
   ;; enable the pres-set bindings
@@ -455,13 +458,6 @@
   ;; disable autoclose for ' and ` in Emacs Lisp mode
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
   (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
-
-;; On-the-fly spell checker. Built-in package.
-;; (use-package flyspell
-;;   :hook
-;;   (text-mode . flyspell-mode)
-;;   (markdown-mode . flyspell-mode)
-;;   (prog-mode . flyspell-prog-mode))
 
 ;; Show current command and its binding
 (use-package keycast
@@ -472,7 +468,7 @@
 (use-package undo-tree
   :ensure t
   :config
-  (setq undo-tree-auto-save-history t)
+  (setopt undo-tree-auto-save-history t)
   (global-undo-tree-mode 1))
 
 ;; Display available keybindings in popup
@@ -503,37 +499,47 @@
 
 ;; Dired, the Directory Editor
 (use-package dired
-  :commands (dired)
-  :bind (:map dired-mode-map
-	      ("C-o" . casual-dired-tmenu) ; casual-dired transient menu
-	      ("s" . casual-dired-sort-by-tmenu)
-	      ("/" . casual-dired-search-replace-tmenu)
-	      ("<tab>" . dired-subtree-toggle)
-	      ("TAB" . dired-subtree-toggle)
-	      ("<backtab>" . dired-subtree-remove)
-	      ("S-TAB" . dired-subtree-remove))
+  :bind
+  (:map dired-mode-map
+	("C-o" . casual-dired-tmenu) ; casual-dired transient menu
+	("s" . casual-dired-sort-by-tmenu)
+	("r" . wdired-change-to-wdired-mode)
+	("/" . casual-dired-search-replace-tmenu)
+	("<tab>" . dired-subtree-toggle)
+	("TAB" . dired-subtree-toggle)
+	("<backtab>" . dired-subtree-remove)
+	("S-TAB" . dired-subtree-remove))
   :hook
-  ((dired-mode . dired-hide-details-mode)
-   (dired-mode . hl-line-mode)
-   (dired-mode . diff-hl-dired-mode)
-   (dired-mode . dired-omit-mode))
-  :config
-  (setq dired-recursive-copies 'always
-	dired-recursive-deletes 'always
-	delete-by-moving-to-trash t
-	dired-dwim-target t))
+  (dired-mode . (lambda ()
+                  (dired-hide-details-mode)
+                  (hl-line-mode)
+                  (diff-hl-dired-mode)
+                  (dired-omit-mode)))
+  :custom
+  (dired-recursive-copies #'always)
+  (dired-recursive-deletes #'always)
+  (delete-by-moving-to-trash t)
+  (dired-dwim-target t))
 
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree
   :ensure t
   :after dired
   :config
-  (setq dired-subtree-use-backgrounds nil))
+  (setopt dired-subtree-use-backgrounds nil))
 
 ;; Operate on buffers like dired. Built-in package.
 (use-package ibuffer
-  :bind (:map ibuffer-mode-map
-	      ("C-o" . casual-ibuffer-tmenu)))
+  :bind
+  (:map ibuffer-mode-map
+	("C-o" . casual-ibuffer-tmenu)))
+
+;; Incremental search with partial matches, navigation, and search
+;; history. Built-in package.
+(use-package isearch
+  :bind
+  (:map isearch-mode-map
+	("C-o" . casual-isearch-tmenu)))
 
 ;; Info package for Emacs. Built-in package.
 (use-package info
@@ -552,9 +558,9 @@
 ;; Viewing/editing system trash can.
 (use-package trashed
   :ensure t
-  :commands (trashed)
+  :defer t
   :config
-  (setq trashed-action-confirmer 'y-or-n-p)
+  (setq trashed-action-confirmer #'y-or-n-p)
   (setq trashed-use-header-line t)
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
@@ -564,13 +570,14 @@
 ;; system of Internet documents). Built-in package.
 (use-package dictionary
   :bind ("<f7>" . dictionary-lookup-definition)
-  :config (setq dictionary-server "dict.org"))
+  :config (setopt dictionary-server "dict.org"))
 
 ;; Interaction mode for Emacs Lisp. Built-in package.
 (use-package ielm
-  :bind (:map ielm-map
-	      ("C-c C-q" . dimagid/ielm-clear-repl)
-	      ("<S-return>" . dimagid/ielm-insert-newline))
+  :bind
+  (:map ielm-map
+	("C-c C-q" . dimagid/ielm-clear-repl)
+	("<S-return>" . dimagid/ielm-insert-newline))
   :config
   (defun dimagid/ielm-clear-repl ()
     "Clear current REPL buffer."
@@ -586,27 +593,29 @@
 
 ;; The Emacs Client for LSP servers. Built-in package.
 (use-package eglot
-  :bind (:map eglot-mode-map
-	      ("C-c l a" . eglot-code-actions)
-	      ("C-c l f" . eglot-format)
-	      ("<f6>" . eglot-format)
-	      ("C-c l r" . eglot-rename)
-	      ("C-c l n" . flymake-goto-next-error)
-	      ("C-c l p" . flymake-goto-prev-error)
-	      ("C-c l s" . flymake-show-buffer-diagnostics)
-	      ("C-c l S" . flymake-show-project-diagnostics)
-	      ("C-c l i" . eglot-inlay-hints-mode)
-	      ("C-c l e" . eglot-events-buffer)
-	      ("C-c l x" . eglot-stderr-buffer)
-	      ("C-c l c" . eglot-clear-status)
-	      ("C-c l u" . eglot-signal-didChangeConfiguration)
-	      ("C-c l o" . eglot-code-action-organize-imports)
-	      ("C-c l q" . eglot-code-action-quickfix)
-	      ("C-c l X" . eglot-code-action-extract)
-	      ("C-c l I" . eglot-code-action-inline)
-	      ("C-c l w" . eglot-code-action-rewrite)
-	      ("C-c l b" . eglot-format-buffer)
-	      ("C-c l R" . eglot-reconnect)))
+  :bind
+  (:map eglot-mode-map
+	("C-c d" . eldoc)
+	("C-c l a" . eglot-code-actions)
+	("C-c l f" . eglot-format)
+	("<f6>" . eglot-format)
+	("C-c l r" . eglot-rename)
+	("C-c l n" . flymake-goto-next-error)
+	("C-c l p" . flymake-goto-prev-error)
+	("C-c l s" . flymake-show-buffer-diagnostics)
+	("C-c l S" . flymake-show-project-diagnostics)
+	("C-c l i" . eglot-inlay-hints-mode)
+	("C-c l e" . eglot-events-buffer)
+	("C-c l x" . eglot-stderr-buffer)
+	("C-c l c" . eglot-clear-status)
+	("C-c l u" . eglot-signal-didChangeConfiguration)
+	("C-c l o" . eglot-code-action-organize-imports)
+	("C-c l q" . eglot-code-action-quickfix)
+	("C-c l X" . eglot-code-action-extract)
+	("C-c l I" . eglot-code-action-inline)
+	("C-c l w" . eglot-code-action-rewrite)
+	("C-c l b" . eglot-format-buffer)
+	("C-c l R" . eglot-reconnect)))
 
 ;; Tool for interacting with LLMs.
 (use-package ellama
@@ -618,7 +627,7 @@
   (setopt ellama-instant-display-action-function #'display-buffer-at-bottom)
   :config
   ;; set ellama-long-lines-length to fill-column
-  (setq ellama-long-lines-length fill-column)
+  (setopt ellama-long-lines-length fill-column)
   :hook
   (ellama-session-mode . (lambda () (whitespace-mode -1))))
 
@@ -648,8 +657,7 @@
 (use-package jarchive
   :ensure t
   :defer t
-  :config
-  (jarchive-mode))
+  :config (jarchive-mode))
 
 ;; Major mode for editing Clojure code.
 (use-package clojure-mode
@@ -657,7 +665,7 @@
   :hook
   ((clojure-mode . eglot-ensure))
   :config
-  (setq cider-eldoc-display-for-symbol-at-point nil))
+  (setopt cider-eldoc-display-for-symbol-at-point nil))
 
 ;; A better *help* buffer.
 (use-package helpful
@@ -683,25 +691,26 @@
 (use-package keyfreq
   :ensure t
   :config
-  (setq keyfreq-excluded-commands
-	'(self-insert-command
-	  forward-char
-	  backward-char
-	  previous-line
-	  next-line
-	  org-self-insert-command
-	  sp-backward-delete-char
-	  mwheel-scroll))
+  (setopt keyfreq-excluded-commands
+	  '(self-insert-command
+	    forward-char
+	    backward-char
+	    previous-line
+	    next-line
+	    org-self-insert-command
+	    sp-backward-delete-char
+	    mwheel-scroll))
   (keyfreq-mode)
   (keyfreq-autosave-mode))
 
 ;; Pulse highlight on demand or after select functions.
 (use-package pulsar
   :ensure t
+  :defer t
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
-  (setq pulsar-face 'pulsar-green
+  (setopt pulsar-face #'pulsar-green
 	pulsar-iterations 5)
   (pulsar-global-mode))
 
@@ -718,7 +727,7 @@
   :config
   (defun my-shell-mode-hook-func ()
     (set-process-sentinel (get-buffer-process (current-buffer))
-			  'my-shell-mode-kill-buffer-on-exit))
+			  #'my-shell-mode-kill-buffer-on-exit))
   (defun my-shell-mode-kill-buffer-on-exit (process state)
     (message "%s" state)
     (if (or
@@ -755,17 +764,16 @@
     (if elfeed-db
         (apply oldfun args)
       "No database loaded yet"))
-  (setq
-   elfeed-db-directory
-   (expand-file-name "elfeed" user-emacs-directory)
-   elfeed-show-entry-switch 'display-buffer
-   elfeed-feeds
-   '(("https://planet.emacslife.com/atom.xml" blog emacs)
-     ("https://nullprogram.com/feed/" blog emacs)
-     ("https://news.ycombinator.com/rss" news)
-     ("https://clojure.org/feed.xml" news clojure)
-     ("https://lucidmanager.org/tags/emacs/index.xml" blog emacs)
-     ("https://www.reddit.com/r/emacs/.rss" reddit emacs))))
+  (setopt elfeed-db-directory
+	  (expand-file-name "elfeed" user-emacs-directory)
+	  elfeed-show-entry-switch #'display-buffer
+	  elfeed-feeds
+	  '(("https://planet.emacslife.com/atom.xml" blog emacs)
+	    ("https://nullprogram.com/feed/" blog emacs)
+	    ("https://news.ycombinator.com/rss" news)
+	    ("https://clojure.org/feed.xml" news clojure)
+	    ("https://lucidmanager.org/tags/emacs/index.xml" blog emacs)
+	    ("https://www.reddit.com/r/emacs/.rss" reddit emacs))))
 
 ;;; Displays Emacs startup stats.
 (message "Emacs initialized in %s with %d garbage collections and %d packages."

@@ -26,9 +26,13 @@
         debug-on-error t))
 
 ;; Set the initial frame to be maximized
-(add-to-list 'initial-frame-alist '(fullscreen . maximized))
+(add-to-list #'initial-frame-alist '(fullscreen . maximized))
 
 ;; Disable elisp-flymake-byte-compile to avoid errors
-(advice-add 'elisp-flymake-byte-compile :around #'ignore)
+(advice-add #'elisp-flymake-byte-compile :around #'ignore)
+
+;; Load newer Lisp files, even if not compiled
+(setq load-prefer-newer t)
+
 
 ;;; early-init.el ends here
