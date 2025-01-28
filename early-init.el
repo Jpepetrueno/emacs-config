@@ -1,10 +1,10 @@
 ;;; early-init.el --- Early init Emacs -*- lexical-binding: t -*-
-
+;;
 ;;; Commentary:
 ;; This file contains early initialization code for Emacs, setting up
 ;; the initial frame, garbage collection threshold, and other basic
 ;; settings.
-
+;;
 ;;; Code:
 
 ;; Reduce garbage collection during startup to improve performance.
@@ -30,9 +30,6 @@
 
 ;; Disable elisp-flymake-byte-compile to avoid errors
 (advice-add #'elisp-flymake-byte-compile :around #'ignore)
-
-;; Load newer Lisp files, even if not compiled
-(setq load-prefer-newer t)
 
 
 ;;; early-init.el ends here

@@ -27,8 +27,6 @@
 ;;
 ;;; Code:
 
-;;; Code:
-
 ;; Load package manager in batch mode
 (if noninteractive
     (require 'package))
@@ -40,10 +38,6 @@
 (add-to-list #'package-archives
 	     '("melpa" . "https://melpa.org/packages/")
 	     t)
-
-;; Refresh package list in background if not already loaded
-(unless package-archive-contents
-  (package-refresh-contents t))
 
 ;; Gather statistics on package loading times
 (setq use-package-compute-statistics t)
@@ -63,6 +57,8 @@
   (setopt custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
   :custom
+  (load-prefer-newer t)
+  (package-install-upgrade-built-in t)
   (visible-bell t) ; Enable visual (flash screen) instead of audible
   (tab-always-indent #'complete)
   (use-short-answers t)
@@ -93,7 +89,7 @@
   (delete-selection-mode)
   (size-indication-mode)
   (winner-mode) ; Undo/redo window configs with C-c <left>/<right>
-  (windmove-default-keybindings) ; Move between windows with Shift+arrows
+  (windmove-default-keybindings) ; windmove with Shift+arrows
   (add-hook 'after-save-hook #'check-parens)
   (add-hook 'after-init-hook
             (lambda ()
@@ -123,6 +119,7 @@
       (dotimes (i 10)
         (when (= p (point))
           (apply orig-fun args)))))
+  (advice-add 'list-packages :before #'package-refresh-contents)
   (advice-add 'pop-to-mark-command :around #'modi/multi-pop-to-mark))
 
 ;; Colorful and legible themes
