@@ -55,7 +55,9 @@
   ("<down-mouse-9>" . yank)
   ("C-c o i" . dimagid/find-user-init-file)
   ("C-c o c" . dimagid/check-init-batch-mode)
-  ("C-c o s" . eshell)
+  ("C-c o e" . dimagid/eshell-other-window)
+  ("C-c o p" . use-package-report)
+  ("C-c o w" . wdired-change-to-wdired-mode)
   ("C-c o r" . restart-emacs)
   :init
   (setq custom-file (locate-user-emacs-file "custom.el"))
@@ -110,6 +112,12 @@
     (interactive)
     (shell-command
      (format "emacs -batch -l %sinit.el" user-emacs-directory)))
+  (defun dimagid/eshell-other-window ()
+    "Open eshell in other window."
+    (interactive)
+    (let ((buf (eshell)))
+      (switch-to-buffer (other-buffer buf))
+      (switch-to-buffer-other-window buf)))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
     "Call ORIG-FUN until the cursor moves.
            Try the repeated popping up to 10 times."
@@ -155,7 +163,7 @@
     (let ((file-to-load (progn
 			  (goto-char (point-min))
 			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
-			  (match-string 1)))) ; the ( is a kludge in README.org
+			  (match-string 1))))
       (with-current-buffer (find-file-noselect file-to-load)
 	(save-buffer)))
     (ert-delete-all-tests)
@@ -231,37 +239,130 @@
   :ensure t
   :config (marginalia-mode))
 
-;; Consulting completing-read
+;; Find recent file using completing-read.
+;; Configuration inspired by the official Consult repo:
+;; https://github.com/minad/consult
 (use-package consult
   :ensure t
-  :bind (;; Search files in a directory with grep, using a regexp.
-         ("M-s M-g" . consult-grep)
-         ;; Search for files by name with find, using a regexp.
-         ("M-s M-f" . consult-find)
-         ;; Jump to an outline heading, narrow and preview supported.
-         ("M-s M-o" . consult-outline)
-         ;; Search for a matching line, with customizable jump behavior.
-         ("M-s M-l" . consult-line)
-         ;; Switch to a buffer, file, or recent entry with preview
-	 ;; and filtering options.
-         ("M-s M-b" . consult-buffer)
-	 ;; Find recent file using completing-read.
-	 ("M-s M-r" . consult-recent-file)))
+  ;; Replace bindings. Lazily loaded by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+         ("C-c M-x" . consult-mode-command)
+         ("C-c h" . consult-history)
+         ("C-c k" . consult-kmacro)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'            ;; previous bindings
+	 ("C-x M-:" . consult-complex-command)     ;; repeat-complex-command
+	 ("C-x b" . consult-buffer)                ;; switch-to-buffer
+	 ("C-x 4 b" . consult-buffer-other-window) ;; switch-to-buffer-other-window
+	 ("C-x 5 b" . consult-buffer-other-frame)  ;; switch-to-buffer-other-frame
+	 ("C-x t b" . consult-buffer-other-tab)    ;; switch-to-buffer-other-tab
+	 ("C-x r b" . consult-bookmark)            ;; bookmark-jump
+	 ("C-x p b" . consult-project-buffer)      ;; project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)      ;; abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)            ;; yank-pop
+         ;; M-g bindings in `goto-map'
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)           ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)         ;; goto-line
+         ("M-g M-g" . consult-goto-line)       ;; goto-line
+         ("M-g o" . consult-outline)           ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)             ;; imenu
+         ("M-g I" . consult-imenu-multi)       ;; imenu
+         ;; M-s bindings in `search-map'
+         ("M-s d" . consult-find)              ;; Alternative: consult-fd
+         ("M-s c" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+	 ("M-s r" . consult-recent-file)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-s e" . consult-isearch-history)
+         ("M-s l" . consult-line)           ;; Enable consult-line with isearch
+         ("M-s L" . consult-line-multi)     ;; Enable consult-line with isearch
+         ;; Minibuffer history
+         ;; :map minibuffer-local-map
+         ;; ("M-s" . consult-history)       ;; next-matching-history-element
+	 )
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+  ;; Tweak the register preview for `consult-register-load',
+  ;; `consult-register-store' and the built-in commands.  This improves the
+  ;; register formatting, adds thin separator lines, register sorting and hides
+  ;; the window mode line.
+  (advice-add #'register-preview :override #'consult-register-window)
+  (setq register-preview-delay 0.5)
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep consult-man
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key "M-."
+   :preview-key '(:debounce 0.4 any))
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; "C-+"
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  (keymap-set consult-narrow-map
+	      (concat consult-narrow-key " ?") #'embark-prefix-help-command))
 
 ;; Conveniently act on minibuffer completions
 (use-package embark
   :ensure t
-  :bind (("C-." . embark-act)
-	 :map minibuffer-local-map
-	 ("C-c C-c" . embark-collect)
-	 ("C-c C-e" . embark-export))
+  :bind
+  (("C-." . embark-act)
+   ("C-;" . embark-dwim)
+   ("C-h B" . embark-bindings)
+   :map minibuffer-local-map
+   ("C-c C-c" . embark-collect)
+   ("C-c C-e" . embark-export))
+  :init
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
   :config
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none))))
   (define-key icomplete-minibuffer-map (kbd "C-.") nil))
 
 ;; Consult integration for Embark
 (use-package embark-consult
   :ensure t
-  :defer t)
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
 
 ;; Writable grep buffer
 (use-package wgrep
@@ -356,11 +457,11 @@
   (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 
 ;; On-the-fly spell checker. Built-in package.
-(use-package flyspell
-  :hook
-  (text-mode . flyspell-mode)
-  (markdown-mode . flyspell-mode)
-  (prog-mode . flyspell-prog-mode))
+;; (use-package flyspell
+;;   :hook
+;;   (text-mode . flyspell-mode)
+;;   (markdown-mode . flyspell-mode)
+;;   (prog-mode . flyspell-prog-mode))
 
 ;; Show current command and its binding
 (use-package keycast
@@ -649,11 +750,11 @@
 (use-package elfeed
   :bind ("C-c w e" . elfeed)
   :config
-  ;; (define-advice elfeed-search--header (:around (oldfun &rest args))
-  ;;   "Check if Elfeed database is loaded before searching"
-  ;;   (if elfeed-db
-  ;;       (apply oldfun args)
-  ;;     "No database loaded yet"))
+  (define-advice elfeed-search--header (:around (oldfun &rest args))
+    "Check if Elfeed database is loaded before searching"
+    (if elfeed-db
+        (apply oldfun args)
+      "No database loaded yet"))
   (setq
    elfeed-db-directory
    (expand-file-name "elfeed" user-emacs-directory)
