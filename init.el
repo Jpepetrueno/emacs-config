@@ -218,7 +218,8 @@
 	      ("M-p" . completion-preview-prev-candidate))
   :hook (prog-mode text-mode markdown-mode)
   :config
-  (global-completion-preview-mode))
+  (global-completion-preview-mode)
+  :delight)
 
 ;; Transient user interfaces for various modes.
 (use-package casual
@@ -431,7 +432,7 @@
 (use-package nerd-icons-dired
   :ensure t
   :hook dired-mode
-  :delight " NID")
+  :delight)
 
 ;; Display nerd icons in ibuffer.
 (use-package nerd-icons-ibuffer
@@ -477,7 +478,8 @@
   (sp-use-smartparens-bindings)
   ;; disable autoclose for ' and ` in Emacs Lisp mode
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
-  (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
+  (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil)
+  :delight)
 
 ;; Show current command and its binding
 (use-package keycast
@@ -489,12 +491,14 @@
   :ensure t
   :config
   (setopt undo-tree-auto-save-history t)
-  (global-undo-tree-mode 1))
+  (global-undo-tree-mode 1)
+  :delight)
 
 ;; Display available keybindings in popup
 (use-package which-key
   :ensure t
-  :config (which-key-mode))
+  :config (which-key-mode)
+  :delight)
 
 ;; Highlight brackets according to their depth.
 (use-package rainbow-delimiters
@@ -506,11 +510,13 @@
   :hook
   (prog-mode text-mode markdown-mode)
   :config
-  (auto-fill-mode))
+  (auto-fill-mode)
+  :delight)
 
 ;; This package is a minor mode to visualize blanks. Built-in package.
 (use-package whitespace
-  :hook (text-mode markdown-mode))
+  :hook (text-mode markdown-mode)
+  :delight)
 
 ;; Evaluation Result OverlayS for Emacs Lisp.
 (use-package eros
@@ -730,7 +736,7 @@
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
-  (setopt pulsar-face #'pulsar-green
+  (setq pulsar-face #'pulsar-green
 	pulsar-iterations 5)
   (pulsar-global-mode))
 
@@ -794,6 +800,15 @@
 	    ("https://clojure.org/feed.xml" news clojure)
 	    ("https://lucidmanager.org/tags/emacs/index.xml" blog emacs)
 	    ("https://www.reddit.com/r/emacs/.rss" reddit emacs))))
+
+;; Access Google Translate without tracking via lingva.ml.
+(use-package lingva
+  :ensure t
+  :defer t
+  :bind ("C-c o t" . lingva-mode)
+  :config
+  (setq lingva-source "auto"
+        lingva-target "es"))
 
 ;;; Displays Emacs startup stats.
 (message "Emacs initialized in %s with %d garbage collections and %d packages."

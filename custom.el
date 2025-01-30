@@ -29,8 +29,8 @@
 	    dired-preview dired-subtree editorconfig ef-themes eglot
 	    elfeed elisp-def elisp-demos ellama embark-consult eros
 	    exec-path-from-shell expand-region faceup helpful
-	    highlight-defined jarchive keycast keyfreq live-py-mode
-	    lorem-ipsum magit marginalia markdown-mode
+	    highlight-defined jarchive keycast keyfreq lingva
+	    live-py-mode lorem-ipsum magit marginalia markdown-mode
 	    nerd-icons-completion nerd-icons-corfu nerd-icons-dired
 	    nerd-icons-ibuffer org package-lint-flymake pdf-tools
 	    pulsar rainbow-delimiters smartparens suggest trashed
