@@ -74,6 +74,7 @@
   (global-auto-revert-non-file-buffers t)
   (recentf-max-saved-items 50)
   (shr-width 70) ; Set HTML width to 70
+  (default-input-method 'spanish-postfix) ; A' -> Á, N~ -> Ñ, ?/ -> ¿
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -550,6 +551,7 @@
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree
   :ensure t
+  :defer t
   :after dired
   :config
   (setopt dired-subtree-use-backgrounds nil))
@@ -770,7 +772,9 @@
 (use-package pdf-tools
   :ensure t
   :defer t
-  :config (pdf-tools-install))
+  :config (pdf-loader-install)
+  :hook
+  (pdf-view-mode . (lambda () (display-line-numbers-mode -1))))
 
 ;; Insert dummy pseudo Latin text
 (use-package lorem-ipsum
@@ -805,7 +809,7 @@
 (use-package lingva
   :ensure t
   :defer t
-  :bind ("C-c o t" . lingva-mode)
+  :bind ("<f8>" . lingva-translate)
   :config
   (setq lingva-source "auto"
         lingva-target "es"))
