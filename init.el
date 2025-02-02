@@ -130,8 +130,9 @@
   (mapc #'disable-theme custom-enabled-themes)
   :config
   (ef-themes-select #'ef-owl)
-  (setopt ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
-        ef-themes-variable-pitch-ui t))
+  (setopt ef-themes-to-toggle '(ef-owl ef-eagle)
+	  ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
+	  ef-themes-variable-pitch-ui t))
 
 ;; Macro-aware go-to-definition for elisp.
 (use-package elisp-def
@@ -371,7 +372,9 @@
    ("C-h B" . embark-bindings)
    :map minibuffer-local-map
    ("C-c C-c" . embark-collect)
-   ("C-c C-e" . embark-export))
+   ("C-c C-e" . embark-export)
+   :map icomplete-minibuffer-map
+   ("C-." . embark-act))
   :init
   ;; Optionally replace the key help with a completing-read interface
   (setopt prefix-help-command #'embark-prefix-help-command)
@@ -380,8 +383,7 @@
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
                  nil
-                 (window-parameters (mode-line-format . none))))
-  (define-key icomplete-minibuffer-map (kbd "C-.") nil))
+                 (window-parameters (mode-line-format . none)))))
 
 ;; Consult integration for Embark
 (use-package embark-consult

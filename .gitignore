@@ -105,10 +105,11 @@ projectile-bookmarks.eld
 # Ellama
 ellama-sessions/
 
-playground.el
 bookmarks
 projects
 common-english-words.txt
 .elfeed/
 elfeed/
 url/
+
+myscratch/
