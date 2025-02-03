@@ -42,7 +42,7 @@
 ;; Gather statistics on package loading times
 (setq use-package-compute-statistics t)
 
-;; Configure Emacs built-in variables and settings
+;; Global Emacs settings (no package required)
 (use-package emacs
   :bind
   ("C-x C-b" . ibuffer)
@@ -54,7 +54,7 @@
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
   :init
-  (setopt custom-file (locate-user-emacs-file "custom.el"))
+  (setq custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
   :custom
   (load-prefer-newer t)
@@ -79,6 +79,12 @@
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
        display-buffer-below-selected))))
+  :hook
+  ((after-save . check-parens)
+   (after-init . (lambda ()
+		   (setq gc-cons-threshold 800000)
+		   (message "gc-cons-threshold restored to %.2f MB."
+			    (/ gc-cons-threshold 1048576.0)))))
   :config
   (fido-vertical-mode)
   (repeat-mode)
@@ -91,12 +97,6 @@
   (size-indication-mode)
   (winner-mode) ; Undo/redo window configs with C-c <left>/<right>
   (windmove-default-keybindings) ; windmove with Shift+arrows
-  (add-hook 'after-save-hook #'check-parens)
-  (add-hook 'after-init-hook
-            (lambda ()
-              (setq gc-cons-threshold 800000)
-              (message "gc-cons-threshold restored to %.2f MB."
-                       (/ gc-cons-threshold 1048576.0))))
   (defun dimagid/find-user-init-file ()
     "Find Emacs init file in another window."
     (interactive)
@@ -481,8 +481,7 @@
   (sp-use-smartparens-bindings)
   ;; disable autoclose for ' and ` in Emacs Lisp mode
   (sp-local-pair 'emacs-lisp-mode "'" nil :actions nil)
-  (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil)
-  :delight)
+  (sp-local-pair 'emacs-lisp-mode "`" nil :actions nil))
 
 ;; Show current command and its binding
 (use-package keycast
@@ -812,6 +811,8 @@
   :ensure t
   :defer t
   :bind ("<f8>" . lingva-translate)
+  :hook
+  (lingva-mode . (lambda () (fill-region (point-min) (point-max))))
   :config
   (setq lingva-source "auto"
         lingva-target "es"))
