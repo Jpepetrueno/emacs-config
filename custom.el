@@ -14,7 +14,6 @@
  '(casual-lib-use-unicode t)
  '(cider-download-java-sources t)
  '(column-number-mode t)
- '(custom-enabled-themes '(ef-owl))
  '(custom-safe-themes
    '("b9c002dc827fb75b825da3311935c9f505d48d7ee48f470f0aa7ac5d2a595ab2"
      "d609d9aaf89d935677b04d34e4449ba3f8bbfdcaaeeaab3d21ee035f43321ff1"

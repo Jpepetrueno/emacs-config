@@ -53,6 +53,7 @@
   ("C-c o e" . dimagid/eshell-other-window)
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
+  ("<f9>" . browse-url-chromium)
   :init
   (setq custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
@@ -113,6 +114,28 @@
     (let ((buf (eshell)))
       (switch-to-buffer (other-buffer buf))
       (switch-to-buffer-other-window buf)))
+  (defun dimagid/count-available-packages ()
+    "Show the number of available packages.
+Available packages include built-in packages and installed packages
+with their dependencies."
+    (interactive)
+    (let ((pkg-builtins (length package--builtins))
+          (pkg-installed (length package-alist)))
+      (message "%d packages available (%d built-in, %d installed and its dependencies)."
+	       (+ pkg-builtins pkg-installed)
+	       pkg-builtins
+	       pkg-installed)))
+(defun dimagid/count-loaded-features ()
+  "Show the number of features loaded in the current Emacs session."
+  (interactive)
+  (message "%d features loaded in the current Emacs session."
+	   (length features)))
+(defun dimagid/get-default-browser ()
+  "Get the default browser."
+  (interactive)
+  (let ((default-browser (shell-command-to-string
+			  "xdg-settings get default-web-browser")))
+    (message (string-trim default-browser))))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
     "Call ORIG-FUN until the cursor moves.
            Try the repeated popping up to 10 times."
@@ -150,6 +173,13 @@
 
 ;; Config Emacs Lisp
 (use-package lisp-mode
+  :bind
+  (:map emacs-lisp-mode-map
+	("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
+	("C-c ;" . dimagid/elisp-eval-and-comment)
+	("M-." . elisp-def))
+  :hook
+  (emacs-lisp-mode . package-lint-flymake-setup)
   :config
   (defun dimagid/elisp-ert-run-tests-in-buffer ()
     "Deletes all loaded tests from the runtime, saves the current
@@ -167,9 +197,8 @@
     (eval-buffer)
     (ert 't))
   (defun dimagid/elisp-eval-and-comment ()
-    "Evaluate a Lisp expression and insert its value
- as a comment at the end of the line.
- Useful for documenting values or checking values."
+    "Evaluate a Lisp expression and insert its value as a comment at the end
+     of the line. Useful for documenting values or checking values."
     (interactive)
     (save-excursion
       (backward-sexp)
@@ -181,12 +210,7 @@
 			  (format " ;; ⇒ %s"))]
 	(forward-sexp)
 	(end-of-line)
-	(insert result))))
-  :bind (:map emacs-lisp-mode-map
-	      ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
-	      ("C-c ;" . dimagid/elisp-eval-and-comment)
-	      ("M-." . elisp-def))
-  :hook (emacs-lisp-mode . package-lint-flymake-setup))
+	(insert result)))))
 
 ;; the Emacs command shell
 (use-package eshell
@@ -735,7 +759,6 @@
 ;; Pulse highlight on demand or after select functions.
 (use-package pulsar
   :ensure t
-  :defer t
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
@@ -772,10 +795,12 @@
 ;; Support library for PDF documents
 (use-package pdf-tools
   :ensure t
-  :defer t
-  :config (pdf-loader-install)
+  :custom
+  (pdf-view-display-size 'fit-page)
   :hook
-  (pdf-view-mode . (lambda () (display-line-numbers-mode -1))))
+  (pdf-view-mode . (lambda () (display-line-numbers-mode -1)))
+  :config
+  (pdf-loader-install))
 
 ;; Insert dummy pseudo Latin text
 (use-package lorem-ipsum
@@ -788,7 +813,10 @@
 
 ;; An Emacs Atom/RSS feed reader.
 (use-package elfeed
-  :bind ("C-c w e" . elfeed)
+  :bind
+  ("C-c w e" . elfeed)
+  :custom
+  (elfeed-show-truncate-long-urls nil)
   :config
   (define-advice elfeed-search--header (:around (oldfun &rest args))
     "Check if Elfeed database is loaded before searching"
@@ -817,11 +845,17 @@
   (setq lingva-source "auto"
         lingva-target "es"))
 
-;;; Displays Emacs startup stats.
-(message "Emacs initialized in %s with %d garbage collections and %d packages."
+;; Displays Emacs startup stats.
+(message "Emacs initialized in %s with %d garbage collections."
 	 (emacs-init-time)
-	 gcs-done
-	 (length package-alist))
+	 gcs-done)
+
+;; Show the number of built-in, installed, and dependency of available
+;; packages.
+(dimagid/count-available-packages)
+
+;; Show the number of loaded features in the current Emacs session.
+(dimagid/count-loaded-features)
 
 (put 'erase-buffer 'disabled nil)
 (put 'upcase-region 'disabled nil)
