@@ -33,7 +33,8 @@
 	    nerd-icons-completion nerd-icons-corfu nerd-icons-dired
 	    nerd-icons-ibuffer org package-lint-flymake pdf-tools
 	    pulsar rainbow-delimiters smartparens suggest trashed
-	    undo-tree verilog-mode wgrep which-key yasnippet-snippets))
+	    undo-tree verilog-mode wgrep which-key window-tool-bar
+	    yasnippet-snippets))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces

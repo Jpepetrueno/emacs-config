@@ -8,14 +8,7 @@
 ;;; Code:
 
 ;; Reduce garbage collection during startup to improve performance.
-(if noninteractive  ; in CLI sessions
-    ;; Adjust GC settings for CLI sessions to balance performance and
-    ;; memory usage.
-    (setq gc-cons-threshold 536870912  ; 512 MB)
-	  ;; Disable GC during interactive startup to improve
-	  ;; performance. This value is reset to its default value
-	  ;; (0.76 MB) after after-init-hook.
-	  (setq gc-cons-threshold most-positive-fixnum)))
+(setq gc-cons-threshold (* 2 800000))
 
 ;; Enable debugging mode for additional error information
 (setenv "DEBUG" "1")

@@ -51,6 +51,7 @@
   ("C-c o i" . dimagid/find-user-init-file)
   ("C-c o c" . dimagid/check-init-batch-mode)
   ("C-c o e" . dimagid/eshell-other-window)
+  ("C-c o f" . flyspell-mode)
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
   ("<f9>" . browse-url-chromium)
@@ -212,6 +213,17 @@ with their dependencies."
 	(end-of-line)
 	(insert result)))))
 
+;; On-the-fly spell checker. Built-in package.
+(use-package flyspell
+  :hook
+  (after-save . dimagid/flyspell-enable-and-check-buffer)
+  :config
+  (defun dimagid/flyspell-enable-and-check-buffer ()
+    "Enable flyspell-mode or flyspell-prog-mode."
+    (if (derived-mode-p 'prog-mode)
+        (flyspell-prog-mode)
+      (flyspell-mode))))
+
 ;; the Emacs command shell
 (use-package eshell
   :defer t
@@ -317,7 +329,7 @@ with their dependencies."
          ("M-s L" . consult-line-multi)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
-	 ("M-s r" . consult-recent-file)
+         ("M-s i" . consult-recent-file)
          ;; Isearch integration
          ("M-s e" . consult-isearch-history)
          :map isearch-mode-map
@@ -676,8 +688,11 @@ with their dependencies."
   :init
   ;; customize display buffer behaviour
   ;; see ~(info "(elisp) Buffer Display Action Functions")~
-  (setopt ellama-chat-display-action-function #'display-buffer-full-frame)
-  (setopt ellama-instant-display-action-function #'display-buffer-at-bottom)
+  (setopt ellama-chat-display-action-function
+	  #'display-buffer-full-frame)
+  (setopt ellama-instant-display-action-function
+	  #'display-buffer-at-bottom)
+  (setopt ellama-language "Spanish")
   :config
   ;; set ellama-long-lines-length to fill-column
   (setopt ellama-long-lines-length fill-column)
@@ -795,6 +810,7 @@ with their dependencies."
 ;; Support library for PDF documents
 (use-package pdf-tools
   :ensure t
+  :magic ("%PDF" . pdf-view-mode)
   :custom
   (pdf-view-display-size 'fit-page)
   :hook
@@ -813,6 +829,7 @@ with their dependencies."
 
 ;; An Emacs Atom/RSS feed reader.
 (use-package elfeed
+  :ensure t
   :bind
   ("C-c w e" . elfeed)
   :custom
