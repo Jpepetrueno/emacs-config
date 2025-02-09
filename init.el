@@ -8,10 +8,10 @@
 ;;
 ;; This file is not part of GNU Emacs.
 ;;
-;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation, either version 3 of the
+;; License, or (at your option) any later version.
 ;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -19,7 +19,8 @@
 ;; GNU General Public License for more details.
 ;;
 ;; You should have received a copy of the GNU General Public License
-;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+;; along with this program.  If not, see
+;;<http://www.gnu.org/licenses/>.
 ;;
 ;;; Commentary:
 ;; See my Emacs configuration in:
@@ -51,7 +52,7 @@
   ("C-c o i" . dimagid/find-user-init-file)
   ("C-c o c" . dimagid/check-init-batch-mode)
   ("C-c o e" . dimagid/eshell-other-window)
-  ("C-c o f" . flyspell-mode)
+  ("C-c o f" . dimagid/flyspell-enable-by-mode)
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
   ("<f9>" . browse-url-chromium)
@@ -83,10 +84,9 @@
        display-buffer-below-selected))))
   :hook
   ((after-save . check-parens)
-   (after-init . (lambda ()
-		   (setq gc-cons-threshold 800000)
-		   (message "gc-cons-threshold restored to %.2f MB."
-			    (/ gc-cons-threshold 1048576.0)))))
+   (after-init . (lambda () (setq gc-cons-threshold 800000)
+		   (message "gc-cons-threshold restored to %d bytes."
+			    gc-cons-threshold))))
   :config
   (fido-vertical-mode)
   (repeat-mode)
@@ -117,29 +117,35 @@
       (switch-to-buffer-other-window buf)))
   (defun dimagid/count-available-packages ()
     "Show the number of available packages.
-Available packages include built-in packages and installed packages
-with their dependencies."
+    Available packages include built-in packages and installed
+    packages with their dependencies."
     (interactive)
     (let ((pkg-builtins (length package--builtins))
           (pkg-installed (length package-alist)))
-      (message "%d packages available (%d built-in, %d installed and its dependencies)."
+      (message "Pkgs: %d (available), %d (built-in), %d (installed & deps)."
 	       (+ pkg-builtins pkg-installed)
 	       pkg-builtins
 	       pkg-installed)))
-(defun dimagid/count-loaded-features ()
-  "Show the number of features loaded in the current Emacs session."
-  (interactive)
-  (message "%d features loaded in the current Emacs session."
-	   (length features)))
-(defun dimagid/get-default-browser ()
-  "Get the default browser."
-  (interactive)
-  (let ((default-browser (shell-command-to-string
-			  "xdg-settings get default-web-browser")))
-    (message (string-trim default-browser))))
+  (defun dimagid/count-loaded-features ()
+    "Show the number of features loaded in the current Emacs session."
+    (interactive)
+    (message "%d features loaded in the current Emacs session."
+	     (length features)))
+  (defun dimagid/get-default-browser ()
+    "Get the default browser."
+    (interactive)
+    (let ((default-browser (shell-command-to-string
+			    "xdg-settings get default-web-browser")))
+      (message (string-trim default-browser))))
+  (defun dimagid/flyspell-enable-by-mode ()
+    "Enable `flyspell-prog-mode` in prog modes; else `flyspell-mode`."
+    (interactive)
+    (if (derived-mode-p 'prog-mode)
+	(flyspell-prog-mode)
+      (flyspell-mode)))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
-    "Call ORIG-FUN until the cursor moves.
-           Try the repeated popping up to 10 times."
+    "Call ORIG-FUN until the cursor moves. Try the repeated popping up
+     to 10 times."
     (let ((p (point)))
       (dotimes (i 10)
         (when (= p (point))
@@ -184,8 +190,8 @@ with their dependencies."
   :config
   (defun dimagid/elisp-ert-run-tests-in-buffer ()
     "Deletes all loaded tests from the runtime, saves the current
-     buffer and the file being loaded, evaluates the current buffer
-     and runs all loaded tests with ert."
+    buffer and the file being loaded, evaluates the current buffer
+    and runs all loaded tests with ert."
     (interactive)
     (save-buffer)
     (let ((file-to-load (progn
@@ -198,8 +204,9 @@ with their dependencies."
     (eval-buffer)
     (ert 't))
   (defun dimagid/elisp-eval-and-comment ()
-    "Evaluate a Lisp expression and insert its value as a comment at the end
-     of the line. Useful for documenting values or checking values."
+    "Evaluate a Lisp expression and insert its value as a comment at
+    the end of the line. Useful for documenting values or checking
+    values."
     (interactive)
     (save-excursion
       (backward-sexp)
@@ -212,17 +219,6 @@ with their dependencies."
 	(forward-sexp)
 	(end-of-line)
 	(insert result)))))
-
-;; On-the-fly spell checker. Built-in package.
-(use-package flyspell
-  :hook
-  (after-save . dimagid/flyspell-enable-and-check-buffer)
-  :config
-  (defun dimagid/flyspell-enable-and-check-buffer ()
-    "Enable flyspell-mode or flyspell-prog-mode."
-    (if (derived-mode-p 'prog-mode)
-        (flyspell-prog-mode)
-      (flyspell-mode))))
 
 ;; the Emacs command shell
 (use-package eshell
