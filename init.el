@@ -36,7 +36,7 @@
 (package-initialize)
 
 ;; Add MELPA repository to Emacs package archives
-(add-to-list #'package-archives
+(add-to-list 'package-archives
 	     '("melpa" . "https://melpa.org/packages/")
 	     t)
 
@@ -63,7 +63,7 @@
   (load-prefer-newer t)
   (package-install-upgrade-built-in t)
   (visible-bell t) ; Enable visual (flash screen) instead of audible
-  (tab-always-indent #'complete)
+  (tab-always-indent 'complete)
   (use-short-answers t)
   (require-final-newline t)
   (completion-ignore-case t)
@@ -117,8 +117,8 @@
       (switch-to-buffer-other-window buf)))
   (defun dimagid/count-available-packages ()
     "Show the number of available packages.
-    Available packages include built-in packages and installed
-    packages with their dependencies."
+  Available packages include built-in packages and installed
+  packages with their dependencies."
     (interactive)
     (let ((pkg-builtins (length package--builtins))
           (pkg-installed (length package-alist)))
@@ -145,13 +145,13 @@
       (flyspell-mode)))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
     "Call ORIG-FUN until the cursor moves. Try the repeated popping up
-     to 10 times."
+  to 10 times."
     (let ((p (point)))
-      (dotimes (i 10)
+      (dotimes (_ 10)
         (when (= p (point))
           (apply orig-fun args)))))
   (advice-add 'list-packages :before #'package-refresh-contents)
-  (advice-add 'pop-to-mark-command :around #'modi/multi-pop-to-mark))
+  (advice-add 'pop-to-mark-command :around 'modi/multi-pop-to-mark))
 
 ;; Colorful and legible themes
 (use-package ef-themes
@@ -159,7 +159,7 @@
   :init
   (mapc #'disable-theme custom-enabled-themes)
   :config
-  (ef-themes-select #'ef-owl)
+  (ef-themes-select 'ef-owl)
   (setopt ef-themes-to-toggle '(ef-owl ef-eagle)
 	  ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
 	  ef-themes-variable-pitch-ui t))
@@ -174,9 +174,9 @@
   :ensure t
   :config
   (advice-add 'describe-function-1
-	      :after #'elisp-demos-advice-describe-function-1)
+	      :after 'elisp-demos-advice-describe-function-1)
   (advice-add 'helpful-update
-	      :after #'elisp-demos-advice-helpful-update))
+	      :after 'elisp-demos-advice-helpful-update))
 
 ;; Config Emacs Lisp
 (use-package lisp-mode
@@ -190,8 +190,8 @@
   :config
   (defun dimagid/elisp-ert-run-tests-in-buffer ()
     "Deletes all loaded tests from the runtime, saves the current
-    buffer and the file being loaded, evaluates the current buffer
-    and runs all loaded tests with ert."
+  buffer and the file being loaded, evaluates the current buffer
+  and runs all loaded tests with ert."
     (interactive)
     (save-buffer)
     (let ((file-to-load (progn
@@ -205,17 +205,17 @@
     (ert 't))
   (defun dimagid/elisp-eval-and-comment ()
     "Evaluate a Lisp expression and insert its value as a comment at
-    the end of the line. Useful for documenting values or checking
-    values."
+  the end of the line. Useful for documenting values or checking
+  values."
     (interactive)
     (save-excursion
       (backward-sexp)
-      (-let [result
-             (thread-last (thing-at-point #'sexp)
-			  read-from-string
-			  car
-			  eval
-			  (format " ;; ⇒ %s"))]
+      (let* ((result
+              (thread-last (thing-at-point 'sexp)
+                           read-from-string
+                           car
+                           eval
+                           (format " ;; ⇒ %s"))))
 	(forward-sexp)
 	(end-of-line)
 	(insert result)))))
@@ -224,7 +224,7 @@
 (use-package eshell
   :defer t
   :config
-  (setopt eshell-hist-ignoredups #'erase))
+  (setopt eshell-hist-ignoredups 'erase))
 
 ;; Info package for Emacs
 (use-package info
@@ -236,9 +236,9 @@
   :defer t
   :hook (Info-mode . (lambda ()
                        (define-key Info-mode-map (kbd "{")
-				   #'View-scroll-half-page-backward)
+				   'View-scroll-half-page-backward)
                        (define-key Info-mode-map (kbd "}")
-				   #'View-scroll-half-page-forward))))
+				   'View-scroll-half-page-forward))))
 
 ;; Syntax highlighting of known Elisp symbols.
 (use-package highlight-defined
@@ -249,11 +249,9 @@
 (use-package completion-preview
   :bind (:map completion-preview-active-mode-map
 	      ("M-n" . completion-preview-next-candidate)
-	      ("M-p" . completion-preview-prev-candidate))
-  :hook (prog-mode text-mode markdown-mode)
-  :config
-  (global-completion-preview-mode)
-  :delight)
+	      ("M-p" . completion-preview-prev-candidate)
+	      ("M-f" . completion-preview-insert-word))
+  :config (global-completion-preview-mode))
 
 ;; Transient user interfaces for various modes.
 (use-package casual
@@ -263,8 +261,7 @@
 ;; Configure savehist to save minibuffer history. Built-in package.
 (use-package savehist
   :config
-  (setopt savehist-additional-variables '(corfu-history
-					  register-alist
+  (setopt savehist-additional-variables '(register-alist
 					  kill-ring))
   (savehist-mode))
 
@@ -345,11 +342,11 @@
   ;; `consult-register-store' and the built-in commands.  This
   ;; improves the register formatting, adds thin separator lines,
   ;; register sorting and hides the window mode line.
-  (advice-add #'register-preview :override #'consult-register-window)
+  (advice-add #'register-preview :override 'consult-register-window)
   (setopt register-preview-delay 0.5)
   ;; Use Consult to select xref locations with preview
-  (setopt xref-show-xrefs-function #'consult-xref
-          xref-show-definitions-function #'consult-xref)
+  (setopt xref-show-xrefs-function 'consult-xref
+          xref-show-definitions-function 'consult-xref)
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
@@ -377,7 +374,7 @@
   ;; instead.
   (keymap-set consult-narrow-map
 	      (concat consult-narrow-key " ?")
-	      #'embark-prefix-help-command)
+	      'embark-prefix-help-command)
   (defun consult-info-emacs ()
     "Search through Emacs info pages."
     (interactive)
@@ -409,7 +406,7 @@
    ("C-." . embark-act))
   :init
   ;; Optionally replace the key help with a completing-read interface
-  (setopt prefix-help-command #'embark-prefix-help-command)
+  (setopt prefix-help-command 'embark-prefix-help-command)
   :config
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
@@ -428,22 +425,6 @@
   :ensure t
   :defer t)
 
-;; Corfu enhances in-buffer completion with a small completion popup.
-(use-package corfu
-  :ensure t
-  :defer t
-  :init
-  (setopt corfu-preview-current nil
-	corfu-min-width 20
-	corfu-popupinfo-delay '(1.25 . 0.5))
-  :config
-  (global-corfu-mode)
-  (corfu-popupinfo-mode) ; shows documentation after `corfu-popupinfo-delay'
-  ;; Sort by input history (no need to modify `corfu-sort-function').
-  (with-eval-after-load 'savehist
-    (corfu-history-mode 1)
-    (add-to-list #'savehist-additional-variables #'corfu-history)))
-
 ;; Emacs nerd font icons library.
 (use-package nerd-icons
   :ensure t)
@@ -454,14 +435,7 @@
   :after marginalia
   :config
   (nerd-icons-completion-mode)
-  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
-
-;; Introduces a margin formatter for Corfu which adds icons.
-(use-package nerd-icons-corfu
-  :ensure t
-  :after corfu
-  :custom
-  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
+  (add-hook 'marginalia-mode-hook 'nerd-icons-completion-marginalia-setup))
 
 ;; Shows icons for each file in dired mode.
 (use-package nerd-icons-dired
@@ -491,7 +465,7 @@
   :ensure t
   :defer t
   :config
-  (add-hook 'magit-post-refresh-hook #'diff-hl-magit-post-refresh))
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
 
 ;; Highlight uncommitted changes using VC
 (use-package diff-hl
@@ -506,7 +480,7 @@
   :ensure t
   :hook (prog-mode text-mode markdown-mode)
   :config
-  (set-face-attribute #'sp-pair-overlay-face nil :background "#444444")
+  (set-face-attribute 'sp-pair-overlay-face nil :background "#444444")
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
   ;; enable the pres-set bindings
@@ -576,8 +550,8 @@
                   (diff-hl-dired-mode)
                   (dired-omit-mode)))
   :custom
-  (dired-recursive-copies #'always)
-  (dired-recursive-deletes #'always)
+  (dired-recursive-copies 'always)
+  (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
   (dired-dwim-target t))
 
@@ -773,7 +747,7 @@
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
-  (setq pulsar-face #'pulsar-green
+  (setq pulsar-face 'pulsar-green
 	pulsar-iterations 5)
   (pulsar-global-mode))
 
@@ -788,15 +762,15 @@
 (use-package shell
   :hook (shell-mode . my-shell-mode-hook-func)
   :config
-  (defun my-shell-mode-hook-func ()
-    (set-process-sentinel (get-buffer-process (current-buffer))
-			  #'my-shell-mode-kill-buffer-on-exit))
   (defun my-shell-mode-kill-buffer-on-exit (process state)
     (message "%s" state)
     (if (or
 	 (string-match "exited abnormally with code.*" state)
 	 (string-match "finished" state))
-	(kill-buffer (current-buffer)))))
+	(kill-buffer (current-buffer))))
+  (defun my-shell-mode-hook-func ()
+    (set-process-sentinel (get-buffer-process (current-buffer))
+			  'my-shell-mode-kill-buffer-on-exit)))
 
 ;; Suggest elisp functions that give the output requested.
 (use-package suggest
@@ -811,8 +785,7 @@
   (pdf-view-display-size 'fit-page)
   :hook
   (pdf-view-mode . (lambda () (display-line-numbers-mode -1)))
-  :config
-  (pdf-loader-install))
+  :config (pdf-loader-install))
 
 ;; Insert dummy pseudo Latin text
 (use-package lorem-ipsum
