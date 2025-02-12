@@ -56,6 +56,12 @@
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
   ("<f9>" . browse-url-chromium)
+  (:map emacs-lisp-mode-map
+	("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
+	("C-c j" . dimagid/elisp-eval-and-comment)
+	("M-." . elisp-def))
+  (:map lisp-interaction-mode-map
+	("C-c j" . dimagid/elisp-eval-and-comment))
   :init
   (setq custom-file (locate-user-emacs-file "custom.el"))
   (load custom-file :no-error-if-file-is-missing)
@@ -75,18 +81,21 @@
   (enable-recursive-minibuffers t)
   (set-mark-command-repeat-pop t)
   (global-auto-revert-non-file-buffers t)
-  (recentf-max-saved-items 50)
+  (recentf-max-saved-items 100)
   (shr-width 70) ; Set HTML width to 70
-  (default-input-method 'spanish-postfix) ; A' -> Á, N~ -> Ñ, ?/ -> ¿
+  (default-input-method 'spanish-prefix) ; 'A -> Á, ~N -> Ñ, ~? -> ¿
+  (completion-auto-help 'visible)
+  (completion-auto-select 'second-tab)
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
        display-buffer-below-selected))))
   :hook
-  ((after-save . check-parens)
-   (after-init . (lambda () (setq gc-cons-threshold 800000)
-		   (message "gc-cons-threshold restored to %d bytes."
-			    gc-cons-threshold))))
+  (emacs-lisp-mode . package-lint-flymake-setup)
+  (after-save . check-parens)
+  (after-init . (lambda () (setq gc-cons-threshold 800000)
+		  (message "gc-cons-threshold restored to %d bytes."
+			   gc-cons-threshold)))
   :config
   (fido-vertical-mode)
   (repeat-mode)
@@ -116,7 +125,7 @@
       (switch-to-buffer (other-buffer buf))
       (switch-to-buffer-other-window buf)))
   (defun dimagid/count-available-packages ()
-    "Show the number of available packages.
+    "Show the number of available packages in current Emacs session.
   Available packages include built-in packages and installed
   packages with their dependencies."
     (interactive)
@@ -138,20 +147,50 @@
 			    "xdg-settings get default-web-browser")))
       (message (string-trim default-browser))))
   (defun dimagid/flyspell-enable-by-mode ()
-    "Enable `flyspell-prog-mode` in prog modes; else `flyspell-mode`."
+    "Enable `flyspell-prog-mode` in prog modes, else `flyspell-mode`."
     (interactive)
     (if (derived-mode-p 'prog-mode)
 	(flyspell-prog-mode)
       (flyspell-mode)))
+  (defun dimagid/elisp-ert-run-tests-in-buffer ()
+    "Delete all loaded tests, evaluate the buffer, and run tests.
+  This function deletes all loaded ERT tests, saves the current buffer
+  and the file being loaded, evaluates the buffer, and runs all tests."
+    (interactive)
+    (save-buffer)
+    (let ((file-to-load (progn
+			  (goto-char (point-min))
+			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
+			  (match-string 1))))
+      (with-current-buffer (find-file-noselect file-to-load)
+	(save-buffer)))
+    (ert-delete-all-tests)
+    (eval-buffer)
+    (ert 't))
+  (defun dimagid/elisp-eval-and-comment ()
+    "Evaluate the sexp and insert its value as a ';; ⇒' comment."
+    (interactive)
+    (save-excursion
+      (backward-sexp)
+      (let* ((result
+              (thread-last (thing-at-point 'sexp)
+                           read-from-string
+                           car
+                           eval
+                           (format " ;; ⇒ %s"))))
+	(forward-sexp)
+	(end-of-line)
+	(insert result))))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
-    "Call ORIG-FUN until the cursor moves. Try the repeated popping up
-  to 10 times."
+    "Call ORIG-FUN until the cursor moves, up to 10 times."
     (let ((p (point)))
       (dotimes (_ 10)
         (when (= p (point))
           (apply orig-fun args)))))
-  (advice-add 'list-packages :before #'package-refresh-contents)
-  (advice-add 'pop-to-mark-command :around 'modi/multi-pop-to-mark))
+  (advice-add 'list-packages
+	      :before #'package-refresh-contents)
+  (advice-add 'pop-to-mark-command
+	      :around #'modi/multi-pop-to-mark))
 
 ;; Colorful and legible themes
 (use-package ef-themes
@@ -177,48 +216,6 @@
 	      :after 'elisp-demos-advice-describe-function-1)
   (advice-add 'helpful-update
 	      :after 'elisp-demos-advice-helpful-update))
-
-;; Config Emacs Lisp
-(use-package lisp-mode
-  :bind
-  (:map emacs-lisp-mode-map
-	("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
-	("C-c ;" . dimagid/elisp-eval-and-comment)
-	("M-." . elisp-def))
-  :hook
-  (emacs-lisp-mode . package-lint-flymake-setup)
-  :config
-  (defun dimagid/elisp-ert-run-tests-in-buffer ()
-    "Deletes all loaded tests from the runtime, saves the current
-  buffer and the file being loaded, evaluates the current buffer
-  and runs all loaded tests with ert."
-    (interactive)
-    (save-buffer)
-    (let ((file-to-load (progn
-			  (goto-char (point-min))
-			  (re-search-forward "(load-file \"\\([^)]+\\)\"")
-			  (match-string 1))))
-      (with-current-buffer (find-file-noselect file-to-load)
-	(save-buffer)))
-    (ert-delete-all-tests)
-    (eval-buffer)
-    (ert 't))
-  (defun dimagid/elisp-eval-and-comment ()
-    "Evaluate a Lisp expression and insert its value as a comment at
-  the end of the line. Useful for documenting values or checking
-  values."
-    (interactive)
-    (save-excursion
-      (backward-sexp)
-      (let* ((result
-              (thread-last (thing-at-point 'sexp)
-                           read-from-string
-                           car
-                           eval
-                           (format " ;; ⇒ %s"))))
-	(forward-sexp)
-	(end-of-line)
-	(insert result)))))
 
 ;; the Emacs command shell
 (use-package eshell
@@ -246,12 +243,15 @@
   :hook (emacs-lisp-mode . highlight-defined-mode))
 
 ;; Preview completion with inline overlay. Built-in package.
-(use-package completion-preview
-  :bind (:map completion-preview-active-mode-map
-	      ("M-n" . completion-preview-next-candidate)
-	      ("M-p" . completion-preview-prev-candidate)
-	      ("M-f" . completion-preview-insert-word))
-  :config (global-completion-preview-mode))
+;; (use-package completion-preview
+;;   :bind (:map completion-preview-active-mode-map
+;; 	      ("M-n" . completion-preview-next-candidate)
+;; 	      ("M-p" . completion-preview-prev-candidate)
+;; 	      ("M-f" . completion-preview-insert-word))
+;;   :init
+;;   (global-completion-preview-mode)
+;;   :custom
+;;   (completion-preview-minimum-symbol-length 2))
 
 ;; Transient user interfaces for various modes.
 (use-package casual
@@ -464,8 +464,10 @@
 (use-package magit
   :ensure t
   :defer t
+  :hook
+  (magit-post-refresh . diff-hl-magit-post-refresh)
   :config
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh))
+  (setopt magit-format-file-function #'magit-format-file-nerd-icons))
 
 ;; Highlight uncommitted changes using VC
 (use-package diff-hl
@@ -553,7 +555,8 @@
   (dired-recursive-copies 'always)
   (dired-recursive-deletes 'always)
   (delete-by-moving-to-trash t)
-  (dired-dwim-target t))
+  (dired-dwim-target t)
+  (wdired-allow-to-change-permissions t))
 
 ;; Manage and navigate projects in Emacs easily.
 (use-package dired-subtree
@@ -763,12 +766,20 @@
   :hook (shell-mode . my-shell-mode-hook-func)
   :config
   (defun my-shell-mode-kill-buffer-on-exit (process state)
+    "Kill the shell buffer when the process exits.
+  This function is intended to be used as a hook for `shell-mode'.
+  It checks if the PROCESS has exited (either normally or abnormally)
+  based on the STATE string, and kills the buffer if so."
     (message "%s" state)
     (if (or
 	 (string-match "exited abnormally with code.*" state)
 	 (string-match "finished" state))
 	(kill-buffer (current-buffer))))
   (defun my-shell-mode-hook-func ()
+    "Set up `my-shell-mode-kill-buffer-on-exit' as the sentinel.
+  This function is intended to be used as a hook for `shell-mode'.
+  It configures the current shell buffer to automatically kill itself
+  when the shell process exits."
     (set-process-sentinel (get-buffer-process (current-buffer))
 			  'my-shell-mode-kill-buffer-on-exit)))
 
@@ -805,7 +816,7 @@
   (elfeed-show-truncate-long-urls nil)
   :config
   (define-advice elfeed-search--header (:around (oldfun &rest args))
-    "Check if Elfeed database is loaded before searching"
+    "Check if Elfeed database is loaded before searching."
     (if elfeed-db
         (apply oldfun args)
       "No database loaded yet"))
