@@ -92,6 +92,7 @@
        display-buffer-below-selected))))
   :hook
   (emacs-lisp-mode . package-lint-flymake-setup)
+  (sh-mode . flymake-mode)
   (after-save . check-parens)
   (after-init . (lambda () (setq gc-cons-threshold 800000)
 		  (message "gc-cons-threshold restored to %d bytes."
@@ -230,12 +231,9 @@
 
 ;; Peruse file or buffer without editing. Built-in package.
 (use-package view
-  :defer t
-  :hook (Info-mode . (lambda ()
-                       (define-key Info-mode-map (kbd "{")
-				   'View-scroll-half-page-backward)
-                       (define-key Info-mode-map (kbd "}")
-				   'View-scroll-half-page-forward))))
+  :bind (:map Info-mode-map
+              ("{" . View-scroll-half-page-backward)
+              ("}" . View-scroll-half-page-forward)))
 
 ;; Syntax highlighting of known Elisp symbols.
 (use-package highlight-defined
@@ -747,6 +745,7 @@
 ;; Pulse highlight on demand or after select functions.
 (use-package pulsar
   :ensure t
+  :defer 1
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
@@ -800,7 +799,9 @@
 
 ;; Insert dummy pseudo Latin text
 (use-package lorem-ipsum
-  :ensure t)
+  :ensure t
+  :commands (lorem-ipsum-insert-sentences
+	     lorem-ipsum-insert-paragraphs))
 
 ;; Increase selected region by semantic units.
 (use-package expand-region
