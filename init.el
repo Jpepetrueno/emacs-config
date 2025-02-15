@@ -40,15 +40,14 @@
 	     '("melpa" . "https://melpa.org/packages/")
 	     t)
 
-;; Gather statistics on package loading times
-(setq use-package-compute-statistics t)
-
-;; Global Emacs settings (no package required)
+;; Customization of the One True Editor
 (use-package emacs
   :bind
   ("C-x C-b" . ibuffer)
   ("<down-mouse-8>" . kill-ring-save)
   ("<down-mouse-9>" . yank)
+  ("M-n" . scroll-up-line)
+  ("M-p" . scroll-down-line)
   ("C-c o i" . dimagid/find-user-init-file)
   ("C-c o c" . dimagid/check-init-batch-mode)
   ("C-c o e" . dimagid/eshell-other-window)
@@ -81,6 +80,7 @@
   (enable-recursive-minibuffers t)
   (set-mark-command-repeat-pop t)
   (global-auto-revert-non-file-buffers t)
+  (scroll-preserve-screen-position 1)
   (recentf-max-saved-items 100)
   (shr-width 70) ; Set HTML width to 70
   (default-input-method 'spanish-prefix) ; 'A -> Á, ~N -> Ñ, ~? -> ¿
@@ -218,14 +218,16 @@
   (advice-add 'helpful-update
 	      :after 'elisp-demos-advice-helpful-update))
 
-;; the Emacs command shell
+;; The Emacs command shell
 (use-package eshell
   :defer t
   :config
   (setopt eshell-hist-ignoredups 'erase))
 
-;; Info package for Emacs
+;; Info package for Emacs. Built-in package.
 (use-package info
+  :bind (:map Info-mode-map
+	      ("C-o" . casual-info-tmenu))
   :config
   (setopt Info-hide-note-references nil))
 
@@ -240,38 +242,24 @@
   :ensure t
   :hook (emacs-lisp-mode . highlight-defined-mode))
 
-;; Preview completion with inline overlay. Built-in package.
-;; (use-package completion-preview
-;;   :bind (:map completion-preview-active-mode-map
-;; 	      ("M-n" . completion-preview-next-candidate)
-;; 	      ("M-p" . completion-preview-prev-candidate)
-;; 	      ("M-f" . completion-preview-insert-word))
-;;   :init
-;;   (global-completion-preview-mode)
-;;   :custom
-;;   (completion-preview-minimum-symbol-length 2))
-
-;; Transient user interfaces for various modes.
+;; Opinionated Transient-based keyboard interfaces for Emacs modes
 (use-package casual
   :ensure t
   :defer t)
 
-;; Configure savehist to save minibuffer history. Built-in package.
+;; Save minibuffer history. Built-in package.
 (use-package savehist
   :config
   (setopt savehist-additional-variables '(register-alist
 					  kill-ring))
   (savehist-mode))
 
-;; Enable marginalia to add completion annotations to existing
-;;commands.
+;; Enrich existing commands with completion annotations
 (use-package marginalia
   :ensure t
   :config (marginalia-mode))
 
-;; Find recent file using completing-read.
-;; Configuration inspired by the official Consult repo:
-;; https://github.com/minad/consult
+;; Consulting "completing-read"
 (use-package consult
   :ensure t
   ;; Replace bindings. Lazily loaded by `use-package'.
@@ -423,11 +411,11 @@
   :ensure t
   :defer t)
 
-;; Emacs nerd font icons library.
+;; Manage how Nerd Fonts formats icons
 (use-package nerd-icons
   :ensure t)
 
-;; Add icons to completion candidates.
+;; Add icons to completion candidates
 (use-package nerd-icons-completion
   :ensure t
   :after marginalia
@@ -435,13 +423,13 @@
   (nerd-icons-completion-mode)
   (add-hook 'marginalia-mode-hook 'nerd-icons-completion-marginalia-setup))
 
-;; Shows icons for each file in dired mode.
+;; Shows icons for each file in dired mode
 (use-package nerd-icons-dired
   :ensure t
   :hook dired-mode
   :delight)
 
-;; Display nerd icons in ibuffer.
+;; Display nerd icons in ibuffer
 (use-package nerd-icons-ibuffer
   :ensure t
   :hook (ibuffer-mode . nerd-icons-ibuffer-mode))
@@ -467,15 +455,14 @@
   :config
   (setopt magit-format-file-function #'magit-format-file-nerd-icons))
 
-;; Highlight uncommitted changes using VC
+;; Highlight uncommitted changes on the side of a window using VC
 (use-package diff-hl
   :ensure t
   :defer t
   :config
   (global-diff-hl-mode))
 
-;; Automatic insertion, wrapping and paredit-like
-;; navigation with user defined pairs.
+;; Auto-insertion, wrapping, and navigation for custom pairs.
 (use-package smartparens
   :ensure t
   :hook (prog-mode text-mode markdown-mode)
@@ -521,7 +508,7 @@
   (auto-fill-mode)
   :delight)
 
-;; This package is a minor mode to visualize blanks. Built-in package.
+;; Visualize blanck (TAB, (HARD) SPACE and NEWLINE). Built-in package.
 (use-package whitespace
   :hook (text-mode markdown-mode)
   :delight)
@@ -531,7 +518,7 @@
   :ensure t
   :config (eros-mode))
 
-;; Dired, the Directory Editor
+;; Manage files and directories. Built-in package.
 (use-package dired
   :bind
   (:map dired-mode-map
@@ -566,28 +553,18 @@
 
 ;; Operate on buffers like dired. Built-in package.
 (use-package ibuffer
-  :bind
-  (:map ibuffer-mode-map
-	("C-o" . casual-ibuffer-tmenu)))
+  :bind (:map ibuffer-mode-map
+	      ("C-o" . casual-ibuffer-tmenu)))
 
-;; Incremental search with partial matches, navigation, and search
-;; history. Built-in package.
+;; Incremental search. Built-in package.
 (use-package isearch
-  :bind
-  (:map isearch-mode-map
-	("C-o" . casual-isearch-tmenu)))
-
-;; Info package for Emacs. Built-in package.
-(use-package info
-  :bind
-  (:map Info-mode-map
-	("C-o" . casual-info-tmenu)))
+  :bind (:map isearch-mode-map
+	      ("C-o" . casual-isearch-tmenu)))
 
 ;; The GNU Emacs calculator. Built-in package.
 (use-package calc
-  :bind
-  (:map calc-mode-map
-	("C-o" . casual-calc-tmenu))
+  :bind (:map calc-mode-map
+	      ("C-o" . casual-calc-tmenu))
   :hook
   (calc-mode . (lambda () (display-line-numbers-mode -1))))
 
@@ -601,31 +578,28 @@
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
-;; Dictionary client for accessing dictionary servers via RFC 2229 protocol
-;; (Note: RFC 2229 is an informational document. RFC: Request for Comments, a
-;; system of Internet documents). Built-in package.
+;; Client for accessing dictionary servers.  Built-in package.
 (use-package dictionary
   :bind ("<f7>" . dictionary-lookup-definition)
   :config (setopt dictionary-server "dict.org"))
 
 ;; Interaction mode for Emacs Lisp. Built-in package.
 (use-package ielm
-  :bind
-  (:map ielm-map
-	("C-c C-q" . dimagid/ielm-clear-repl)
-	("<S-return>" . dimagid/ielm-insert-newline))
+  :bind (:map ielm-map
+	      ("C-c C-q" . dimagid/ielm-clear-repl)
+	      ("<S-return>" . dimagid/ielm-insert-newline))
   :config
   (defun dimagid/ielm-clear-repl ()
     "Clear current REPL buffer."
     (interactive)
     (let ((inhibit-read-only t))
-	(erase-buffer)
-	(ielm-send-input)))
+      (erase-buffer)
+      (ielm-send-input)))
   (defun dimagid/ielm-insert-newline ()
     "Insert a newline without evaluating the sexp."
     (interactive)
     (let ((ielm-dynamic-return nil))
-	(ielm-return))))
+      (ielm-return))))
 
 ;; The Emacs Client for LSP servers. Built-in package.
 (use-package eglot
@@ -716,8 +690,7 @@
 	 ("C-c C-d" . helpful-at-point)
 	 ("C-h F" . helpful-function)))
 
-;; A cornucopia of useful interactive commands to make your Emacs experience
-;; more enjoyable.
+;; A cornucopia of useful interactive commands
 (use-package crux
   :ensure t
   :bind
@@ -726,7 +699,7 @@
   (:map ctl-x-4-map
 	("t" . crux-transpose-windows)))
 
-;; Track command frequencies.
+;; Track command frequencies
 (use-package keyfreq
   :ensure t
   :config
@@ -742,15 +715,13 @@
   (keyfreq-mode)
   (keyfreq-autosave-mode))
 
-;; Pulse highlight on demand or after select functions.
+;; Pulse highlight on demand or after select functions
 (use-package pulsar
   :ensure t
   :defer 1
   :custom
   (pulsar-pulse-region-functions pulsar-pulse-region-common-functions)
   :config
-  (setq pulsar-face 'pulsar-green
-	pulsar-iterations 5)
   (pulsar-global-mode))
 
 ;; Collection of yasnippet snippets
@@ -782,7 +753,7 @@
     (set-process-sentinel (get-buffer-process (current-buffer))
 			  'my-shell-mode-kill-buffer-on-exit)))
 
-;; Suggest elisp functions that give the output requested.
+;; Suggest elisp functions that give the output requested
 (use-package suggest
   :ensure t
   :defer t)
@@ -803,7 +774,7 @@
   :commands (lorem-ipsum-insert-sentences
 	     lorem-ipsum-insert-paragraphs))
 
-;; Increase selected region by semantic units.
+;; Increase selected region by semantic units
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
@@ -811,8 +782,7 @@
 ;; An Emacs Atom/RSS feed reader.
 (use-package elfeed
   :ensure t
-  :bind
-  ("C-c w e" . elfeed)
+  :bind ("C-c w e" . elfeed)
   :custom
   (elfeed-show-truncate-long-urls nil)
   :config

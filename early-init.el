@@ -7,8 +7,10 @@
 ;;
 ;;; Code:
 
-;; Reduce garbage collection during startup to improve performance.
-(setq gc-cons-threshold (* 2 800000))
+;; Tune Emacs performance and package management
+(setq gc-cons-threshold (* 2 800000)
+      use-package-compute-statistics t
+      use-package-enable-imenu-support t)
 
 ;; Disable debugging mode by default (set to "1" to enable)
 (setenv "DEBUG" nil)
