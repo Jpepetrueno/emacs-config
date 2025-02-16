@@ -28,10 +28,6 @@
 ;;
 ;;; Code:
 
-;; Load package manager in batch mode
-(if noninteractive
-    (require 'package))
-
 ;; Initialize the package system
 (package-initialize)
 
@@ -40,7 +36,7 @@
 	     '("melpa" . "https://melpa.org/packages/")
 	     t)
 
-;; Customization of the One True Editor
+;; Customizations that don't require loading a package
 (use-package emacs
   :bind
   ("C-x C-b" . ibuffer)
@@ -48,17 +44,15 @@
   ("<down-mouse-9>" . yank)
   ("M-n" . scroll-up-line)
   ("M-p" . scroll-down-line)
-  ("C-c o i" . dimagid/find-user-init-file)
-  ("C-c o c" . dimagid/check-init-batch-mode)
   ("C-c o e" . dimagid/eshell-other-window)
   ("C-c o f" . dimagid/flyspell-enable-by-mode)
+  ("C-c o i" . dimagid/find-user-init-file)
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
   ("<f9>" . browse-url-chromium)
   (:map emacs-lisp-mode-map
-	("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
-	("C-c j" . dimagid/elisp-eval-and-comment)
-	("M-." . elisp-def))
+        ("C-c b" . dimagid/elisp-ert-run-tests-in-buffer)
+	("C-c j" . dimagid/elisp-eval-and-comment))
   (:map lisp-interaction-mode-map
 	("C-c j" . dimagid/elisp-eval-and-comment))
   :init
@@ -91,12 +85,8 @@
       (display-buffer-reuse-mode-window
        display-buffer-below-selected))))
   :hook
-  (emacs-lisp-mode . package-lint-flymake-setup)
-  (sh-mode . flymake-mode)
+  (after-init . dimagid/restore-gc-cons-threshold)
   (after-save . check-parens)
-  (after-init . (lambda () (setq gc-cons-threshold 800000)
-		  (message "gc-cons-threshold restored to %d bytes."
-			   gc-cons-threshold)))
   :config
   (fido-vertical-mode)
   (repeat-mode)
@@ -109,16 +99,16 @@
   (size-indication-mode)
   (winner-mode) ; Undo/redo window configs with C-c <left>/<right>
   (windmove-default-keybindings) ; windmove with Shift+arrows
+  (defun dimagid/restore-gc-cons-threshold ()
+    "Resets to 800000 bytes."
+    (setq gc-cons-threshold 800000)
+    (message "gc-cons-threshold restored to %d bytes."
+	     gc-cons-threshold))
   (defun dimagid/find-user-init-file ()
     "Find Emacs init file in another window."
     (interactive)
     (find-file-other-window (expand-file-name
 			     "init.el" user-emacs-directory)))
-  (defun dimagid/check-init-batch-mode ()
-    "Use batch mode to check emacs initialization."
-    (interactive)
-    (shell-command
-     (format "emacs -batch -l %sinit.el" user-emacs-directory)))
   (defun dimagid/eshell-other-window ()
     "Open eshell in other window."
     (interactive)
@@ -204,12 +194,13 @@
 	  ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
 	  ef-themes-variable-pitch-ui t))
 
-;; Macro-aware go-to-definition for elisp.
+;; Macro-aware go-to-definition for elisp
 (use-package elisp-def
-  :ensure t
-  :defer t)
+  :bind (:map emacs-lisp-mode-map
+	      ("M-." . elisp-def))
+  :ensure t)
 
-;; Elisp API Demos.
+;; Elisp API Demos
 (use-package elisp-demos
   :ensure t
   :config
@@ -218,7 +209,12 @@
   (advice-add 'helpful-update
 	      :after 'elisp-demos-advice-helpful-update))
 
-;; The Emacs command shell
+;; A package-lint Flymake backend
+(use-package package-lint-flymake
+  :ensure t
+  :hook (emacs-lisp-mode . package-lint-flymake-setup))
+
+;; The Emacs command shell. Built-in package.
 (use-package eshell
   :defer t
   :config
@@ -237,7 +233,7 @@
               ("{" . View-scroll-half-page-backward)
               ("}" . View-scroll-half-page-forward)))
 
-;; Syntax highlighting of known Elisp symbols.
+;; Syntax highlighting of known Elisp symbols
 (use-package highlight-defined
   :ensure t
   :hook (emacs-lisp-mode . highlight-defined-mode))
@@ -246,6 +242,10 @@
 (use-package casual
   :ensure t
   :defer t)
+
+;; Major mode for editing shell scripts
+(use-package sh
+  :hook (sh-mode . flymake-mode))
 
 ;; Save minibuffer history. Built-in package.
 (use-package savehist
@@ -291,6 +291,8 @@
          ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flymake)           ;; Alternative: consult-flycheck
+	 ("M-g M-n" . flymake-goto-next-error)
+	 ("M-g M-p" . flymake-goto-prev-error)
          ("M-g g" . consult-goto-line)         ;; goto-line
          ("M-g M-g" . consult-goto-line)       ;; goto-line
          ("M-g o" . consult-outline)           ;; Alternative: consult-org-heading
@@ -495,7 +497,7 @@
   :config (which-key-mode)
   :delight)
 
-;; Highlight brackets according to their depth.
+;; Highlight brackets according to their depth
 (use-package rainbow-delimiters
   :ensure t
   :hook (prog-mode . rainbow-delimiters-mode))
@@ -513,7 +515,7 @@
   :hook (text-mode markdown-mode)
   :delight)
 
-;; Evaluation Result OverlayS for Emacs Lisp.
+;; Evaluation Result OverlayS for Emacs Lisp
 (use-package eros
   :ensure t
   :config (eros-mode))
@@ -543,7 +545,7 @@
   (dired-dwim-target t)
   (wdired-allow-to-change-permissions t))
 
-;; Manage and navigate projects in Emacs easily.
+;; Manage and navigate projects in Emacs easily
 (use-package dired-subtree
   :ensure t
   :defer t
@@ -627,7 +629,7 @@
 	("C-c l b" . eglot-format-buffer)
 	("C-c l R" . eglot-reconnect)))
 
-;; Tool for interacting with LLMs.
+;; Tool for interacting with LLMs
 (use-package ellama
   :bind ("C-c e" . ellama-transient-main-menu)
   :init
@@ -672,7 +674,7 @@
   :defer t
   :config (jarchive-mode))
 
-;; Major mode for editing Clojure code.
+;; Major mode for editing Clojure code
 (use-package clojure-mode
   :ensure t
   :hook
@@ -680,7 +682,7 @@
   :config
   (setopt cider-eldoc-display-for-symbol-at-point nil))
 
-;; A better *help* buffer.
+;; A better *help* buffer that provides more contextual information
 (use-package helpful
   :ensure t
   :bind (("C-h f" . helpful-callable)
