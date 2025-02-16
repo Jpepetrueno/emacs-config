@@ -65,8 +65,6 @@
   (tab-always-indent 'complete)
   (use-short-answers t)
   (require-final-newline t)
-  (completion-ignore-case t)
-  (read-buffer-completion-ignore-case t)
   (switch-to-buffer-obey-display-actions t)
   (debugger-stack-frame-as-list t)
   (history-delete-duplicates t)
@@ -78,8 +76,12 @@
   (recentf-max-saved-items 100)
   (shr-width 70) ; Set HTML width to 70
   (default-input-method 'spanish-prefix) ; 'A -> Á, ~N -> Ñ, ~? -> ¿
+  (completions-max-height 14)
   (completion-auto-help 'visible)
   (completion-auto-select 'second-tab)
+  (completion-ignore-case t)
+  (read-buffer-completion-ignore-case t)
+  (read-file-name-completion-ignore-case t)
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -214,11 +216,30 @@
   :ensure t
   :hook (emacs-lisp-mode . package-lint-flymake-setup))
 
+;; Enchanted Spell Checker
+(use-package jinx
+  :ensure t
+  :bind
+  ("M-$" . jinx-correct)
+  ("C-M-$" . jinx-languages)
+  :hook (emacs-startup . global-jinx-mode)
+  :custom
+  (jinx-languages "en_US es_ES")
+  :delight)
+
 ;; The Emacs command shell. Built-in package.
 (use-package eshell
   :defer t
-  :config
-  (setopt eshell-hist-ignoredups 'erase))
+  :custom
+  (eshell-hist-ignoredups 'erase)
+  (eshell-cmpl-ignore-case t))
+
+;; Emulate A Terminal, in a region, in a buffer and in Eshell
+(use-package eat
+  :ensure t
+  :after eshell
+  :config (eat-eshell-mode)
+  :custom (eshell-visual-commands '()))
 
 ;; Info package for Emacs. Built-in package.
 (use-package info

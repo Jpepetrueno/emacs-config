@@ -25,10 +25,10 @@
  '(inhibit-startup-screen t)
  '(package-selected-packages
    '(casual cider clojure-ts-mode crux debbugs delight diff-hl
-	    dired-preview dired-subtree editorconfig ef-themes eglot
-	    elfeed elisp-def elisp-demos ellama embark-consult eros
-	    exec-path-from-shell expand-region faceup helpful
-	    highlight-defined jarchive keycast keyfreq lingva
+	    dired-preview dired-subtree eat editorconfig ef-themes
+	    eglot elfeed elisp-def elisp-demos ellama embark-consult
+	    eros exec-path-from-shell expand-region faceup helpful
+	    highlight-defined jarchive jinx keycast keyfreq lingva
 	    live-py-mode lorem-ipsum magit marginalia markdown-mode
 	    nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer
 	    org package-lint-flymake pdf-tools pulsar
