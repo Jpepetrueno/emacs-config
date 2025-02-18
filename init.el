@@ -47,6 +47,7 @@
   ("C-c o e" . dimagid/eshell-other-window)
   ("C-c o f" . dimagid/flyspell-enable-by-mode)
   ("C-c o i" . dimagid/find-user-init-file)
+  ("C-c o m" . dimagid/display-buffer-modes)
   ("C-c o p" . use-package-report)
   ("C-c o r" . restart-emacs)
   ("<f9>" . browse-url-chromium)
@@ -174,6 +175,33 @@
 	(forward-sexp)
 	(end-of-line)
 	(insert result))))
+  (defun dimagid/display-buffer-modes ()
+    "Display major and minor modes in the current buffer."
+    (interactive)
+    (let* ((minor-modes-list
+	    (seq-filter (lambda (mode)
+                          (and (boundp mode) (symbol-value mode)))
+			minor-mode-list))
+           (minor-modes-alist
+	    (seq-filter (lambda (mode) (symbol-value (car mode))) minor-mode-alist))
+           (minor-mode-count-list
+	    (length minor-modes-list))
+           (minor-mode-count-alist
+	    (length minor-modes-alist))
+           (modes-list
+	    (if minor-modes-list
+		(mapconcat #'symbol-name minor-modes-list ", ")
+              "None"))
+           (modes-alist
+	    (if minor-modes-alist
+		(mapconcat (lambda (mode) (symbol-name (car mode))) minor-modes-alist ", ")
+              "None")))
+      (message "Major mode: %s\nMinor modes (%d): %s\nMinor modes in mode line (%d): %s"
+               major-mode
+               minor-mode-count-list
+               modes-list
+               minor-mode-count-alist
+               modes-alist)))
   (defun modi/multi-pop-to-mark (orig-fun &rest args)
     "Call ORIG-FUN until the cursor moves, up to 10 times."
     (let ((p (point)))
@@ -211,10 +239,28 @@
   (advice-add 'helpful-update
 	      :after 'elisp-demos-advice-helpful-update))
 
+;; Suggest elisp functions that give the output requested
+(use-package suggest
+  :ensure t
+  :defer t)
+
 ;; A package-lint Flymake backend
 (use-package package-lint-flymake
   :ensure t
   :hook (emacs-lisp-mode . package-lint-flymake-setup))
+
+;; Increase selected region by semantic units
+(use-package expand-region
+  :ensure t
+  :bind ("C-=" . er/expand-region))
+
+;; Highlight escape sequences
+(use-package highlight-escape-sequences
+  :ensure t
+  :config
+  (add-to-list 'hes-mode-alist
+	       '(lisp-interaction-mode . "\\(\\\\\\(u[[:xdigit:]]\\{4\\}\\|U00[[:xdigit:]]\\{6\\}\\|x[[:xdigit:]]+\\|[0-7]+\\|.\\)\\)"))
+  (hes-mode))
 
 ;; Enchanted Spell Checker
 (use-package jinx
@@ -546,13 +592,14 @@
   :bind
   (:map dired-mode-map
 	("C-o" . casual-dired-tmenu) ; casual-dired transient menu
-	("s" . casual-dired-sort-by-tmenu)
-	("r" . wdired-change-to-wdired-mode)
 	("/" . casual-dired-search-replace-tmenu)
 	("<tab>" . dired-subtree-toggle)
 	("TAB" . dired-subtree-toggle)
 	("<backtab>" . dired-subtree-remove)
-	("S-TAB" . dired-subtree-remove))
+	("S-TAB" . dired-subtree-remove)
+	("J" . dired-preview-mode)
+        ("r" . wdired-change-to-wdired-mode)
+	("s" . casual-dired-sort-by-tmenu))
   :hook
   (dired-mode . (lambda ()
                   (dired-hide-details-mode)
@@ -573,6 +620,12 @@
   :after dired
   :config
   (setopt dired-subtree-use-backgrounds nil))
+
+;; Automatically preview file at point in Dired
+(use-package dired-preview
+  :ensure t
+  :defer t
+  :after dired)
 
 ;; Operate on buffers like dired. Built-in package.
 (use-package ibuffer
@@ -776,11 +829,6 @@
     (set-process-sentinel (get-buffer-process (current-buffer))
 			  'my-shell-mode-kill-buffer-on-exit)))
 
-;; Suggest elisp functions that give the output requested
-(use-package suggest
-  :ensure t
-  :defer t)
-
 ;; Support library for PDF documents
 (use-package pdf-tools
   :ensure t
@@ -790,17 +838,6 @@
   :hook
   (pdf-view-mode . (lambda () (display-line-numbers-mode -1)))
   :config (pdf-loader-install))
-
-;; Insert dummy pseudo Latin text
-(use-package lorem-ipsum
-  :ensure t
-  :commands (lorem-ipsum-insert-sentences
-	     lorem-ipsum-insert-paragraphs))
-
-;; Increase selected region by semantic units
-(use-package expand-region
-  :ensure t
-  :bind ("C-=" . er/expand-region))
 
 ;; An Emacs Atom/RSS feed reader.
 (use-package elfeed

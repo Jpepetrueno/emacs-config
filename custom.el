@@ -28,13 +28,13 @@
 	    dired-preview dired-subtree eat editorconfig ef-themes
 	    eglot elfeed elisp-def elisp-demos ellama embark-consult
 	    eros exec-path-from-shell expand-region faceup helpful
-	    highlight-defined jarchive jinx keycast keyfreq lingva
-	    live-py-mode lorem-ipsum magit marginalia markdown-mode
-	    nerd-icons-completion nerd-icons-dired nerd-icons-ibuffer
-	    org package-lint-flymake pdf-tools pulsar
-	    rainbow-delimiters smartparens suggest trashed undo-tree
-	    verilog-mode wgrep which-key window-tool-bar
-	    yasnippet-snippets))
+	    highlight-defined highlight-escape-sequences jarchive jinx
+	    keycast keyfreq lingva live-py-mode lorem-ipsum magit
+	    marginalia markdown-mode nerd-icons-completion
+	    nerd-icons-dired nerd-icons-ibuffer org
+	    package-lint-flymake pdf-tools pulsar rainbow-delimiters
+	    smartparens suggest trashed undo-tree verilog-mode wgrep
+	    which-key window-tool-bar yasnippet-snippets))
  '(tab-bar-mode t)
  '(tool-bar-mode nil))
 (custom-set-faces
