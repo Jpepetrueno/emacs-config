@@ -224,6 +224,15 @@
 	  ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
 	  ef-themes-variable-pitch-ui t))
 
+;; A dimmer switch for your lighter text
+(use-package delight
+  :ensure t)
+
+;; SOAP library to access debbugs servers
+(use-package debbugs
+  :ensure t
+  :defer t)
+
 ;; Macro-aware go-to-definition for elisp
 (use-package elisp-def
   :bind (:map emacs-lisp-mode-map
@@ -535,8 +544,9 @@
 (use-package smartparens
   :ensure t
   :hook (prog-mode text-mode markdown-mode)
+  :custom
+  (sp-highlight-pair-overlay nil)
   :config
-  (set-face-attribute 'sp-pair-overlay-face nil :background "#444444")
   ;; enable global strict-mode
   (smartparens-global-strict-mode)
   ;; enable the pres-set bindings
@@ -723,11 +733,17 @@
 ;; Python's flying circus support for Emacs. Built-in package.
 (use-package python
   :bind (:map python-ts-mode-map
-	      ("<f5>" . recompile))
+	      ("<f5>" . recompile)
+	      ("C-c p" . live-py-mode))
   :hook
   ((python-ts-mode . eglot-ensure))
   :mode
   (("\\.py\\'" . python-ts-mode)))
+
+;; Live Coding in Python
+(use-package live-py-mode
+  :ensure t
+  :defer t)
 
 ;; Major mode for editing C and similar languages. Built-in package.
 (use-package cc-mode
