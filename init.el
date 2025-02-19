@@ -216,13 +216,16 @@
 ;; Colorful and legible themes
 (use-package ef-themes
   :ensure t
+  :bind ("C-c o t" . ef-themes-toggle)
   :init
   (mapc #'disable-theme custom-enabled-themes)
-  :config
   (ef-themes-select 'ef-owl)
-  (setopt ef-themes-to-toggle '(ef-owl ef-eagle)
-	  ef-themes-mixed-fonts t ; allow spacing-sensitive constructs
-	  ef-themes-variable-pitch-ui t))
+  :hook
+  (after-init . (lambda () (ef-themes-load-theme 'ef-owl)))
+  :custom
+  (ef-themes-to-toggle '(ef-owl ef-eagle))
+  (ef-themes-mixed-fonts t)
+  (ef-themes-variable-pitch-ui t))
 
 ;; A dimmer switch for your lighter text
 (use-package delight
