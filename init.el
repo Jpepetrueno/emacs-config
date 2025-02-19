@@ -319,10 +319,6 @@
   :ensure t
   :defer t)
 
-;; Major mode for editing shell scripts
-(use-package sh
-  :hook (sh-mode . flymake-mode))
-
 ;; Save minibuffer history. Built-in package.
 (use-package savehist
   :config
@@ -730,15 +726,22 @@
   :hook
   (ellama-session-mode . (lambda () (whitespace-mode -1))))
 
+;; Major mode for editing shell scripts. Built-in package.
+(use-package sh
+  :hook
+  (bash-ts-mode . flymake-mode)
+  :init
+  (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode)))
+
 ;; Python's flying circus support for Emacs. Built-in package.
 (use-package python
   :bind (:map python-ts-mode-map
 	      ("<f5>" . recompile)
 	      ("C-c p" . live-py-mode))
   :hook
-  ((python-ts-mode . eglot-ensure))
+  (python-ts-mode . eglot-ensure)
   :mode
-  (("\\.py\\'" . python-ts-mode)))
+  ("\\.py\\'" . python-ts-mode))
 
 ;; Live Coding in Python
 (use-package live-py-mode
@@ -750,8 +753,8 @@
   :bind (:map c-mode-map
 	      ("<f5>" . recompile))
   :hook
-  ((c-mode . eglot-ensure)
-   (c++-mode . eglot-ensure))
+  (c-mode . eglot-ensure)
+  (c++-mode . eglot-ensure)
   :mode
   ("\\.c\\'" . c-mode)
   ("\\.cpp\\'" . c++-mode)
@@ -768,19 +771,20 @@
 (use-package clojure-mode
   :ensure t
   :hook
-  ((clojure-mode . eglot-ensure))
+  (clojure-mode . eglot-ensure)
   :config
   (setopt cider-eldoc-display-for-symbol-at-point nil))
 
 ;; A better *help* buffer that provides more contextual information
 (use-package helpful
   :ensure t
-  :bind (("C-h f" . helpful-callable)
-	 ("C-h v" . helpful-variable)
-	 ("C-h k" . helpful-key)
-	 ("C-h x" . helpful-command)
-	 ("C-c C-d" . helpful-at-point)
-	 ("C-h F" . helpful-function)))
+  :bind
+  ("C-h f" . helpful-callable)
+  ("C-h v" . helpful-variable)
+  ("C-h k" . helpful-key)
+  ("C-h x" . helpful-command)
+  ("C-c C-d" . helpful-at-point)
+  ("C-h F" . helpful-function))
 
 ;; A cornucopia of useful interactive commands
 (use-package crux
