@@ -83,6 +83,7 @@
   (completion-ignore-case t)
   (read-buffer-completion-ignore-case t)
   (read-file-name-completion-ignore-case t)
+  (next-error-message-highlight t)
   (display-buffer-alist
    '(("\\*Occur\\*"
       (display-buffer-reuse-mode-window
@@ -208,8 +209,6 @@
       (dotimes (_ 10)
         (when (= p (point))
           (apply orig-fun args)))))
-  (advice-add 'list-packages
-	      :before #'package-refresh-contents)
   (advice-add 'pop-to-mark-command
 	      :around #'modi/multi-pop-to-mark))
 
@@ -732,9 +731,7 @@
 ;; Major mode for editing shell scripts. Built-in package.
 (use-package sh
   :hook
-  (bash-ts-mode . flymake-mode)
-  :init
-  (add-to-list 'major-mode-remap-alist '(sh-mode . bash-ts-mode)))
+  (sh-mode . flymake-mode))
 
 ;; Python's flying circus support for Emacs. Built-in package.
 (use-package python

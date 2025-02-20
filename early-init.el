@@ -21,7 +21,7 @@
         debug-on-error t))
 
 ;; Set the initial frame to be maximized
-(add-to-list #'initial-frame-alist '(fullscreen . maximized))
+(setq initial-frame-alist '((fullscreen . maximized)))
 
 
 ;;; early-init.el ends here
